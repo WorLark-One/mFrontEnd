@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         stateSearch: false,
+        rutaActual: "",
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -13,11 +14,22 @@ export default new Vuex.Store({
         },
         stateFalseAppBarSearch(state) {
             state.stateSearch = false;
+        },
+        SET_RUTAACTUAL(state, nuevaRuta) {
+            state.rutaActual = nuevaRuta;
         }
-
     },
     actions: {
+        setruta({ commit }, nuevaRuta) {
+            commit("SET_RUTAACTUAL", nuevaRuta);
+        },
     },
     modules: {
-    }
+    },
+    getters: {
+        rutaActual: (state) => {
+            return state.rutaActual
+        },
+    },
+
 })

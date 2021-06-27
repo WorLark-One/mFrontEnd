@@ -7,7 +7,6 @@
       dark
     >
       <!--      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />-->
-
       <v-toolbar-title>
         <a href="/" class="white--text" style="text-decoration: none"
           ><font-awesome-icon icon="shopping-basket" size="2x" />&nbsp;
@@ -16,6 +15,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-text-field
+        v-model="producto"
         flat
         solo-inverted
         hide-details
@@ -23,6 +23,7 @@
         class="hidden-sm-and-down"
       />
       <v-select
+        v-model="comuna"
         style="width: 25px"
         :items="items"
         label="Comuna"
@@ -32,9 +33,11 @@
         class="hidden-sm-and-down pl-2"
       ></v-select>
       <v-btn
-        color="secondary"
+        class="ml-1"
+        color="hidden-sm-and-down secondary"
         solo-inverted
         fab
+        small
         elevation="0"
         @click="goToSearch()"
       >
@@ -42,27 +45,19 @@
       </v-btn>
       <v-spacer />
       <v-btn icon>
-        <v-icon>mdi-account-circle</v-icon>
-      </v-btn>
-      <v-btn v-on="on" icon>
         <v-badge content="1" color="green" overlap>
           <v-icon>mdi-bell</v-icon>
         </v-badge>
       </v-btn>
+      <v-btn icon>
+        <v-icon>mdi-account-circle</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-content>
-      <!--<v-bottom-navigation :value="activeBtn" color="primary" horizontal>
-        <a href="/" class="v-btn">
-          <span>Bienvenida</span>
-        </a>
-
-        <v-btn href="/">
-          <span>Tendencias</span>
-        </v-btn>
-      </v-bottom-navigation>-->
+      <router-view />
     </v-content>
-    <router-view />
+
     <v-footer :padless="true">
       <v-card flat tile width="100%" class="secondary white--text text-center">
         <v-card-text>
@@ -101,6 +96,7 @@
   </v-app>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -138,11 +134,59 @@ export default {
         "Talca",
       ],
       activeBtn: 1,
+      comuna: "",
+      producto: "",
+      orientacion: "ASC",
+      marketPlaces: "ComunidadC+marketmaule+MercadoLibre",
+      rangoPrecios: "Todos",
+      pagina: 1,
     };
   },
+  mutations: {},
   methods: {
+    ...mapActions(["SET_RUTAACTUAL"]),
     goToSearch() {
-      this.$router.push("/search");
+      if (this.producto != "" && this.producto != undefined) {
+        var consulta = "";
+        if (this.comuna != "" && this.comuna != undefined) {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=" +
+            this.comuna +
+            "&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        } else {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=Todas&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        }
+        const ruta = {
+          name: "Search",
+          params: {
+            consulta: consulta,
+          },
+        };
+        this.$store.commit("SET_RUTAACTUAL", consulta);
+        this.producto = "";
+        this.comuna = "";
+        this.orientacion = "ASC";
+        this.$router.push(ruta);
+      }
     },
   },
 };

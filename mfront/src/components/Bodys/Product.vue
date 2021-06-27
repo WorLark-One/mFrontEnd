@@ -1,9 +1,17 @@
 <template>
   <div>
-    <v-container>
+    <v-container class="mb-6 mt-6">
       <div class="row">
         <div class="col-md-5 col-sm-5 col-xs-12">
-          <v-img max-height="500" :src="product.imagen" />
+          <v-img
+            max-height="500"
+            contain
+            :src="
+              product.marketplace == `marketmaule`
+                ? `https://descubreelmaule.cl/wp-content/uploads/2020/11/Market-Maule.png`
+                : product.imagen
+            "
+          />
         </div>
         <div class="col-md-7 col-sm-7 col-xs-12 mt-4">
           <div class="pl-6">
