@@ -567,13 +567,18 @@ export default {
         this.url +
         `p=${this.productoFinal}/` +
         `c=${this.comunaFinal}/` +
-        `pag=${this.orientacionFinal}`;
+        `ori=${this.orientacionFinal}/` +
+        `mp=${this.marketPlacesFinal}/` +
+        `rgp=${this.rangoPrecioFinal}/` +
+        `pag=${this.paginaFinal}`;
       axios.get(urlSearch).then((result) => {
+        console.log(result);
         const response = result.data.data;
         this.products = response;
-        this.totalProductos = this.products.length;
+        this.totalProductos = result.data.totalProductos;
+
         this.cargando = false;
-        console.log(response);
+        console.log(this.totalProductos);
       });
     },
     abrir(link) {
