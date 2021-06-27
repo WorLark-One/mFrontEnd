@@ -100,13 +100,6 @@
             <v-card-title>Market Place</v-card-title>
             <v-container class="pt-0" fluid>
               <v-checkbox
-                v-model="allMarketPlacesCheckBox"
-                label="Todas"
-                hide-details
-                dense
-                @change="changeMarketPlace()"
-              ></v-checkbox>
-              <v-checkbox
                 v-model="marketMauleCheckBox"
                 label="MarketMaule"
                 hide-details
@@ -432,7 +425,7 @@ export default {
     selectMarketPlace: [],
     marketPlace: ["marketmaule", "ComunidadC", "MercadoLibre"],
     //checkboxes marketPlace
-    allMarketPlacesCheckBox: false,
+    //allMarketPlacesCheckBox: false,
     marketMauleCheckBox: false,
     comunidadCCheckBox: false,
     mercadoLibreCheckBox: false,
@@ -687,7 +680,11 @@ export default {
       } else {
         this.rangoPrecioFinal = this.range[0] + "to" + this.range[1];
       }
-      if (this.allMarketPlacesCheckBox == true) {
+      if (
+        this.comunidadCCheckBox == true &&
+        this.marketMauleCheckBox == true &&
+        this.mercadoLibreCheckBox == true
+      ) {
         this.marketPlacesFinal = "ComunidadC+marketmaule+MercadoLibre";
       } else {
         var auxMarketPLacesFinal = [];
@@ -723,14 +720,14 @@ export default {
       this.goToNewRute();
     },
     changeMarketPlace() {
-      if (
-        this.marketMauleCheckBox == true &&
-        this.comunidadCCheckBox == true &&
-        this.mercadoLibreCheckBox == true
-      ) {
-        this.allMarketPlacesCheckBox = true;
-        console.log("wena");
-      }
+      //if (
+      //this.marketMauleCheckBox == true &&
+      //this.comunidadCCheckBox == true &&
+      //this.mercadoLibreCheckBox == true
+      //) {
+      //this.allMarketPlacesCheckBox = true;
+      //console.log("wena");
+      //}
     },
   },
 };
