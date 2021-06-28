@@ -26,6 +26,36 @@
       </v-card>
     </v-card>
     -->
+    <v-col cols="12" class="hidden-md-and-up">
+      <v-text-field
+        v-model="producto"
+        flat
+        solo-inverted
+        hide-details
+        color="white"
+        label="Buscar producto"
+        class="hidden-md-and-up"
+      />
+      <v-select
+        v-model="comuna"
+        :items="items"
+        label="Comuna"
+        flat
+        solo-inverted
+        hide-details
+        class="hidden-md-and-up mt-1"
+      ></v-select>
+      <v-btn
+        color="hidden-md-and-up secondary mt-1"
+        solo-inverted
+        block
+        elevation="0"
+        @click="goToSearch()"
+      >
+        BUSCAR
+        <v-icon class="ml-2">mdi-magnify</v-icon>
+      </v-btn>
+    </v-col>
     <v-carousel hide-delimiters>
       <v-carousel-item
         src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820667912950-full.jpeg"
@@ -281,16 +311,12 @@ export default {
       "San Rafael",
       "Talca",
     ],
-    product: [
-      { id: 1 },
-      { id: 2 },
-      { id: 3 },
-      { id: 4 },
-      { id: 5 },
-      { id: 6 },
-      { id: 7 },
-      { id: 8 },
-    ],
+    comuna: "",
+    producto: "",
+    orientacion: "ASC",
+    marketPlaces: "ComunidadC+marketmaule+MercadoLibre",
+    rangoPrecios: "Todos",
+    pagina: 1,
   }),
 
   created() {
@@ -299,8 +325,49 @@ export default {
   methods: {
     ...mapMutations(["stateFalseAppBarSearch"]),
     goToSearch() {
-      this.$router.push("/search");
+      if (this.producto != "" && this.producto != undefined) {
+        var consulta = "";
+        if (this.comuna != "" && this.comuna != undefined) {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=" +
+            this.comuna +
+            "&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        } else {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=Todas&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        }
+        const ruta = {
+          name: "Search",
+          params: {
+            consulta: consulta,
+          },
+        };
+        this.$store.commit("SET_RUTAACTUAL", consulta);
+        this.producto = "";
+        this.comuna = "";
+        this.orientacion = "ASC";
+        this.$router.push(ruta);
+      }
     },
+
     goToHome() {
       this.stateFalseAppBarSearch();
     },
