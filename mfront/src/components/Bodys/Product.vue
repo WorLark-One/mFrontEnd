@@ -18,7 +18,7 @@
             <p class="display-1 mb-0">{{ product.titulo }}</p>
             <v-card-actions class="pa-0">
               <p class="headline font-weight-light pt-3">
-                ${{ product.precio }}
+                ${{ formatPrecio(product.precio) }}
               </p>
               <v-spacer></v-spacer>
               <v-rating
@@ -167,6 +167,19 @@ export default {
     },
     goToProduct() {
       this.$router.push("/product");
+    },
+    formatPrecio(n) {
+      n = n.toString();
+      var flag = 0;
+      while (flag == 0) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1.$2$3");
+        if (n == n2) {
+          flag = 1;
+        } else {
+          n = n2;
+        }
+      }
+      return n;
     },
   },
 };

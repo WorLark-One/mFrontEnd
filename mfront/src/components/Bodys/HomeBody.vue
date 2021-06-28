@@ -56,58 +56,67 @@
         <v-icon class="ml-2">mdi-magnify</v-icon>
       </v-btn>
     </v-col>
-    <v-carousel hide-delimiters>
-      <v-carousel-item
-        src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820667912950-full.jpeg"
-      >
-        <v-row class="fill-height" align="center" justify="center">
-          <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>40% DE DESCUENTO</strong>
-          </div>
-          <br />
-        </v-row>
-      </v-carousel-item>
-      <v-carousel-item
-        src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820317266484-full.jpeg"
-      >
-        <v-row class="fill-height" align="center" justify="center">
-          <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>40% DE DESCUENTO</strong>
-          </div>
-          <br />
-        </v-row>
-      </v-carousel-item>
-      <v-carousel-item
-        src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820317266484-full.jpeg"
-      >
-        <v-row class="fill-height" align="center" justify="center">
-          <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>40% DE DESCUENTO</strong>
-          </div>
-          <br />
-        </v-row>
-      </v-carousel-item>
-      <v-carousel-item
-        src="https://comunidadc.cl/repoimg/default//2021/02/1612402513126467/1612923231834849-full.jpeg"
-      >
-        <v-row class="fill-height" align="center" justify="center">
-          <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>40% DE DESCUENTO</strong>
-          </div>
-          <br />
-        </v-row>
-      </v-carousel-item>
-    </v-carousel>
-    <v-divider></v-divider>
-    <section class="mt-2 mb-5">
-      <div class="pt-12 d-flex flex-row">
+    <section class="mb-5">
+      <div class="mt-4 d-flex flex-row">
         <font-awesome-icon icon="fire" size="2x" />
-        <h1 class="ml-2 mb-6">Tendencias</h1>
+        <h1 class="ml-2 mb-6">Productos en tendencias</h1>
       </div>
-      <div class="pl-4 pr-4 row">
+      <v-divider></v-divider>
+      <v-carousel cycle hide-delimiters height="300" class="mt-4">
+        <v-carousel-item
+          contain
+          gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820667912950-full.jpeg"
+        >
+          <v-row class="fill-height" align="center" justify="center">
+            <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
+              <strong>40% DE DESCUENTO</strong>
+            </div>
+            <br />
+          </v-row>
+        </v-carousel-item>
+        <v-carousel-item
+          contain
+          gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820317266484-full.jpeg"
+        >
+          <v-row class="fill-height" align="center" justify="center">
+            <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
+              <strong>40% DE DESCUENTO</strong>
+            </div>
+            <br />
+          </v-row>
+        </v-carousel-item>
+        <v-carousel-item
+          contain
+          gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820317266484-full.jpeg"
+        >
+          <v-row class="fill-height" align="center" justify="center">
+            <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
+              <strong>40% DE DESCUENTO</strong>
+            </div>
+            <br />
+          </v-row>
+        </v-carousel-item>
+        <v-carousel-item
+          contain
+          gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          src="https://comunidadc.cl/repoimg/default//2021/02/1612402513126467/1612923231834849-full.jpeg"
+        >
+          <v-row class="fill-height" align="center" justify="center">
+            <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
+              <strong>40% DE DESCUENTO</strong>
+            </div>
+            <br />
+          </v-row>
+        </v-carousel-item>
+      </v-carousel>
+      <div class="mt-2 row">
         <div class="col-md-6 col-sm-6 col-xs-12">
           <v-card>
             <v-img
+              contain
               src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612820317266484-full.jpeg"
               class="white--text align-center"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -138,6 +147,7 @@
         <div class="col-md-6 col-sm-6 col-xs-12">
           <v-card>
             <v-img
+              contain
               src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612821978703376-full.jpeg"
               class="white--text align-center"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -153,10 +163,11 @@
           </v-card>
         </div>
       </div>
-      <div class="pl-4 pr-4 row">
+      <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
           <v-card outlined>
             <v-img
+              contain
               src="https://comunidadc.cl/repoimg/default//2021/02/1612402513126467/1612922736479716-full.jpeg"
               class="white--text align-center"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -177,6 +188,7 @@
         <div class="col-md-4 col-sm-4 col-xs-12">
           <v-card outlined>
             <v-img
+              contain
               src="https://comunidadc.cl/repoimg/default//2021/02/1612294088284620/1612821281152012-full.jpeg"
               class="white--text align-center"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -197,6 +209,7 @@
         <div class="col-md-4 col-sm-4 col-xs-12">
           <v-card outlined>
             <v-img
+              contain
               src="https://comunidadc.cl/repoimg/default//2020/06/1592577160126937/1592598118938379-full.png"
               class="white--text align-center"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -327,6 +340,7 @@ export default {
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
+        this.producto = this.producto.replace(" ", "%");
         if (this.comuna != "" && this.comuna != undefined) {
           consulta =
             "p=" +

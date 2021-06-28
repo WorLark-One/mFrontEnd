@@ -32,7 +32,7 @@
             <v-icon class="ml-2">mdi-magnify</v-icon>
           </v-btn>
         </v-col>
-        <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="col-md-3 col-sm-12 col-xs-12">
           <v-card outlined>
             <v-card-title>Filtros</v-card-title>
             <v-divider></v-divider>
@@ -121,12 +121,12 @@
                 @change="changeMarketPlace()"
               ></v-checkbox>
             </v-container>
-            <v-divider></v-divider>
-            <v-btn block @click="setFilters()">APLICAR FILTROS</v-btn>
-            <v-divider></v-divider>
+            <v-btn block color="secondary" @click="setFilters()"
+              >APLICAR FILTROS</v-btn
+            >
           </v-card>
         </div>
-        <div class="col-md-9 col-sm-9 col-xs-12">
+        <div class="col-md-9 col-sm-12 col-xs-12">
           <v-row dense class="mt-2 mb-1">
             <v-col cols="12" sm="6" class="pl-2 pt-6">
               <small>{{ this.totalProductos }} productos encontrados.</small>
@@ -151,7 +151,11 @@
                 elevation="0"
                 @click="cuadricula = false"
               >
-                <font-awesome-icon icon="th-list" color="gray" size="2x" />
+                <font-awesome-icon
+                  icon="th-list"
+                  :color="cuadricula == false ? '#83c5be' : 'gray'"
+                  size="2x"
+                />
               </v-btn>
               <v-btn
                 elevation="0"
@@ -159,7 +163,11 @@
                 color="white"
                 @click="cuadricula = true"
               >
-                <font-awesome-icon icon="th-large" color="gray" size="2x" />
+                <font-awesome-icon
+                  icon="th-large"
+                  :color="cuadricula == true ? '#83c5be' : 'gray'"
+                  size="2x"
+                />
               </v-btn>
             </v-col>
           </v-row>
@@ -177,19 +185,13 @@
             ></v-progress-linear>
             <div
               class="col-md-4 col-sm-6 col-xs-12"
-              :key="pro.id"
+              :key="pro.id + 100000"
               v-for="pro in products"
             >
               <v-hover v-slot:default="{ hover }">
-                <v-card
-                  class="mx-auto"
-                  color="fondo lighten-4"
-                  max-width="350px"
-                  height="425px"
-                >
+                <v-card class="mx-auto" color="fondo lighten-4" height="425px">
                   <v-img
                     class="white--text align-self-star"
-                    :aspect-ratio="16 / 9"
                     contain
                     height="300px"
                     :src="
@@ -198,17 +200,6 @@
                         : pro.imagen
                     "
                   >
-                    <div
-                      class="
-                        d-flex
-                        align-self-start
-                        black--text
-                        flex-row-reverse
-                      "
-                    >
-                      <v-icon>mdi-star</v-icon>
-                      <span>(4,5) </span>
-                    </div>
                     <v-expand-transition>
                       <div
                         v-if="hover"
@@ -246,9 +237,27 @@
                   </v-card-subtitle>
                   <v-divider class="mx-4"></v-divider>
                   <v-card-actions class="justify-center align-content-end">
-                    <span style=""
-                      ><strong>${{ pro.precio }}</strong></span
+                    <span v-if="pro.precio != 0" class="ml-1"
+                      ><strong>$ {{ formatPrecio(pro.precio) }}</strong></span
                     >
+                    <span
+                      style="font-size: 90%"
+                      class="ml-1"
+                      v-if="pro.precio == 0"
+                      >CONSULTAR PRECIO</span
+                    >
+                    <v-spacer></v-spacer>
+                    <span class="ml-1">(3,5)</span>
+                    <v-rating
+                      readonly
+                      value="1"
+                      length="1"
+                      background-color="warning lighten-3"
+                      color="warning"
+                      class="mr-1"
+                      dense
+                    >
+                    </v-rating>
                   </v-card-actions>
                 </v-card>
               </v-hover>
@@ -312,25 +321,56 @@
                           <a
                             @click="goToProduct(pro.id)"
                             style="text-decoration: none; font-size: large"
-                            >{{ pro.titulo }}</a
+                            ><span
+                              class="d-inline-block text-truncate"
+                              style="max-width: 100%"
+                              >{{ pro.titulo }}</span
+                            ></a
                           >
                         </div>
                         <v-row class="mt-10 ml-0">
-                          <span class="mt-1" style="font-size: 150%"
-                            ><strong>${{ pro.precio }}</strong></span
+                          <span
+                            class="mt-1"
+                            style="font-size: 150%"
+                            v-if="pro.precio != 0"
+                            ><strong
+                              >$ {{ formatPrecio(pro.precio) }}</strong
+                            ></span
                           >
-                          <v-spacer></v-spacer>
+                          <span style="font-size: 100%" v-if="pro.precio == 0"
+                            >CONSULTAR PRECIO</span
+                          >
+                          <v-spacer class="hidden-md-and-down"></v-spacer>
                           <v-rating
+                            readonly
                             value="3"
-                            class=""
+                            class="hidden-md-and-down"
                             background-color="warning lighten-3"
                             color="warning"
                             dense
                           >
                           </v-rating>
-                          <span class="body-2 font-weight-thin mt-1 ml-1 mr-16"
+                          <span
+                            class="
+                              body-2
+                              font-weight-thin
+                              mt-1
+                              ml-1
+                              mr-16
+                              hidden-md-and-down
+                            "
                             >5 Valoraciones</span
                           >
+                        </v-row>
+                        <v-row class="hidden-md-and-up mt-4 ml-0">
+                          <v-rating
+                            value="3"
+                            background-color="warning lighten-3"
+                            color="warning"
+                            dense
+                          >
+                          </v-rating>
+                          <span class="font-weight-thin mt-1 ml-1">(5)</span>
                         </v-row>
                       </v-card-text>
                     </v-col>
@@ -339,8 +379,26 @@
               </v-hover>
             </v-col>
           </div>
+          <div v-if="this.totalProductos == 0">
+            <v-card class="mt-4 text-center">
+              <v-container>
+                <div class="my-4">
+                  <v-img
+                    height="150"
+                    contain
+                    class=""
+                    src="@/assets/bag.png"
+                  ></v-img>
+                  <v-card-subtitle style="font-size: 100%" class="mt-2">
+                    No se encontraron productos asociados a la búsqueda.
+                  </v-card-subtitle>
+                </div>
+              </v-container>
+            </v-card>
+          </div>
           <div class="text-center mt-12">
             <v-pagination
+              v-if="this.totalProductos > 0"
               v-model.number="page"
               :length="cantidadPaginas"
             ></v-pagination>
@@ -358,6 +416,12 @@
   opacity: 0.8;
   position: absolute;
   width: 100%;
+}
+.truncate {
+  width: 10%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
 <script>
@@ -457,6 +521,7 @@ export default {
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
+        this.producto = this.producto.replace(" ", "%");
         if (this.comuna != "" && this.comuna != undefined) {
           consulta =
             "p=" +
@@ -642,7 +707,9 @@ export default {
     },
     setMarketPlaces() {
       if (this.marketPlacesFinal == "ComunidadC+marketmaule+MercadoLibre") {
-        this.allMarketPlacesCheckBox = true;
+        this.marketMauleCheckBox = true;
+        this.comunidadCCheckBox = true;
+        this.mercadoLibreCheckBox = true;
       } else {
         var auxMP = this.marketPlacesFinal.split("+");
         if (auxMP.length > 0) {
@@ -727,6 +794,19 @@ export default {
         console.log(this.page);
         this.goToNewRute();
       }
+    },
+    formatPrecio(n) {
+      n = n.toString();
+      var flag = 0;
+      while (flag == 0) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1.$2$3");
+        if (n == n2) {
+          flag = 1;
+        } else {
+          n = n2;
+        }
+      }
+      return n;
     },
   },
 };

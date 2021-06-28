@@ -148,6 +148,7 @@ export default {
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
+        this.producto = this.producto.replace(" ", "%");
         if (this.comuna != "" && this.comuna != undefined) {
           consulta =
             "p=" +
