@@ -340,7 +340,10 @@
             </v-col>
           </div>
           <div class="text-center mt-12">
-            <v-pagination v-model="page" :length="6"></v-pagination>
+            <v-pagination
+              v-model.number="page"
+              :length="cantidadPaginas"
+            ></v-pagination>
           </div>
         </div>
       </div>
@@ -384,6 +387,9 @@ export default {
     rangoPrecioFinal: "",
     marketPlacesFinal: "",
     paginaFinal: "",
+    //paginacion
+    cantidadPaginas: 1,
+    cantidadPaginasAux: "1",
     cuadricula: false,
     items: [
       "Todas",
@@ -442,58 +448,9 @@ export default {
       //console.log(this.$store.state.rutaActual);
       this.obtenerProductos();
     },
-    /**allMarketPlacesCheckBox: function () {
-      if (this.allMarketPlacesCheckBox == true) {
-        this.marketMauleCheckBox = false;
-        this.comunidadCCheckBox = false;
-        this.mercadoLibreCheckBox = false;
-        console.log(this.comunidadCCheckBox);
-      }
+    page: function () {
+      this.setNavigation();
     },
-    marketMauleCheckBox: function () {
-      if (this.marketMauleCheckBox != false) {
-        if (
-          this.marketMauleCheckBox == true &&
-          this.comunidadCCheckBox == true &&
-          this.mercadoLibreCheckBox == true
-        ) {
-          this.allMarketPlacesCheckBox = true;
-        } else {
-          this.marketMauleCheckBox = true;
-          this.allMarketPlacesCheckBox = false;
-        }
-      }
-    },
-    comunidadCCheckBox: function () {
-      if (this.comunidadCCheckBox != false) {
-        if (
-          this.marketMauleCheckBox == true &&
-          this.comunidadCCheckBox == true &&
-          this.mercadoLibreCheckBox == true
-        ) {
-          this.allMarketPlacesCheckBox = true;
-          console.log("hola2");
-        } else {
-          this.comunidadCCheckBox = true;
-          this.allMarketPlacesCheckBox = false;
-          console.log("hola");
-        }
-      }
-    },
-    mercadoLibreCheckBox: function () {
-      if (this.mercadoLibreCheckBox != false) {
-        if (
-          this.marketMauleCheckBox == true &&
-          this.comunidadCCheckBox == true &&
-          this.mercadoLibreCheckBox == true
-        ) {
-          this.allMarketPlacesCheckBox = true;
-        } else {
-          this.mercadoLibreCheckBox = true;
-          this.allMarketPlacesCheckBox = false;
-        }
-      }
-    },*/
   },
   methods: {
     ...mapActions(["SET_RUTAACTUAL"]),
@@ -559,6 +516,7 @@ export default {
           this.rangoPrecioFinal = elementSplit;
         } else if (index == 5) {
           this.paginaFinal = parseInt(elementSplit);
+          //this.page = elementSplit;
         }
       }
       this.setMarketPlaces();
@@ -572,13 +530,41 @@ export default {
         `rgp=${this.rangoPrecioFinal}/` +
         `pag=${this.paginaFinal}`;
       axios.get(urlSearch).then((result) => {
-        console.log(result);
-        const response = result.data.data;
-        this.products = response;
+        //console.log(result);
+        //const response = result.data.data;
+        //this.products = response;
+        this.products = [];
+        this.page = parseInt(this.paginaFinal);
+        this.cantidadPaginas = 0;
         this.totalProductos = result.data.totalProductos;
-
+        if (this.totalProductos % 12 == 0) {
+          this.cantidadPaginas = this.totalProductos / 12;
+        } else {
+          this.cantidadPaginas = 1 + this.totalProductos / 12;
+        }
+        //console.log(result.data.data);
+        //console.log(this.totalProductos);
+        //this.cantidadPaginasAux = this.cantidadPaginas.toString();
+        if (this.page >= 1 && this.page <= this.cantidadPaginas) {
+          var productosPorPagina =
+            this.page * 12 > this.totalProductos
+              ? this.totalProductos
+              : this.page * 12;
+          let inicioProducto = (this.page - 1) * 12;
+          for (
+            let index = inicioProducto;
+            index < productosPorPagina;
+            index++
+          ) {
+            const element = result.data.data[index];
+            console.log(element);
+            this.products =
+              this.products.length > 0
+                ? [...this.products, element]
+                : [element];
+          }
+        }
         this.cargando = false;
-        console.log(this.totalProductos);
       });
     },
     abrir(link) {
@@ -722,6 +708,7 @@ export default {
           this.allMarketPlacesCheckBox = true;
         }
       }
+      this.paginaFinal = 1;
       this.goToNewRute();
     },
     changeMarketPlace() {
@@ -733,6 +720,13 @@ export default {
       //this.allMarketPlacesCheckBox = true;
       //console.log("wena");
       //}
+    },
+    setNavigation() {
+      if (this.page <= this.cantidadPaginas) {
+        this.paginaFinal = this.page;
+        console.log(this.page);
+        this.goToNewRute();
+      }
     },
   },
 };
