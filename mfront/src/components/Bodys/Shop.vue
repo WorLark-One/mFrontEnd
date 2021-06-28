@@ -611,6 +611,18 @@ export default {
         //console.log(this.totalProductos);
         //this.cantidadPaginasAux = this.cantidadPaginas.toString();
         if (this.page >= 1 && this.page <= this.cantidadPaginas) {
+          if (this.rangoPrecioFinal == "Todos") {
+            this.range[1] = result.data.precioMaximo;
+            //this.range[0] = 0;
+            this.max = result.data.precioMaximo;
+          } else {
+            var auxRangoPrecio = this.rangoPrecioFinal.split("to");
+            this.range[1] = result.data.precioMaximo;
+            ///this.range[0] = 0;
+            //this.min = parseInt(auxRangoPrecio[0]);
+            this.max = parseInt(auxRangoPrecio[1]);
+            //this.max = result.data.precioMaximo;
+          }
           var productosPorPagina =
             this.page * 12 > this.totalProductos
               ? this.totalProductos
@@ -622,7 +634,7 @@ export default {
             index++
           ) {
             const element = result.data.data[index];
-            console.log(element);
+            //console.log(element);
             this.products =
               this.products.length > 0
                 ? [...this.products, element]
