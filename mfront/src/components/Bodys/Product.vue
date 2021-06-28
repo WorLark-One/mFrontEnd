@@ -70,18 +70,17 @@
             <v-tab>Historial de precios</v-tab>
             <v-tab>Valoraciones</v-tab>
             <v-tab-item>
-              <p class="pt-6 subtitle-1 font-weight">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ultricies mi eget mauris pharetra et. Vel pretium lectus quam id
-                leo in vitae turpis massa. Orci dapibus ultrices in iaculis
-                nunc. At auctor urna nunc id cursus metus. Integer feugiat
-                scelerisque varius morbi enim nunc. Aliquam sem et tortor
-                consequat id porta nibh venenatis cras. Pellentesque pulvinar
-                pellentesque habitant morbi tristique senectus et netus.
-                Malesuada nunc vel risus commodo viverra maecenas. Neque
-                volutpat ac tincidunt vitae semper quisss.
-              </p>
+              <line-chart
+                id="line2"
+                :data="data"
+                xkey="fecha"
+                ykeys='["precio"]'
+                line-colors='[ "#FF6384" ]'
+                grid="true"
+                grid-text-weight="blod"
+                resize="true"
+              >
+              </line-chart>
             </v-tab-item>
 
             <v-tab-item>
@@ -207,18 +206,18 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <p class="pt-6 subtitle-1 font-weight">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ultricies mi eget mauris pharetra et. Vel pretium lectus quam id
-                leo in vitae turpis massa. Orci dapibus ultrices in iaculis
-                nunc. At auctor urna nunc id cursus metus. Integer feugiat
-                scelerisque varius morbi enim nunc. Aliquam sem et tortor
-                consequat id porta nibh venenatis cras. Pellentesque pulvinar
-                pellentesque habitant morbi tristique senectus et netus.
-                Malesuada nunc vel risus commodo viverra maecenas. Neque
-                volutpat ac tincidunt vitae semper quisss.
-              </p>
+              <line-chart
+                id="line2"
+                :data="data"
+                xkey="fecha"
+                ykeys='["precio"]'
+                labels='["Precio"]'
+                line-colors='[ "#FF6384" ]'
+                grid="true"
+                grid-text-weight="blod"
+                resize="true"
+              >
+              </line-chart>
             </v-tab-item>
             <v-tab-item>
               <v-list three-line="true" avatar="true" disabled>
@@ -274,9 +273,23 @@
 </template>
 <script>
 import axios from "axios";
+import { LineChart } from "vue-morris";
 export default {
+  components: {
+    LineChart,
+  },
   data() {
     return {
+      data: [
+        { fecha: "2021-06-21", precio: 10000 },
+        { fecha: "2021-06-22", precio: 11000 },
+        { fecha: "2021-06-23", precio: 11000 },
+        { fecha: "2021-06-24", precio: 11000 },
+        { fecha: "2021-06-25", precio: 10000 },
+        { fecha: "2021-06-26", precio: 10000 },
+        { fecha: "2021-06-27", precio: 9000 },
+        { fecha: "2021-06-28", precio: 9000 },
+      ],
       rating: 4.5,
       url: "http://127.0.0.1:8000/api/public/getProducto/",
       idProducto: 1,
