@@ -379,7 +379,7 @@
               </v-hover>
             </v-col>
           </div>
-          <div v-if="this.totalProductos == 0">
+          <div v-if="this.totalProductos == 0 && cargando == false">
             <v-card class="mt-4 text-center">
               <v-container>
                 <div class="my-4">
@@ -528,26 +528,12 @@ export default {
             this.producto +
             "&c=" +
             this.comuna +
-            "&ori=" +
-            this.orientacion +
-            "&mp=" +
-            this.marketPlacesFinal +
-            "&rgp=" +
-            this.rangoPrecioFinal +
-            "&pag=" +
-            this.paginaFinal;
+            "&ori=ASC&mp=ComunidadC+marketmaule+MercadoLibre&rgp=Todos&pag=1";
         } else {
           consulta =
             "p=" +
             this.producto +
-            "&c=Todas&ori=" +
-            this.orientacion +
-            "&mp=" +
-            this.marketPlacesFinal +
-            "&rgp=" +
-            this.rangoPrecioFinal +
-            "&pag=" +
-            this.paginaFinal;
+            "&c=Todas&ori=ASC&mp=ComunidadC+marketmaule+MercadoLibre&rgp=Todos&pag=1";
         }
         const ruta = {
           name: "Search",
@@ -595,7 +581,7 @@ export default {
         `rgp=${this.rangoPrecioFinal}/` +
         `pag=${this.paginaFinal}`;
       axios.get(urlSearch).then((result) => {
-        //console.log(result);
+        console.log(result);
         //const response = result.data.data;
         //this.products = response;
         this.products = [];
@@ -610,18 +596,18 @@ export default {
         //console.log(result.data.data);
         //console.log(this.totalProductos);
         //this.cantidadPaginasAux = this.cantidadPaginas.toString();
+        this.range = [];
         if (this.page >= 1 && this.page <= this.cantidadPaginas) {
           if (this.rangoPrecioFinal == "Todos") {
-            this.range[1] = result.data.precioMaximo;
-            //this.range[0] = 0;
+            this.range[1] = result.data.precioMaxRango;
+            this.range[0] = result.data.precioMinRango;
             this.max = result.data.precioMaximo;
+            this.min = 0;
           } else {
-            var auxRangoPrecio = this.rangoPrecioFinal.split("to");
-            this.range[1] = result.data.precioMaximo;
-            ///this.range[0] = 0;
-            //this.min = parseInt(auxRangoPrecio[0]);
-            this.max = parseInt(auxRangoPrecio[1]);
-            //this.max = result.data.precioMaximo;
+            this.range[1] = result.data.precioMaxRango;
+            this.range[0] = result.data.precioMinRango;
+            this.max = result.data.precioMaximo;
+            this.min = 0;
           }
           var productosPorPagina =
             this.page * 12 > this.totalProductos
@@ -748,7 +734,11 @@ export default {
       if (this.range[0] == this.min && this.range[1] == this.max) {
         this.rangoPrecioFinal = "Todos";
       } else {
-        this.rangoPrecioFinal = this.range[0] + "to" + this.range[1];
+        if (this.totalProductos == 0) {
+          this.rangoPrecioFinal = "Todos";
+        } else {
+          this.rangoPrecioFinal = this.range[0] + "to" + this.range[1];
+        }
       }
       if (
         this.comunidadCCheckBox == true &&
