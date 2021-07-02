@@ -194,11 +194,7 @@
                     class="white--text align-self-star"
                     contain
                     height="300px"
-                    :src="
-                      pro.marketplace == `marketmaule`
-                        ? `https://descubreelmaule.cl/wp-content/uploads/2020/11/Market-Maule.png`
-                        : pro.imagen
-                    "
+                    :src="pro.imagen"
                   >
                     <v-expand-transition>
                       <div
@@ -284,11 +280,7 @@
                         width="180px"
                         contain
                         class="rounded-sm"
-                        :src="
-                          pro.marketplace == `marketmaule`
-                            ? `https://descubreelmaule.cl/wp-content/uploads/2020/11/Market-Maule.png`
-                            : pro.imagen
-                        "
+                        :src="pro.imagen"
                       >
                         <v-expand-transition>
                           <div
@@ -429,7 +421,7 @@ import axios from "axios";
 import { mapActions } from "vuex";
 export default {
   data: () => ({
-    url: "http://127.0.0.1:8000/api/public/getSearch/",
+    url: "http://localhost:8000/api/public/getSearch/",
     range: [0, 1000000],
     select: "Precio: Menor a Mayor",
     options: [
