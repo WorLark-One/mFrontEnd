@@ -56,27 +56,63 @@
           </v-btn>
         </template>
         <v-card>
-          <v-card-title class="text-h5 grey lighten-2">
-            Privacy Policy
+          <v-card-title
+            v-if="this.$store.state.auth == false"
+            class="text-h5 lighten-2"
+          >
+            Iniciar sesión en KMaule
           </v-card-title>
-          <v-card-text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog = false">
-              I accept
+          <v-card-title
+            v-if="this.$store.state.auth == true"
+            class="text-h5 lighten-2"
+          >
+            Cerrar sesión en KMaule
+          </v-card-title>
+          <v-divider class="mx-4"></v-divider>
+          <v-form
+            class="mx-6 mt-6"
+            @submit.prevent="
+              login(form);
+              dialog = false;
+            "
+            v-if="this.$store.state.auth == false"
+          >
+            <v-text-field
+              v-model="form.email"
+              label="Correo electrónico"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="form.password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="show1 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Contraseña"
+              hint="At least 8 characters"
+              required
+              @click:append="show1 = !show1"
+            ></v-text-field>
+            <v-btn color="secondary" block type="submit">
+              Iniciar sesión
             </v-btn>
+          </v-form>
+          <v-card-actions
+            v-if="this.$store.state.auth == false"
+            class="mt-8 pb-4"
+          >
+            <a>¿Olvidaste tu contraseña?</a>
           </v-card-actions>
+          <div class="pt-6 pb-6 px-6" v-if="this.$store.state.auth == true">
+            <v-btn
+              color="secondary"
+              block
+              @click="
+                logout();
+                dialog = false;
+              "
+              >Logout</v-btn
+            >
+          </div>
         </v-card>
       </v-dialog>
     </v-app-bar>
@@ -124,9 +160,11 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
+      show1: false,
       dialog: false,
       items: [
         "Todas",
@@ -168,11 +206,15 @@ export default {
       marketPlaces: "ComunidadC+marketmaule+MercadoLibre",
       rangoPrecios: "Todos",
       pagina: 1,
+      form: {
+        email: "felipe.milla.calquin@gmail.com",
+        password: "1234567890",
+      },
     };
   },
   mutations: {},
   methods: {
-    ...mapActions(["SET_RUTAACTUAL"]),
+    ...mapActions(["SET_RUTAACTUAL", "login", "logout"]),
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";

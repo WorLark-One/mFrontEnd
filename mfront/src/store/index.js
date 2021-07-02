@@ -41,7 +41,8 @@ export default new Vuex.Store({
         },
         async logout({ dispatch }) {
             await axios.post("/logout");
-            return dispatch("getUser");
+            await dispatch("getUser");
+            await dispatch("goToHome");
         },
         async getUser({ commit }) {
             await axios.get("/api/user")
@@ -54,6 +55,9 @@ export default new Vuex.Store({
         },
         goToDashboad() {
             router.push("dashBoardAdmin");
+        },
+        goToHome() {
+            router.push("/");
         }
     },
     modules: {

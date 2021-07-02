@@ -300,16 +300,22 @@ export default {
     },
     obtenerProducto() {
       this.idProducto = this.$route.params.id;
-      axios.get(this.url + this.idProducto).then((result) => {
-        const response = result.data.data;
-        this.product.titulo = response.titulo;
-        this.product.descripcion = response.descripcion;
-        this.product.precio = response.precio;
-        this.product.imagen = response.imagen;
-        this.product.ubicacion = response.ubicacion;
-        this.product.link = response.link;
-        this.product.marketplace = response.marketplace;
-      });
+      const ruta = this.url + this.idProducto;
+      axios
+        .get(ruta)
+        .then((result) => {
+          const response = result.data.data;
+          this.product.titulo = response.titulo;
+          this.product.descripcion = response.descripcion;
+          this.product.precio = response.precio;
+          this.product.imagen = response.imagen;
+          this.product.ubicacion = response.ubicacion;
+          this.product.link = response.link;
+          this.product.marketplace = response.marketplace;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
     },
 
     abrir(link) {
