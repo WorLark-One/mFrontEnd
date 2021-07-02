@@ -6,15 +6,7 @@
     <v-card class="mt-4 mx-8 mb-8" v-if="apariencia == true">
       <div class="row">
         <div class="col-md-5 col-sm-5 col-xs-12">
-          <v-img
-            height="500"
-            contain
-            :src="
-              product.marketplace == `marketmaule`
-                ? `https://descubreelmaule.cl/wp-content/uploads/2020/11/Market-Maule.png`
-                : product.imagen
-            "
-          />
+          <v-img height="500" contain :src="product.imagen" />
         </div>
         <div class="col-md-7 col-sm-7 col-xs-12 mt-4">
           <div class="pl-6">
@@ -139,15 +131,7 @@
           <div class="px-4">
             <v-card-title class="px-0">{{ product.titulo }}</v-card-title>
             <!--<p class="display-1 mb-0"></p>-->
-            <v-img
-              height="300"
-              contain
-              :src="
-                product.marketplace == `marketmaule`
-                  ? `https://descubreelmaule.cl/wp-content/uploads/2020/11/Market-Maule.png`
-                  : product.imagen
-              "
-            />
+            <v-img height="300" contain :src="product.imagen" />
             <v-card-actions class="pa-0 mt-4">
               <p class="headline font-weight-light">
                 <strong>${{ formatPrecio(product.precio) }}</strong>
