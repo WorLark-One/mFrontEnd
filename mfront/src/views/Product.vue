@@ -11,5 +11,8 @@ export default {
   components: {
     ProductBody,
   },
+  created() {
+    this.$store.dispatch("colocarLayout");
+  },
 };
 </script>

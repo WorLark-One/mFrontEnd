@@ -275,7 +275,7 @@ export default {
         { fecha: "2021-06-28", precio: 9000 },
       ],
       rating: 4.5,
-      url: "hhttp://localhost:8000/api/public/getProducto/",
+      url: "http://localhost:8000/api/public/getProducto/",
       idProducto: 1,
       producto: "",
       product: {

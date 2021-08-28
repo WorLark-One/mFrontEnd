@@ -11,5 +11,8 @@ export default {
   components: {
     SearchBody,
   },
+  created() {
+    this.$store.dispatch("colocarLayout");
+  },
 };
 </script>

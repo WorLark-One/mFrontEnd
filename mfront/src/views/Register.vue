@@ -28,40 +28,65 @@
         <v-col cols="12" sm="12" md="4" class="">
           <v-card class="white" elevation="0">
             <v-card-title class="justify-center">
-              <h1 class="mb-4 mt-6 medtitt2">Inicio de sesión</h1>
+              <h1 class="mb-4 mt-6 medtitt2">Registro</h1>
             </v-card-title>
             <v-card-subtitle class="text-center">
-              Ingrese sus credenciales para continuar
+              Completa los siguientes datos
             </v-card-subtitle>
 
-            <v-form class="mx-6 mt-2 pt-4" @submit.prevent="login(form)">
+            <v-form
+              class="mx-6 mt-6"
+              @submit.prevent="crearCuentaMethod()"
+              v-if="this.$store.state.auth == false"
+            >
               <v-text-field
-                v-model="form.email"
+                v-model="form2.name"
+                label="Nombre de usuario"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="form2.email"
                 label="Correo electrónico"
                 required
               ></v-text-field>
               <v-text-field
-                v-model="form.password"
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="show1 ? 'text' : 'password'"
+                v-model="form2.password"
+                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show2 ? 'text' : 'password'"
                 name="input-10-1"
                 label="Contraseña"
+                hint="Al menos 8 caracteres"
                 required
-                @click:append="show1 = !show1"
+                @click:append="show2 = !show2"
               ></v-text-field>
-              <v-btn color="cbtn" dark large rounded block type="submit">
-                Continuar
+              <v-text-field
+                v-model="form2.passwordConfirm"
+                :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show3 ? 'text' : 'password'"
+                name="input-10-1"
+                label="Confirmar contraseña"
+                hint="Al menos 8 caracteres"
+                :rules="[
+                  (v) =>
+                    v == this.form2.password ||
+                    'Debe ser igual que la contraseña',
+                ]"
+                required
+                @click:append="show3 = !show3"
+              ></v-text-field>
+              <v-btn color="cbtn" rounded dark large block type="submit">
+                Registrarse
               </v-btn>
             </v-form>
             <v-card-actions>
               <v-card-subtitle>
-                ¿Aún no tienes una cuenta?
+                ¿Ya tienes una cuenta?
                 <a
-                  href="/#/register"
+                  href="/#/Login"
                   class="blue--text ml-1"
                   style="text-decoration: none"
                 >
-                  Registrarse</a
+                  Ingresar</a
                 >
               </v-card-subtitle>
             </v-card-actions>
@@ -73,40 +98,50 @@
 </template>
 
 <script>
-//import axios from "axios";
-//axios.defaults.withCredentials = true;
-//axios.defaults.baseURL = "http://localhost:8000/";
 import { mapState, mapActions } from "vuex";
 export default {
   data: () => ({
     //user: {},
     //userAuth: {},
-    show1: false,
+
+    show2: false,
+    show3: false,
+    form2: {
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      rol: "",
+    },
     form: {
       email: "felipe.milla.calquin@gmail.com",
       password: "1234567890",
     },
   }),
-  computed: {
-    ...mapState(["auth", "user"]),
-  },
   beforeCreate() {
     this.$store.dispatch("quitarLayout");
     if (this.$store.state.auth == true) {
       this.$router.push("/");
     }
   },
-
+  computed: {
+    ...mapState(["auth", "user"]),
+  },
   methods: {
-    ...mapActions(["login"]),
-    //logout() {
-    //axios.post("/logout").then(() => {
-    //this.userAuth = {};
-    //});
-    //},
-    //async login2() {
-    //this.$store.dispatch("login", this.form);
-    //},
+    ...mapActions(["register"]),
+    async crearCuentaMethod() {
+      if (this.form2.password == this.form2.passwordConfirm) {
+        let newUser = {
+          name: this.form2.name,
+          email: this.form2.email,
+          password: this.form2.password,
+          rol: this.$store.state.newUser,
+        };
+        this.show2 = false;
+        this.show3 = false;
+        await this.register(newUser);
+      }
+    },
   },
 };
 </script>

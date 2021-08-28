@@ -121,7 +121,7 @@
                 @change="changeMarketPlace()"
               ></v-checkbox>
             </v-container>
-            <v-btn block color="secondary" @click="setFilters()"
+            <v-btn block color="cbtn" dark @click="setFilters()"
               >APLICAR FILTROS</v-btn
             >
           </v-card>
@@ -153,7 +153,7 @@
               >
                 <font-awesome-icon
                   icon="th-list"
-                  :color="cuadricula == false ? '#83c5be' : 'gray'"
+                  :color="cuadricula == false ? '#0bce96' : 'gray'"
                   size="2x"
                 />
               </v-btn>
@@ -165,7 +165,7 @@
               >
                 <font-awesome-icon
                   icon="th-large"
-                  :color="cuadricula == true ? '#83c5be' : 'gray'"
+                  :color="cuadricula == true ? '#0bce96' : 'gray'"
                   size="2x"
                 />
               </v-btn>

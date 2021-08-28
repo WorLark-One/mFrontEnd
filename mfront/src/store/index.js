@@ -13,6 +13,8 @@ export default new Vuex.Store({
         rutaActual: "",
         user: null,
         auth: false,
+        newUser: "cliente",
+        layout: true,
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -27,6 +29,9 @@ export default new Vuex.Store({
         SET_USER(state, user) {
             state.user = user;
             state.auth = Boolean(user);
+        },
+        SET_LAYOUT(state, value) {
+            state.layout = value;
         }
     },
     actions: {
@@ -37,16 +42,45 @@ export default new Vuex.Store({
             await axios.get("/sanctum/csrf-cookie");
             await axios.post("/login", credentials);
             await dispatch("getUser");
-            await dispatch("goToDashboad");
+            await dispatch("goToHome");
         },
         async logout({ dispatch }) {
             await axios.post("/logout");
             await dispatch("getUser");
             await dispatch("goToHome");
         },
+        async register({ dispatch }, re) {
+            var flag = false;
+            await axios.get("/sanctum/csrf-cookie");
+            await axios.post("/api/public/registerUser", re)
+                .then(() => {
+                    flag = true;
+                    //console.log(res.data);
+                    //dispatch("getUser");
+                })
+                .catch((ex) => {
+                    //dispatch("getUser");
+                    console.log(ex);
+                    flag = false;
+                });
+            if (flag) {
+                let credentials = {
+                    email: re.email,
+                    password: re.password
+                }
+
+                await axios.post("/login", credentials);
+                await dispatch("getUser");
+                await dispatch("goToHome");
+            }
+
+
+        },
         async getUser({ commit }) {
             await axios.get("/api/user")
                 .then((res) => {
+                    console.log(res.data);
+                    //await axios.get
                     commit('SET_USER', res.data);
                 })
                 .catch(() => {
@@ -58,6 +92,12 @@ export default new Vuex.Store({
         },
         goToHome() {
             router.push("/");
+        },
+        quitarLayout() {
+            this.commit('SET_LAYOUT', false);
+        },
+        colocarLayout() {
+            this.commit('SET_LAYOUT', true);
         }
     },
     modules: {
