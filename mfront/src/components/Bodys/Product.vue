@@ -1,9 +1,11 @@
 <template>
   <div>
-    <v-btn small elevation="0" @click="apariencia = !apariencia"
-      >apariencia</v-btn
-    >
-    <v-card class="mt-4 mx-8 mb-8" v-if="apariencia == true">
+    <v-breadcrumbs class="ml-2" :items="items">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <v-card class="mt-4 mx-8 mb-8" elevation="2" v-if="apariencia == true">
       <div class="row">
         <div class="col-md-5 col-sm-5 col-xs-12">
           <v-img height="500" contain :src="product.imagen" />
@@ -125,7 +127,7 @@
         </div>
       </div>
     </v-card>
-    <v-card class="mt-4 mx-8 mb-8" v-if="apariencia == false">
+    <v-card class="mt-4 mx-8 mb-8" elevation="12" v-if="apariencia == false">
       <v-row>
         <v-col cols="12" md="6">
           <div class="px-4">
@@ -267,7 +269,7 @@ export default {
       data: [
         { fecha: "2021-06-21", precio: 10000 },
         { fecha: "2021-06-22", precio: 11000 },
-        { fecha: "2021-06-23", precio: 11000 },
+
         { fecha: "2021-06-24", precio: 11000 },
         { fecha: "2021-06-25", precio: 10000 },
         { fecha: "2021-06-26", precio: 10000 },
@@ -276,6 +278,7 @@ export default {
       ],
       rating: 4.5,
       url: "http://localhost:8000/api/public/getProducto/",
+      urlH: "http://localhost:8000/api/public/getHistorial/",
       idProducto: 1,
       producto: "",
       product: {
@@ -289,10 +292,28 @@ export default {
       },
       apariencia: false,
       scrollInvoked: 0,
+      items: [
+        {
+          text: "Inicio",
+          disabled: false,
+          href: "/",
+        },
+        {
+          text: "Búsqueda",
+          disabled: false,
+          href: "javascript:history.back()",
+        },
+        {
+          text: "Producto",
+          disabled: true,
+          href: "breadcrumbs_link_2",
+        },
+      ],
     };
   },
   beforeMount() {
     this.obtenerProducto();
+    this.obtenerHistorialProducto();
   },
   methods: {
     onScroll() {
@@ -312,6 +333,18 @@ export default {
           this.product.ubicacion = response.ubicacion;
           this.product.link = response.link;
           this.product.marketplace = response.marketplace;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+    },
+    obtenerHistorialProducto() {
+      const ruta = this.urlH + this.idProducto;
+      axios
+        .get(ruta)
+        .then((result) => {
+          console.log(result.data.data);
+          this.data = result.data.data;
         })
         .catch((er) => {
           console.log(er);

@@ -1,6 +1,27 @@
 <template>
   <div class="fdo">
     <v-container class="mt-6">
+      <v-snackbar
+        top
+        right
+        color="danger"
+        timeout="-1"
+        v-model="$store.state.alertaRegister"
+      >
+        <font-awesome-icon icon="exclamation-circle" size="1x" />&nbsp; El
+        correo ingresado ya se encuentra registrado
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            small
+            icon
+            v-bind="attrs"
+            @click="alertaRegisterQuitar"
+          >
+            <font-awesome-icon icon="times" size="1x" />
+          </v-btn>
+        </template>
+      </v-snackbar>
       <v-row align="center" justify="center" style="height: 92vh">
         <v-col cols="12" sm="12" md="8">
           <v-card class="primary" elevation="0" style="height: 92vh">
@@ -35,18 +56,22 @@
             </v-card-subtitle>
 
             <v-form
+              ref="form"
+              v-model="valid"
+              lazy-validation
               class="mx-6 mt-6"
               @submit.prevent="crearCuentaMethod()"
-              v-if="this.$store.state.auth == false"
             >
               <v-text-field
                 v-model="form2.name"
                 label="Nombre de usuario"
+                :rules="nameRules"
                 required
               ></v-text-field>
               <v-text-field
                 v-model="form2.email"
                 label="Correo electrónico"
+                :rules="emailRules"
                 required
               ></v-text-field>
               <v-text-field
@@ -56,6 +81,7 @@
                 name="input-10-1"
                 label="Contraseña"
                 hint="Al menos 8 caracteres"
+                :rules="passwordRules"
                 required
                 @click:append="show2 = !show2"
               ></v-text-field>
@@ -67,6 +93,7 @@
                 label="Confirmar contraseña"
                 hint="Al menos 8 caracteres"
                 :rules="[
+                  (v) => !!v || 'Confirmación de contraseña requerida',
                   (v) =>
                     v == this.form2.password ||
                     'Debe ser igual que la contraseña',
@@ -103,7 +130,7 @@ export default {
   data: () => ({
     //user: {},
     //userAuth: {},
-
+    valid: true,
     show2: false,
     show3: false,
     form2: {
@@ -113,10 +140,20 @@ export default {
       passwordConfirm: "",
       rol: "",
     },
-    form: {
-      email: "felipe.milla.calquin@gmail.com",
-      password: "1234567890",
-    },
+    nameRules: [
+      (v) => !!v || "Nombre es requerido",
+      (v) => v.length <= 10 || "El nombre debe tener menos de 10 caracteres",
+    ],
+    emailRules: [
+      (v) => !!v || "El correo electrónico es requerido",
+      (v) => /.+@.+/.test(v) || "El correo electrónico debe ser válido",
+    ],
+    passwordRules: [
+      (v) => !!v || "Contraseña es requerida",
+      (v) => v.length >= 8 || "La contraseña debe tener al menos 8 caracteres",
+      (v) =>
+        v.length <= 16 || "La contraseña debe tener menos de 16 caracteres",
+    ],
   }),
   beforeCreate() {
     this.$store.dispatch("quitarLayout");
@@ -128,7 +165,7 @@ export default {
     ...mapState(["auth", "user"]),
   },
   methods: {
-    ...mapActions(["register"]),
+    ...mapActions(["register", "alertaRegisterQuitar"]),
     async crearCuentaMethod() {
       if (this.form2.password == this.form2.passwordConfirm) {
         let newUser = {
@@ -139,7 +176,13 @@ export default {
         };
         this.show2 = false;
         this.show3 = false;
-        await this.register(newUser);
+        //this.$refs.form.validate();
+        if (this.$refs.form.validate()) {
+          this.valid = true;
+          await this.register(newUser);
+        } else {
+          this.valid = false;
+        }
       }
     },
   },

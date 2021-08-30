@@ -15,6 +15,8 @@ export default new Vuex.Store({
         auth: false,
         newUser: "cliente",
         layout: true,
+        alertaLogin: false,
+        alertaRegister: false,
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -32,6 +34,12 @@ export default new Vuex.Store({
         },
         SET_LAYOUT(state, value) {
             state.layout = value;
+        },
+        SET_ALERTALOGIN(state, value) {
+            state.alertaLogin = value;
+        },
+        SET_ALERTAREGISTER(state, value) {
+            state.alertaRegister = value;
         }
     },
     actions: {
@@ -39,10 +47,22 @@ export default new Vuex.Store({
             commit("SET_RUTAACTUAL", nuevaRuta);
         },
         async login({ dispatch }, credentials) {
+            var flag = false;
             await axios.get("/sanctum/csrf-cookie");
-            await axios.post("/login", credentials);
-            await dispatch("getUser");
-            await dispatch("goToHome");
+            await axios.post("/login", credentials)
+                .then(() => {
+                    flag = true;
+                })
+                .catch(() => {
+                    flag = false;
+                });
+            if (flag) {
+                await dispatch("getUser");
+                await dispatch("goToHome");
+            } else {
+                await dispatch("alertaLoginMostrar");
+            }
+
         },
         async logout({ dispatch }) {
             await axios.post("/logout");
@@ -68,10 +88,11 @@ export default new Vuex.Store({
                     email: re.email,
                     password: re.password
                 }
-
                 await axios.post("/login", credentials);
                 await dispatch("getUser");
                 await dispatch("goToHome");
+            } else {
+                await dispatch("alertaRegisterMostrar");
             }
 
 
@@ -98,7 +119,24 @@ export default new Vuex.Store({
         },
         colocarLayout() {
             this.commit('SET_LAYOUT', true);
-        }
+        },
+        async alertaLoginMostrar() {
+            await this.commit('SET_ALERTALOGIN', true);
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await this.commit('SET_ALERTALOGIN', false);
+        },
+        alertaLoginQuitar() {
+            this.commit('SET_ALERTALOGIN', false);
+        },
+        async alertaRegisterMostrar() {
+            await this.commit('SET_ALERTAREGISTER', true);
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await this.commit('SET_ALERTAREGISTER', false);
+        },
+        alertaRegisterQuitar() {
+            this.commit('SET_ALERTAREGISTER', false);
+        },
+
     },
     modules: {
     },
@@ -107,6 +145,7 @@ export default new Vuex.Store({
             return state.rutaActual
         },
     },
+
 
 
 })

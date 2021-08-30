@@ -1,6 +1,27 @@
 <template>
   <div class="fdo">
     <v-container class="mt-6">
+      <v-snackbar
+        top
+        right
+        color="danger"
+        timeout="-1"
+        v-model="$store.state.alertaLogin"
+      >
+        <font-awesome-icon icon="exclamation-circle" size="1x" />&nbsp; Las
+        credenciales no son válidas
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            small
+            icon
+            v-bind="attrs"
+            @click="alertaLoginQuitar"
+          >
+            <font-awesome-icon icon="times" size="1x" />
+          </v-btn>
+        </template>
+      </v-snackbar>
       <v-row align="center" justify="center" style="height: 92vh">
         <v-col cols="12" sm="12" md="8">
           <v-card class="primary" elevation="0" style="height: 92vh">
@@ -98,7 +119,12 @@ export default {
   },
 
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "alertaLoginQuitar"]),
+    //alertaLoginAux() {
+    //var aux = false;
+    //this.alertaLogin(aux);
+    //this.$store.dispatch("alertaLogin", aux);
+    //},
     //logout() {
     //axios.post("/logout").then(() => {
     //this.userAuth = {};

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <v-container class="mb-6 mt-6">
+    <v-breadcrumbs class="ml-2" :items="itemsB">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <v-container class="mb-6 mt-0 pt-0">
       <div class="row">
         <v-col cols="12" class="hidden-md-and-up">
           <v-text-field
@@ -22,9 +27,10 @@
             class="hidden-md-and-up mt-1"
           ></v-select>
           <v-btn
-            color="hidden-md-and-up secondary mt-1"
+            color="hidden-md-and-up cbtn mt-1"
             solo-inverted
             block
+            dark
             elevation="0"
             @click="goToSearch()"
           >
@@ -172,7 +178,7 @@
             </v-col>
           </v-row>
 
-          <v-divider></v-divider>
+          <v-divider class="primary"></v-divider>
 
           <div class="row mt-2" v-if="cuadricula">
             <v-progress-linear
@@ -189,7 +195,12 @@
               v-for="pro in products"
             >
               <v-hover v-slot:default="{ hover }">
-                <v-card class="mx-auto" color="fondo lighten-4" height="425px">
+                <v-card
+                  class="mx-auto"
+                  color="fondo lighten-4"
+                  elevation="8"
+                  height="425px"
+                >
                   <v-img
                     class="white--text align-self-star"
                     contain
@@ -271,7 +282,12 @@
             ></v-progress-linear>
             <v-col cols="12" :key="pro.id" v-for="pro in products">
               <v-hover v-slot:default="{ hover }">
-                <v-card class="mx-auto" color="fondo lighten-4" height="200">
+                <v-card
+                  class="mx-auto"
+                  color="fondo lighten-4"
+                  elevation="4"
+                  height="200"
+                >
                   <v-row>
                     <v-col cols="5" sm="4" md="3" class="ma-0 pt-0">
                       <v-img
@@ -491,6 +507,18 @@ export default {
     marketMauleCheckBox: false,
     comunidadCCheckBox: false,
     mercadoLibreCheckBox: false,
+    itemsB: [
+      {
+        text: "Inicio",
+        disabled: false,
+        href: "/",
+      },
+      {
+        text: "Búsqueda",
+        disabled: true,
+        href: "javascript:history.back()",
+      },
+    ],
   }),
 
   beforeMount() {
