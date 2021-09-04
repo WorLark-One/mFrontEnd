@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
     <v-breadcrumbs class="ml-2" :items="itemsB">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>

@@ -88,7 +88,7 @@
           <v-list-item key="2" link @click="logout()">
             <v-list-item-title>Mi Lista</v-list-item-title>
           </v-list-item>
-          <v-list-item key="3" link @click="logout()">
+          <v-list-item key="3" link to="userRatings">
             <v-list-item-title>Mis Valoraciones</v-list-item-title>
           </v-list-item>
           <v-list-item key="4" link @click="logout()">

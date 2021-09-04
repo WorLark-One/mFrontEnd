@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
     <v-breadcrumbs class="ml-2" :items="items">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
-    <v-card class="mt-4 mx-8 mb-8" elevation="2" v-if="apariencia == true">
+    <!--<v-card class="mt-4 mx-8 mb-8" elevation="2" v-if="apariencia == true">
       <div class="row">
         <div class="col-md-5 col-sm-5 col-xs-12">
           <v-img height="500" contain :src="product.imagen" />
@@ -126,7 +126,7 @@
           </v-tabs>
         </div>
       </div>
-    </v-card>
+    </v-card>-->
     <v-card class="mt-4 mx-8 mb-8" elevation="12" v-if="apariencia == false">
       <v-row>
         <v-col cols="12" md="6">
@@ -144,8 +144,8 @@
               <v-rating
                 v-model="rating"
                 readonly
-                background-color="warning lighten-3"
-                color="warning"
+                background-color="cbtn lighten-3"
+                color="cbtn"
                 dense
               ></v-rating>
               <span class="body-2 font-weight mr-6">4 Valoraciones</span>
@@ -174,7 +174,13 @@
           </div>
         </v-col>
         <v-col cols="12" md="6">
-          <v-tabs class="px-4">
+          <v-tabs
+            class="px-4"
+            centered
+            next-icon="mdi-arrow-right-bold-box-outline"
+            prev-icon="mdi-arrow-left-bold-box-outline"
+            show-arrows
+          >
             <v-tab>Descripción </v-tab>
             <v-tab>Historial de precios</v-tab>
             <v-tab>Valoraciones</v-tab>
@@ -192,64 +198,326 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <line-chart
-                id="line2"
-                :data="data"
-                xkey="fecha"
-                ykeys='["precio"]'
-                labels='["Precio"]'
-                line-colors='[ "#FF6384" ]'
-                grid="true"
-                grid-text-weight="blod"
-                resize="true"
-              >
-              </line-chart>
+              <v-card height="500" elevation="0" class="pt-8">
+                <line-chart
+                  class="px-4"
+                  id="line2"
+                  :data="data"
+                  xkey="fecha"
+                  ykeys='["precio"]'
+                  labels='["Precio"]'
+                  line-colors='[ "#FF6384" ]'
+                  grid="true"
+                  grid-text-weight="blod"
+                  resize="true"
+                >
+                </line-chart>
+              </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-list three-line="true" avatar="true" disabled>
-                <v-list-item-group v-model="item" color="primary">
-                  <v-list-item inactive="true">
-                    <v-list-item-avatar>
-                      <v-img
-                        src="https://www.pngfind.com/pngs/m/5-52097_avatar-png-pic-vector-avatar-icon-png-transparent.png"
-                      ></v-img>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>Roberto</v-list-item-title
-                      ><v-rating
+              <v-card height="150" elevation="0" class="pt-2">
+                <v-row>
+                  <v-col cols="12" sm="6">
+                    <v-card align="center" elevation="0">
+                      <h1>4.3</h1>
+                      <v-rating
                         v-model="rating"
                         class=""
-                        background-color="warning lighten-3"
-                        color="warning"
+                        background-color="cbtn lighten-3"
+                        color="cbtn"
                         dense
+                        readonly
                       ></v-rating>
-                      <v-list-item-subtitle>
-                        buen producto</v-list-item-subtitle
+                      <v-card-subtitle>
+                        Promedio en 4 valoraciones</v-card-subtitle
                       >
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item inactive>
-                    <v-list-item-avatar>
-                      <v-img
-                        src="https://www.pngfind.com/pngs/m/5-52097_avatar-png-pic-vector-avatar-icon-png-transparent.png"
-                      ></v-img>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>Felipe</v-list-item-title
-                      ><v-rating
-                        v-model="rating"
-                        class=""
-                        background-color="warning lighten-3"
-                        color="warning"
-                        dense
-                      ></v-rating>
-                      <v-list-item-subtitle>
-                        Buen producto</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-card-subtitle class="ma-0 pa-0">
+                      <v-row>
+                        <v-col cols="4" align-self="left">
+                          <span>5 estrellas</span>
+                        </v-col>
+                        <v-col cols="4" class="pl-0 pr-0" align-self="center">
+                          <v-progress-linear
+                            color="primary"
+                            rounded
+                            value="25"
+                          ></v-progress-linear
+                        ></v-col>
+                        <v-col cols="4"> 1</v-col>
+                      </v-row>
+                    </v-card-subtitle>
+                    <v-card-subtitle class="ma-0 pa-0">
+                      <v-row>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          <span>4 estrellas</span>
+                        </v-col>
+                        <v-col
+                          cols="4"
+                          class="pt-0 pl-0 pr-0"
+                          align-self="center"
+                        >
+                          <v-progress-linear
+                            color="primary"
+                            rounded
+                            value="75"
+                          ></v-progress-linear
+                        ></v-col>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          3</v-col
+                        >
+                      </v-row></v-card-subtitle
+                    >
+                    <v-card-subtitle class="ma-0 pa-0">
+                      <v-row>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          <span>3 estrellas</span>
+                        </v-col>
+                        <v-col
+                          cols="4"
+                          class="pt-0 pl-0 pr-0"
+                          align-self="center"
+                        >
+                          <v-progress-linear
+                            color="primary"
+                            rounded
+                            value="0"
+                          ></v-progress-linear
+                        ></v-col>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          0</v-col
+                        >
+                      </v-row></v-card-subtitle
+                    >
+                    <v-card-subtitle class="ma-0 pa-0">
+                      <v-row>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          <span>2 estrellas</span>
+                        </v-col>
+                        <v-col
+                          cols="4"
+                          class="pt-0 pl-0 pr-0"
+                          align-self="center"
+                        >
+                          <v-progress-linear
+                            color="primary"
+                            rounded
+                            value="0"
+                          ></v-progress-linear
+                        ></v-col>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          0</v-col
+                        >
+                      </v-row></v-card-subtitle
+                    >
+                    <v-card-subtitle class="ma-0 pa-0"
+                      ><v-row>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          <span>1 estrella</span>
+                        </v-col>
+                        <v-col
+                          cols="4"
+                          class="pt-0 pl-0 pr-0"
+                          align-self="center"
+                        >
+                          <v-progress-linear
+                            color="primary"
+                            rounded
+                            value="0"
+                          ></v-progress-linear
+                        ></v-col>
+                        <v-col cols="4" class="pt-0" align-self="center">
+                          0</v-col
+                        >
+                      </v-row></v-card-subtitle
+                    >
+                  </v-col>
+                </v-row>
+              </v-card>
+              <v-card
+                v-scroll.self="onScroll"
+                class="overflow-y-auto"
+                height="350"
+                elevation="0"
+              >
+                <v-list three-line="true" avatar="true" disabled>
+                  <v-list-item-group v-model="item" color="primary">
+                    <v-list-item inactive="true">
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Roberto</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Blanditiis repellendus, ex nesciunt sequi
+                          veritatis culpa neque incidunt optio adipisci ratione.
+                          Repellendus, recusandae necessitatibus ut et eum
+                          molestiae eius qui illo?
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item inactive>
+                      <v-list-item-content>
+                        <v-rating
+                          v-model="rating"
+                          class=""
+                          background-color="warning lighten-3"
+                          color="warning"
+                          dense
+                        ></v-rating>
+                        <v-list-item-title>Felipe</v-list-item-title>
+                        <v-list-item-subtitle>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Odio maiores in, magnam ut quae tempora ipsa
+                          debitis eum! Rem laboriosam explicabo atque, delectus
+                          adipisci placeat modi distinctio optio repellendus
+                          velit.</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-card>
             </v-tab-item>
           </v-tabs>
         </v-col>
