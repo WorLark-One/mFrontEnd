@@ -199,7 +199,7 @@
             </v-tab-item>
             <v-tab-item>
               <v-card height="500" elevation="0" class="pt-8">
-                <line-chart
+                <!--<line-chart
                   class="px-4"
                   id="line2"
                   :data="data"
@@ -211,7 +211,15 @@
                   grid-text-weight="blod"
                   resize="true"
                 >
-                </line-chart>
+                </line-chart>-->
+                <div id="chart">
+                  <apexchart
+                    type="line"
+                    height="400"
+                    :options="chartOptions"
+                    :series="series"
+                  ></apexchart>
+                </div>
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -527,13 +535,170 @@
 </template>
 <script>
 import axios from "axios";
-import { LineChart } from "vue-morris";
+//import { LineChart } from "vue-morris";
+import apexchart from "vue-apexcharts";
 export default {
   components: {
-    LineChart,
+    //LineChart,
+    apexchart,
   },
   data() {
     return {
+      series: [
+        {
+          name: "Precio",
+          data: [
+            [new Date("2021/09/01").getTime(), 31.95],
+            [new Date("2021/09/02").getTime(), 31.34],
+            [new Date("2021/09/03").getTime(), 31.18],
+            [new Date("2021/09/04").getTime(), 31.05],
+            [new Date("2021/09/05").getTime(), 31.0],
+            [new Date("2021/09/06").getTime(), 30.95],
+          ],
+        },
+      ],
+
+      chartOptions: {
+        chart: {
+          height: 400,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false,
+          },
+          defaultLocale: "es",
+          locales: [
+            {
+              name: "es",
+              options: {
+                months: [
+                  "Enero",
+                  "Febrero",
+                  "Marzo",
+                  "Abril",
+                  "Mayo",
+                  "Junio",
+                  "Julio",
+                  "Augosto",
+                  "Septiembre",
+                  "Octubre",
+                  "Noviembre",
+                  "Diciembre",
+                ],
+                shortMonths: [
+                  "Ene",
+                  "Feb",
+                  "Mar",
+                  "Abr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Ago",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dic",
+                ],
+                days: [
+                  "Domingo",
+                  "Lunes",
+                  "Martes",
+                  "Miércoles",
+                  "Jueves",
+                  "Viernes",
+                  "Sábado",
+                ],
+                shortDays: ["Dom", "Lun", "Mar", "Mir", "Jue", "Vie", "Sab"],
+                toolbar: {
+                  download: "Descargar SVG",
+                  selection: "Selection",
+                  selectionZoom: "Selection Zoom",
+                  zoomIn: "Zoom In",
+                  zoomOut: "Zoom Out",
+                  pan: "Panning",
+                  reset: "Reset Zoom",
+                },
+              },
+            },
+          ],
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          width: [5, 7, 5],
+          curve: "straight",
+          dashArray: [0, 8, 5],
+        },
+        title: {
+          text: "Historial últimos 15 días",
+          align: "left",
+        },
+        legend: {
+          tooltipHoverFormatter: function (val, opts) {
+            return (
+              val +
+              " - " +
+              opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
+              ""
+            );
+          },
+        },
+        markers: {
+          size: 6,
+          hover: {
+            sizeOffset: 2,
+          },
+        },
+        yaxis: {
+          title: {
+            text: "Precio",
+          },
+          labels: {
+            minWidth: 40,
+          },
+        },
+        xaxis: {
+          /*categories: [
+            "01 Jan",
+            "02 Jan",
+            "03 Jan",
+            "04 Jan",
+            "05 Jan",
+            "06 Jan",
+            "07 Jan",
+            "08 Jan",
+            "09 Jan",
+            "10 Jan",
+            "11 Jan",
+            "12 Jan",
+          ],*/
+          title: {
+            text: "Fecha",
+          },
+          type: "datetime",
+
+          //min: Date.setDate(Date.getDate() - 14),
+          // max: Date.getDate(),
+        },
+        tooltip: {
+          y: [
+            {
+              title: {
+                formatter: function (val) {
+                  return val;
+                },
+              },
+            },
+          ],
+        },
+        grid: {
+          borderColor: "#f1f1f1",
+        },
+      },
+
       data: [
         { fecha: "2021-06-21", precio: 10000 },
         { fecha: "2021-06-22", precio: 11000 },
@@ -582,10 +747,46 @@ export default {
   beforeMount() {
     this.obtenerProducto();
     this.obtenerHistorialProducto();
+    this.prepararCategoriasHistorial();
+    this.obtenerUltimos15Dias();
+    //apexchart.chart = {
+
+    //}
   },
   methods: {
     onScroll() {
       this.scrollInvoked++;
+    },
+    prepararCategoriasHistorial() {
+      var auxCategorias = [];
+      var aux = new Date();
+      for (let index = 1; index <= this.obtenerDiasMes(); index++) {
+        var mes = aux.getMonth() + 1;
+        var nuevaFecha = index + "/" + mes;
+        auxCategorias =
+          auxCategorias.length == 0
+            ? [nuevaFecha]
+            : [...auxCategorias, nuevaFecha];
+      }
+      console.log("hola");
+      console.log(auxCategorias);
+      //this.chartOptions.xaxis.categories = auxCategorias;
+    },
+    obtenerDiasMes() {
+      var aux = new Date();
+      var cantDias = new Date(
+        aux.getFullYear(),
+        aux.getMonth() + 1,
+        0
+      ).getDate();
+      return cantDias;
+    },
+    obtenerUltimos15Dias() {
+      var date = new Date();
+      date.setDate(date.getDate() - 14);
+      var split = date.toISOString().split("T");
+      //console.log(split[0]);
+      return split[0];
     },
     obtenerProducto() {
       this.idProducto = this.$route.params.id;
@@ -607,12 +808,45 @@ export default {
         });
     },
     obtenerHistorialProducto() {
+      var fechaAUX = this.obtenerUltimos15Dias();
       const ruta = this.urlH + this.idProducto;
       axios
         .get(ruta)
         .then((result) => {
-          console.log(result.data.data);
-          this.data = result.data.data;
+          console.log(result.data);
+          var aux = result.data.data;
+          var valor = result.data.data.length;
+          console.log(valor);
+          var aux2 = [];
+          var date = new Date(fechaAUX);
+          for (let index = 0; index <= 15; index++) {
+            var split = date.toISOString().split("T");
+            var flag = false;
+            for (let index = 0; index < valor; index++) {
+              const element = aux[index];
+              if (element.fecha == split[0]) {
+                flag = true;
+                aux2 =
+                  aux2.length == 0
+                    ? [[new Date(element.fecha).getTime(), element.precio]]
+                    : [
+                        ...aux2,
+                        [new Date(element.fecha).getTime(), element.precio],
+                      ];
+                break;
+              }
+            }
+            if (flag) {
+              date.setDate(date.getDate() + 1);
+            } else {
+              aux2 =
+                aux2.length == 0
+                  ? [[new Date(split[0]).getTime(), null]]
+                  : [...aux2, [new Date(split[0]).getTime(), null]];
+              date.setDate(date.getDate() + 1);
+            }
+          }
+          this.series[0].data = aux2;
         })
         .catch((er) => {
           console.log(er);
