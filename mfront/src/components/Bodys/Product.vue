@@ -347,190 +347,126 @@
               <v-card
                 v-scroll.self="onScroll"
                 class="overflow-y-auto"
-                height="350"
+                :height="
+                  this.$store.state.auth == true &&
+                  this.$store.state.user.roles[0] == 'cliente'
+                    ? 300
+                    : 350
+                "
                 elevation="0"
               >
-                <v-list three-line="true" avatar="true" disabled>
-                  <v-list-item-group v-model="item" color="primary">
-                    <v-list-item inactive="true">
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Roberto</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Blanditiis repellendus, ex nesciunt sequi
-                          veritatis culpa neque incidunt optio adipisci ratione.
-                          Repellendus, recusandae necessitatibus ut et eum
-                          molestiae eius qui illo?
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item inactive>
-                      <v-list-item-content>
-                        <v-rating
-                          v-model="rating"
-                          class=""
-                          background-color="warning lighten-3"
-                          color="warning"
-                          dense
-                        ></v-rating>
-                        <v-list-item-title>Felipe</v-list-item-title>
-                        <v-list-item-subtitle>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Odio maiores in, magnam ut quae tempora ipsa
-                          debitis eum! Rem laboriosam explicabo atque, delectus
-                          adipisci placeat modi distinctio optio repellendus
-                          velit.</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
+                <v-card
+                  v-for="valoracion in valoraciones"
+                  :key="valoracion.id"
+                  elevation="0"
+                >
+                  <v-card-subtitle class="pt-2 pb-1">
+                    Por <strong>{{ valoracion.nombreUsuario }}</strong>
+                  </v-card-subtitle>
+                  <v-card-subtitle class="pt-1 pb-2">
+                    <v-rating
+                      background-color="warning lighten-3"
+                      color="warning"
+                      dense
+                      :value="valoracion.value"
+                    ></v-rating
+                  ></v-card-subtitle>
+                  <v-card-text class="pb-2">{{
+                    valoracion.comentarios
+                  }}</v-card-text>
+                  <v-divider class="mx-4"></v-divider>
+                </v-card>
+              </v-card>
+              <v-card
+                v-if="
+                  this.$store.state.auth == true &&
+                  this.$store.state.user.roles[0] == 'cliente'
+                "
+                height="50"
+                elevation="0"
+                class=""
+              >
+                <v-card-title class="pb-0 pt-4 justify-end">
+                  <v-btn
+                    tile
+                    outlined
+                    class="cbtn"
+                    dark
+                    v-if="flagValoracionUsuario"
+                    @click="valoracionDialog = true"
+                    >Dejar tú valoración</v-btn
+                  >
+                  <v-btn
+                    tile
+                    outlined
+                    class="cbtn"
+                    dark
+                    v-if="!flagValoracionUsuario"
+                    >Dejar tú valoración</v-btn
+                  >
+                </v-card-title>
               </v-card>
             </v-tab-item>
           </v-tabs>
         </v-col>
       </v-row>
     </v-card>
+    <v-dialog
+      v-model="valoracionDialog"
+      transition="dialog-bottom-transition"
+      persistent
+      max-width="600px"
+    >
+      <v-card class="white" elevation="0">
+        <v-card-title class="justify-center">
+          <h1 class="mb-4 mt-6 medtitt2">Deja tú valoración</h1>
+        </v-card-title>
+        <v-card-subtitle class="text-center">
+          E ingresa tus comentarios sobre el producto
+        </v-card-subtitle>
+
+        <div class="mx-6 mt-1 pt-1 pb-3">
+          <v-card-actions class="justify-center">
+            <v-rating
+              v-model="valoracionUsuario"
+              class=""
+              background-color="warning lighten-3"
+              color="warning"
+              large
+              dense
+            ></v-rating>
+          </v-card-actions>
+          <v-textarea
+            counter
+            auto-grow
+            label="Comentarios"
+            :rules="rules"
+            :value="comentariosValoración"
+          ></v-textarea>
+
+          <v-card-actions class="justify-end pt-4">
+            <v-btn
+              color="danger"
+              dark
+              tile
+              text
+              @click="valoracionDialog = false"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn
+              class="cbtn"
+              dark
+              tile
+              outlined
+              @click="valoracionDialog = false"
+            >
+              Enviar valoración
+            </v-btn>
+          </v-card-actions>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -742,6 +678,43 @@ export default {
           href: "breadcrumbs_link_2",
         },
       ],
+      flagValoracionUsuario: true,
+      valoracionDialog: false,
+      rules: [(v) => v.length <= 250 || "Max 250 caractéres"],
+      comentariosValoración: "",
+      valoracionUsuario: 0,
+      valoraciones: [
+        {
+          id: 1,
+          value: 2,
+          nombreUsuario: "Felipe",
+          comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
+        },
+        {
+          id: 2,
+          value: 2,
+          nombreUsuario: "Felipe",
+          comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
+        },
+        {
+          id: 3,
+          value: 2,
+          nombreUsuario: "Felipe",
+          comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
+        },
+        {
+          id: 4,
+          value: 2,
+          nombreUsuario: "Felipe",
+          comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
+        },
+        {
+          id: 5,
+          value: 2,
+          nombreUsuario: "Felipe",
+          comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
+        },
+      ],
     };
   },
   beforeMount() {
@@ -875,3 +848,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.medtitt2 {
+  font-size: 1.3em;
+  color: #3d3d3d;
+  font-family: montserrat;
+  line-height: 1.3;
+}
+</style>

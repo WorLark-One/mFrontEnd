@@ -254,7 +254,7 @@
                       >CONSULTAR PRECIO</span
                     >
                     <v-spacer></v-spacer>
-                    <span class="ml-1">(3,5)</span>
+                    <span class="ml-1">({{ pro.valoracion }})</span>
                     <v-rating
                       readonly
                       value="1"
@@ -351,7 +351,7 @@
                           <v-spacer class="hidden-md-and-down"></v-spacer>
                           <v-rating
                             readonly
-                            value="3"
+                            :value="pro.valoracion"
                             class="hidden-md-and-down"
                             background-color="warning lighten-3"
                             color="warning"
@@ -367,18 +367,20 @@
                               mr-16
                               hidden-md-and-down
                             "
-                            >5 Valoraciones</span
+                            >{{ pro.cantidad_valoraciones }} Valoraciones</span
                           >
                         </v-row>
                         <v-row class="hidden-md-and-up mt-4 ml-0">
                           <v-rating
-                            value="3"
+                            :value="pro.valoracion"
                             background-color="warning lighten-3"
                             color="warning"
                             dense
                           >
                           </v-rating>
-                          <span class="font-weight-thin mt-1 ml-1">(5)</span>
+                          <span class="font-weight-thin mt-1 ml-1"
+                            >({{ pro.cantidad_valoraciones }})</span
+                          >
                         </v-row>
                       </v-card-text>
                     </v-col>
