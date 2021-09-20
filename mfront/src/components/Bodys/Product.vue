@@ -229,7 +229,7 @@
                 <v-row>
                   <v-col cols="12" sm="6">
                     <v-card align="center" elevation="0">
-                      <h1>{{ product.valoracion }}</h1>
+                      <h1>{{ mostrarUnDecimal(detallesValoracion.avg) }}</h1>
                       <v-rating
                         class=""
                         background-color="warning"
@@ -240,7 +240,7 @@
                       ></v-rating>
                       <v-card-subtitle>
                         Promedio en
-                        {{ product.cantidadValoraciones }}
+                        {{ detallesValoracion.cant }}
                         valoraciones</v-card-subtitle
                       >
                     </v-card>
@@ -255,10 +255,16 @@
                           <v-progress-linear
                             color="secondary"
                             rounded
-                            value="25"
+                            :value="
+                              detallesValoracion.cant == 0
+                                ? 0
+                                : (detallesValoracion.Five /
+                                    detallesValoracion.cant) *
+                                  100
+                            "
                           ></v-progress-linear
                         ></v-col>
-                        <v-col cols="4"> 1</v-col>
+                        <v-col cols="4"> {{ detallesValoracion.Five }}</v-col>
                       </v-row>
                     </v-card-subtitle>
                     <v-card-subtitle class="ma-0 pa-0">
@@ -274,11 +280,17 @@
                           <v-progress-linear
                             color="secondary"
                             rounded
-                            value="75"
+                            :value="
+                              detallesValoracion.cant == 0
+                                ? 0
+                                : (detallesValoracion.Four /
+                                    detallesValoracion.cant) *
+                                  100
+                            "
                           ></v-progress-linear
                         ></v-col>
                         <v-col cols="4" class="pt-0" align-self="center">
-                          3</v-col
+                          {{ detallesValoracion.Four }}</v-col
                         >
                       </v-row></v-card-subtitle
                     >
@@ -295,11 +307,17 @@
                           <v-progress-linear
                             color="secondary"
                             rounded
-                            value="0"
+                            :value="
+                              detallesValoracion.cant == 0
+                                ? 0
+                                : (detallesValoracion.Three /
+                                    detallesValoracion.cant) *
+                                  100
+                            "
                           ></v-progress-linear
                         ></v-col>
                         <v-col cols="4" class="pt-0" align-self="center">
-                          0</v-col
+                          {{ detallesValoracion.Three }}</v-col
                         >
                       </v-row></v-card-subtitle
                     >
@@ -316,11 +334,17 @@
                           <v-progress-linear
                             color="secondary"
                             rounded
-                            value="0"
+                            :value="
+                              detallesValoracion.cant == 0
+                                ? 0
+                                : (detallesValoracion.Two /
+                                    detallesValoracion.cant) *
+                                  100
+                            "
                           ></v-progress-linear
                         ></v-col>
                         <v-col cols="4" class="pt-0" align-self="center">
-                          0</v-col
+                          {{ detallesValoracion.Two }}</v-col
                         >
                       </v-row></v-card-subtitle
                     >
@@ -337,11 +361,17 @@
                           <v-progress-linear
                             color="secondary"
                             rounded
-                            value="0"
+                            :value="
+                              detallesValoracion.cant == 0
+                                ? 0
+                                : (detallesValoracion.One /
+                                    detallesValoracion.cant) *
+                                  100
+                            "
                           ></v-progress-linear
                         ></v-col>
                         <v-col cols="4" class="pt-0" align-self="center">
-                          0</v-col
+                          {{ detallesValoracion.One }}</v-col
                         >
                       </v-row></v-card-subtitle
                     >
@@ -359,13 +389,17 @@
                 "
                 elevation="0"
               >
+                <v-card-subtitle v-if="valoracionesLength == 0"
+                  >No existen valoraciones aún</v-card-subtitle
+                >
+
                 <v-card
-                  v-for="valoracion in valoraciones"
+                  v-for="valoracion in detallesValoracion.Valoraciones"
                   :key="valoracion.id"
                   elevation="0"
                 >
                   <v-card-subtitle class="pt-2 pb-1">
-                    Por <strong>{{ valoracion.nombreUsuario }}</strong>
+                    Por <strong>{{ valoracion.nombre_usuario }}</strong>
                   </v-card-subtitle>
                   <v-card-subtitle class="pt-1 pb-2">
                     <v-rating
@@ -377,7 +411,7 @@
                     ></v-rating
                   ></v-card-subtitle>
                   <v-card-text class="pb-2">{{
-                    valoracion.comentarios
+                    valoracion.comentario
                   }}</v-card-text>
                   <v-divider class="mx-4"></v-divider>
                 </v-card>
@@ -397,12 +431,12 @@
                     outlined
                     class="cbtn"
                     dark
-                    v-if="flagValoracionUsuario"
+                    v-if="!isRating"
                     @click="valoracionDialog = true"
                     >Dejar tú valoración</v-btn
                   >
                   <span
-                    v-if="!flagValoracionUsuario"
+                    v-if="isRating"
                     style="
                       font-size: 0.8em;
                       color: #dc3545;
@@ -435,38 +469,33 @@
           <v-card-actions class="justify-center">
             <v-rating
               v-model="valoracionUsuario"
-              class=""
-              background-color="warning lighten-3"
+              background-color="warning "
               color="warning"
               large
               dense
             ></v-rating>
           </v-card-actions>
+          <v-card-subtitle
+            class="text-center pt-1"
+            style="color: #ffc107"
+            v-if="flagFaltaValoracion"
+          >
+            Favor ingresar una valoración mayor a 0
+          </v-card-subtitle>
           <v-textarea
+            ref="comentarios"
+            v-model="comentariosValoración"
             counter
             auto-grow
             label="Comentarios"
             :rules="rules"
-            :value="comentariosValoración"
           ></v-textarea>
 
           <v-card-actions class="justify-end pt-4">
-            <v-btn
-              color="danger"
-              dark
-              tile
-              text
-              @click="valoracionDialog = false"
-            >
+            <v-btn color="danger" dark tile text @click="cancelarValoración()">
               Cancelar
             </v-btn>
-            <v-btn
-              class="cbtn"
-              dark
-              tile
-              outlined
-              @click="valoracionDialog = false"
-            >
+            <v-btn class="cbtn" dark tile outlined @click="valorarProducto()">
               Enviar valoración
             </v-btn>
           </v-card-actions>
@@ -477,7 +506,8 @@
 </template>
 <script>
 import axios from "axios";
-//import { LineChart } from "vue-morris";
+axios.defaults.withCredentials = true;
+//axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 import apexchart from "vue-apexcharts";
 export default {
   components: {
@@ -654,6 +684,7 @@ export default {
       rating: 4.5,
       url: "http://localhost:8000/api/public/getProducto/",
       urlH: "http://localhost:8000/api/public/getHistorial/",
+      rutabase: "http://localhost:8000/api/",
       idProducto: 1,
       producto: "",
       product: {
@@ -688,7 +719,10 @@ export default {
       ],
       flagValoracionUsuario: true,
       valoracionDialog: false,
-      rules: [(v) => v.length <= 250 || "Max 250 caractéres"],
+      rules: [
+        (v) => v.length <= 250 || "Max 250 caractéres",
+        (v) => !!v || "Los comentarios son requeridos",
+      ],
       comentariosValoración: "",
       valoracionUsuario: 0,
       valoraciones: [
@@ -725,20 +759,43 @@ export default {
       ],
 
       cantidadPorEstrellas: [0, 0, 0, 0, 0],
+      detallesValoracion: {
+        Valoraciones: [],
+        Five: 0,
+        Four: 0,
+        One: 0,
+        Three: 0,
+        Two: 0,
+        avg: 0,
+        cant: 0,
+        code: 400,
+      },
+      isRating: false,
+      valoracionesLength: 0,
+      flagFaltaValoracion: false,
     };
   },
-  beforeMount() {
+  created() {
     this.obtenerProducto();
+  },
+  beforeMount() {
     this.obtenerHistorialProducto();
     this.prepararCategoriasHistorial();
     this.obtenerUltimos15Dias();
-    //apexchart.chart = {
-
-    //}
   },
+  mounted() {
+    //this.obtenerIsRating();
+    this.obtenerDetailsRating();
+    this.obtenerIsRating();
+  },
+
   methods: {
     onScroll() {
       this.scrollInvoked++;
+    },
+    mostrarUnDecimal(num) {
+      var aux = num.toFixed(1);
+      return aux;
     },
     prepararCategoriasHistorial() {
       var auxCategorias = [];
@@ -771,10 +828,39 @@ export default {
       //console.log(split[0]);
       return split[0];
     },
-    obtenerProducto() {
+    async obtenerIsRating() {
+      //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+      await axios
+        .get(
+          `http://localhost:8000/api/private/getIsRating/${this.$store.state.user.user.id}/${this.idProducto}`
+        )
+        .then((result) => {
+          //console.log(result);
+          this.isRating = result.data.isRating;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+    },
+    async obtenerDetailsRating() {
+      await axios
+        .get(
+          `http://localhost:8000/api/public/getDetailsRating/${this.idProducto}`
+        )
+        .then((result) => {
+          this.detallesValoracion = result.data;
+          this.valoracionesLength = result.data.Valoraciones.length;
+          console.log(this.valoracionesLength);
+          console.log(this.detallesValoracion);
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+    },
+    async obtenerProducto() {
       this.idProducto = this.$route.params.id;
       const ruta = this.url + this.idProducto;
-      axios
+      await axios
         .get(ruta)
         .then((result) => {
           const response = result.data.data;
@@ -836,6 +922,43 @@ export default {
         .catch((er) => {
           console.log(er);
         });
+    },
+
+    async valorarProducto() {
+      if (this.valoracionUsuario == 0) {
+        this.flagFaltaValoracion = true;
+      } else {
+        if (this.$refs.comentarios.validate()) {
+          let newValoracion = {
+            value: this.valoracionUsuario,
+            comentario: this.comentariosValoración,
+            nombre_usuario: this.$store.state.user.user.name,
+            nombre_producto: this.product.titulo,
+            producto_id: parseInt(this.idProducto),
+            usuario_id: this.$store.state.user.user.id,
+          };
+          console.log(newValoracion);
+
+          await axios
+            .post(`http://localhost:8000/api/private/postRating`, newValoracion)
+            .then((result) => {
+              console.log(result);
+              this.cancelarValoración();
+            })
+            .catch((er) => {
+              console.log(er);
+            });
+          await this.obtenerProducto();
+          await this.obtenerDetailsRating();
+          await this.obtenerIsRating();
+        }
+      }
+    },
+    cancelarValoración() {
+      this.valoracionUsuario = 0;
+      this.flagFaltaValoracion = false;
+      this.valoracionDialog = false;
+      this.$refs.comentarios.reset();
     },
 
     abrir(link) {

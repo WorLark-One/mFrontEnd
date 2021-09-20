@@ -5,6 +5,11 @@
       <v-col cols="10" sm="10" md="9">
         <h1 class="mt-10 medtitt2">Mis valoraciones</h1>
         <v-divider class="primary mt-2 mr-8"></v-divider>
+        <v-card v-if="valoraciones.length == 0" height="300" elevation="0">
+          <v-card-subtitle class="pl-0 pt-2 pb-1">
+            Usted no tiene valoraciones registradas.
+          </v-card-subtitle>
+        </v-card>
 
         <v-card
           v-for="valoracion in valoraciones"
@@ -13,10 +18,14 @@
           class="mt-2 mb-2"
         >
           <v-card-subtitle class="pl-0 pt-2 pb-1">
-            Producto <strong>{{ valoracion.nombreProducto }}</strong>
+            Producto
+            <a @click="goToProduct(valoracion.producto_id)"
+              ><strong>{{ valoracion.nombre_producto }}</strong></a
+            >
           </v-card-subtitle>
           <v-card-subtitle class="pl-0 pt-1 pb-1">
-            Realizada el <strong>{{ valoracion.fecha }}</strong>
+            Realizada el
+            <strong>{{ formatoFecha(valoracion.updated_at) }}</strong>
           </v-card-subtitle>
           <v-card-subtitle class="pl-0 pt-2 pb-2">
             <v-rating
@@ -28,7 +37,7 @@
             ></v-rating
           ></v-card-subtitle>
           <v-card-text class="pl-0 pb-2">{{
-            valoracion.comentarios
+            valoracion.comentario
           }}</v-card-text>
           <v-card-actions class="justify-end pb-2 mr-8">
             <v-btn
@@ -79,11 +88,12 @@
             ></v-rating>
           </v-card-actions>
           <v-textarea
+            ref="comentarios"
             counter
+            v-model="comentariosValoración"
             auto-grow
             label="Comentarios"
             :rules="rules"
-            :value="comentariosValoración"
           ></v-textarea>
 
           <v-card-actions class="justify-end pt-4">
@@ -96,13 +106,7 @@
             >
               Cancelar
             </v-btn>
-            <v-btn
-              class="cbtn"
-              dark
-              tile
-              outlined
-              @click="valoracionDialog = false"
-            >
+            <v-btn class="cbtn" dark tile outlined @click="updateValoración()">
               Editar valoración
             </v-btn>
           </v-card-actions>
@@ -170,49 +174,23 @@ export default {
     ],
     right: null,
     rating: 5,
-    valoraciones: [
-      {
-        id: 1,
-        value: 2,
-        fecha: "2021-09-19",
-        nombreProducto: "Felipe",
-        comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
-      },
-      {
-        id: 2,
-        value: 2,
-        fecha: "2021-09-19",
-        nombreProducto: "Felipe",
-        comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
-      },
-      {
-        id: 3,
-        value: 2,
-        fecha: "2021-09-19",
-        nombreProducto: "Felipe",
-        comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
-      },
-      {
-        id: 4,
-        value: 2,
-        fecha: "2021-09-19",
-        nombreProducto: "Felipe",
-        comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
-      },
-      {
-        id: 5,
-        value: 2,
-        fecha: "2021-09-19",
-        nombreProducto: "Felipe",
-        comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
-      },
-    ],
+    valoraciones: [],
     valoracionDialog: false,
-    rules: [(v) => v.length <= 250 || "Max 250 caractéres"],
-    comentariosValoración: "",
-    valoracionUsuario: 0,
+    rules: [
+      (v) => v.length <= 250 || "Max 250 caractéres",
+      (v) => !!v || "Los comentarios son requeridos",
+    ],
+
     valoracionDialogEliminar: false,
     valoracionEliminar: -1,
+    //importante
+    idValoracion: -1,
+    valoracionUsuario: 0,
+    comentariosValoración: "",
+    nombre_usuario: "",
+    nombre_producto: "",
+    producto_id: -1,
+    usuario_id: -1,
   }),
   beforeCreate() {
     if (this.$store.state.auth == false) {
@@ -221,17 +199,32 @@ export default {
       //this.$router.push("/");
     }
   },
+  mounted() {
+    this.obtenerRatings();
+  },
 
   methods: {
     rellenarEditarValoracion(valoracion) {
       this.valoracionDialog = true;
-      this.comentariosValoración = valoracion.comentarios;
+      this.idValoracion = valoracion.id;
+      //importante
       this.valoracionUsuario = valoracion.value;
+      this.comentariosValoración = valoracion.comentario;
+      this.nombre_usuario = this.$store.state.user.user.name;
+      this.nombre_producto = valoracion.nombre_producto;
+      this.producto_id = valoracion.producto_id;
+      this.usuario_id = this.$store.state.user.user.id;
     },
     resetEditarValoracion() {
       this.valoracionDialog = false;
-      this.comentariosValoración = "";
+      this.idValoracion = -1;
+      //importante
       this.valoracionUsuario = 0;
+      this.comentariosValoración = "";
+      this.nombre_usuario = "";
+      this.nombre_producto = "";
+      this.producto_id = -1;
+      this.usuario_id = -1;
     },
     eliminarValoracion(valoracion) {
       this.valoracionEliminar = valoracion.id;
@@ -240,6 +233,52 @@ export default {
     eliminarValoracionAux() {
       console.log("valoracion eliminada: " + this.valoracionEliminar);
       this.valoracionDialogEliminar = false;
+    },
+    async obtenerRatings() {
+      //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+      await axios
+        .get(`/api/private/getRatingUser/${this.$store.state.user.user.id}`)
+        .then((result) => {
+          console.log(result);
+          this.valoraciones = result.data.data;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+    },
+
+    async updateValoración() {
+      if (this.$refs.comentarios.validate()) {
+        let newValoracion = {
+          value: this.valoracionUsuario,
+          comentario: this.comentariosValoración,
+          nombre_usuario: this.nombre_usuario,
+          nombre_producto: this.nombre_producto,
+          producto_id: this.producto_id,
+          usuario_id: this.usuario_id,
+        };
+        console.log("aaaaaaaa");
+        console.log(newValoracion);
+        await axios
+          .put(`/api/private/updateRating/${this.idValoracion}`, newValoracion)
+          .then((result) => {
+            console.log(result);
+            this.resetEditarValoracion();
+          })
+          .catch((er) => {
+            console.log(er);
+          });
+        await this.obtenerRatings();
+      }
+    },
+
+    formatoFecha(fecha) {
+      var aux = fecha.split("T");
+      return aux[0];
+    },
+    goToProduct(id) {
+      var link = `http://localhost:8080/#/product/${id}`;
+      window.open(link, "_blank");
     },
   },
 };
