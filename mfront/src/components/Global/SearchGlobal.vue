@@ -1,0 +1,153 @@
+<template >
+  <div class="paco">
+    <div class="primary hidden-md-and-up">
+      <v-container>
+        <v-col cols="12" class="hidden-md-and-up">
+          <v-text-field
+            v-model="producto"
+            flat
+            dark
+            solo-inverted
+            hide-details
+            label="Buscar producto"
+            class="hidden-md-and-up"
+          />
+          <v-select
+            v-model="comuna"
+            :items="items"
+            label="Comuna"
+            dark
+            flat
+            solo-inverted
+            hide-details
+            class="hidden-md-and-up mt-1"
+          ></v-select>
+          <v-btn
+            color="hidden-md-and-up cbtn mt-1"
+            solo-inverted
+            dark
+            block
+            elevation="0"
+            @click="goToSearch()"
+          >
+            BUSCAR
+            <v-icon class="ml-2">mdi-magnify</v-icon>
+          </v-btn>
+        </v-col>
+      </v-container>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapMutations } from "vuex";
+export default {
+  data: () => ({
+    items: [
+      "Todas",
+      "Cauquenes",
+      "Chanco",
+      "Pelluhue",
+      "Curicó",
+      "Haulañé",
+      "Licantén",
+      "Molina",
+      "Rauco",
+      "Romeral",
+      "Sagrada Familia",
+      "Teno",
+      "Vichuquén",
+      "Colbún",
+      "Linares",
+      "Longaví",
+      "Parral",
+      "Retiro",
+      "San Javier",
+      "Villa Alegre",
+      "Yerbas Buenas",
+      "Constitución",
+      "Curepto",
+      "Empedrado",
+      "Maule",
+      "Pelarco",
+      "Pencahue",
+      "Río Claro",
+      "San Clemente",
+      "San Rafael",
+      "Talca",
+    ],
+    comuna: "",
+    producto: "",
+    orientacion: "ASC",
+    marketPlaces: "ComunidadC+marketmaule+MercadoLibre",
+    rangoPrecios: "Todos",
+    pagina: 1,
+  }),
+
+  created() {
+    //this.goToHome();
+  },
+  methods: {
+    ...mapMutations(["stateFalseAppBarSearch"]),
+    goToSearch() {
+      if (this.producto != "" && this.producto != undefined) {
+        var consulta = "";
+        this.producto = this.producto.replace(" ", "%");
+        if (this.comuna != "" && this.comuna != undefined) {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=" +
+            this.comuna +
+            "&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        } else {
+          consulta =
+            "p=" +
+            this.producto +
+            "&c=Todas&ori=" +
+            this.orientacion +
+            "&mp=" +
+            this.marketPlaces +
+            "&rgp=" +
+            this.rangoPrecios +
+            "&pag=" +
+            this.pagina;
+        }
+        const ruta = {
+          name: "Search",
+          params: {
+            consulta: consulta,
+          },
+        };
+        this.$store.commit("SET_RUTAACTUAL", consulta);
+        this.producto = "";
+        this.comuna = "";
+        this.orientacion = "ASC";
+        this.$router.push(ruta);
+      }
+    },
+
+    goToHome() {
+      this.stateFalseAppBarSearch();
+    },
+  },
+};
+</script>
+
+<style scoped>
+.paco {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+</style>

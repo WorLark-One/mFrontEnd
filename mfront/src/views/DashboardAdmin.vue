@@ -293,8 +293,6 @@ export default {
   },
 
   beforeCreate() {
-    //console.log(this.$store.state.auth);
-    //console.log(this.$store.state.user.roles[0]);
     if (
       this.$store.state.auth == false ||
       this.$store.state.user.roles[0] != "Administrator"

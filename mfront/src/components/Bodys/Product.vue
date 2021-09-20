@@ -142,13 +142,15 @@
             </v-card-actions>
             <v-card-actions class="pa-0 mt-0">
               <v-rating
-                v-model="rating"
                 readonly
-                background-color="cbtn lighten-3"
-                color="cbtn"
+                background-color="warning"
+                color="warning"
                 dense
+                :value="product.valoracion"
               ></v-rating>
-              <span class="body-2 font-weight mr-6">4 Valoraciones</span>
+              <span class="body-2 font-weight mr-6"
+                >{{ product.cantidadValoraciones }} Valoraciones</span
+              >
             </v-card-actions>
             <v-card-subtitle class="pa-0 mt-4" style="font-size: 110%"
               >Comuna: <strong>{{ product.ubicacion }}</strong></v-card-subtitle
@@ -227,17 +229,19 @@
                 <v-row>
                   <v-col cols="12" sm="6">
                     <v-card align="center" elevation="0">
-                      <h1>4.3</h1>
+                      <h1>{{ product.valoracion }}</h1>
                       <v-rating
-                        v-model="rating"
                         class=""
-                        background-color="cbtn lighten-3"
-                        color="cbtn"
+                        background-color="warning"
+                        color="warning"
                         dense
                         readonly
+                        :value="product.valoracion"
                       ></v-rating>
                       <v-card-subtitle>
-                        Promedio en 4 valoraciones</v-card-subtitle
+                        Promedio en
+                        {{ product.cantidadValoraciones }}
+                        valoraciones</v-card-subtitle
                       >
                     </v-card>
                   </v-col>
@@ -249,7 +253,7 @@
                         </v-col>
                         <v-col cols="4" class="pl-0 pr-0" align-self="center">
                           <v-progress-linear
-                            color="primary"
+                            color="secondary"
                             rounded
                             value="25"
                           ></v-progress-linear
@@ -268,7 +272,7 @@
                           align-self="center"
                         >
                           <v-progress-linear
-                            color="primary"
+                            color="secondary"
                             rounded
                             value="75"
                           ></v-progress-linear
@@ -289,7 +293,7 @@
                           align-self="center"
                         >
                           <v-progress-linear
-                            color="primary"
+                            color="secondary"
                             rounded
                             value="0"
                           ></v-progress-linear
@@ -310,7 +314,7 @@
                           align-self="center"
                         >
                           <v-progress-linear
-                            color="primary"
+                            color="secondary"
                             rounded
                             value="0"
                           ></v-progress-linear
@@ -331,7 +335,7 @@
                           align-self="center"
                         >
                           <v-progress-linear
-                            color="primary"
+                            color="secondary"
                             rounded
                             value="0"
                           ></v-progress-linear
@@ -365,9 +369,10 @@
                   </v-card-subtitle>
                   <v-card-subtitle class="pt-1 pb-2">
                     <v-rating
-                      background-color="warning lighten-3"
+                      background-color="warning"
                       color="warning"
                       dense
+                      readonly
                       :value="valoracion.value"
                     ></v-rating
                   ></v-card-subtitle>
@@ -396,13 +401,14 @@
                     @click="valoracionDialog = true"
                     >Dejar tú valoración</v-btn
                   >
-                  <v-btn
-                    tile
-                    outlined
-                    class="cbtn"
-                    dark
+                  <span
                     v-if="!flagValoracionUsuario"
-                    >Dejar tú valoración</v-btn
+                    style="
+                      font-size: 0.8em;
+                      color: #dc3545;
+                      font-family: montserrat;
+                    "
+                    >Usted ya ha valorado este producto</span
                   >
                 </v-card-title>
               </v-card>
@@ -658,6 +664,8 @@ export default {
         ubicacion: " ",
         link: " ",
         marketplace: " ",
+        cantidadValoraciones: 0,
+        valoracion: 0,
       },
       apariencia: false,
       scrollInvoked: 0,
@@ -715,6 +723,8 @@ export default {
           comentarios: "lorem asdjkaslkdjkasksadjfioian ashdkashfka",
         },
       ],
+
+      cantidadPorEstrellas: [0, 0, 0, 0, 0],
     };
   },
   beforeMount() {
@@ -775,6 +785,8 @@ export default {
           this.product.ubicacion = response.ubicacion;
           this.product.link = response.link;
           this.product.marketplace = response.marketplace;
+          this.product.valoracion = response.valoracion;
+          this.product.cantidadValoraciones = response.cantidad_valoraciones;
         })
         .catch((er) => {
           console.log(er);

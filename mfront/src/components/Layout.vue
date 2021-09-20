@@ -82,10 +82,10 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item key="1" link>
+          <v-list-item key="1" :to="{ path: '/userProfile' }">
             <v-list-item-title>Perfil</v-list-item-title>
           </v-list-item>
-          <v-list-item key="2" link @click="logout()">
+          <v-list-item key="2" :to="{ path: '/userList' }">
             <v-list-item-title>Mi Lista</v-list-item-title>
           </v-list-item>
           <v-list-item key="3" :to="{ path: '/userRatings' }">
@@ -121,6 +121,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
+
       <!--<v-dialog
         v-model="dialog"
         width="500"
@@ -267,7 +268,17 @@
       </v-dialog>-->
     </v-app-bar>
 
-    <v-content>
+    <v-content
+      id="1"
+      v-if="
+        this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
+      "
+      :style="
+        this.$vuetify.breakpoint.smAndDown == true ? 'margin-bottom: -56px' : ''
+      "
+      ><searchglobal
+    /></v-content>
+    <v-content id="2">
       <router-view />
     </v-content>
 
@@ -299,8 +310,11 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-
+import searchglobal from "./Global/SearchGlobal.vue";
 export default {
+  components: {
+    searchglobal,
+  },
   data() {
     return {
       crearCuenta: false,

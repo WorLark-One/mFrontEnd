@@ -3,6 +3,8 @@
     <v-navigation-drawer
       permanent
       absolute
+      color="primary"
+      dark
       :mini-variant="
         this.$vuetify.breakpoint.smAndDown ? (drawer ? false : true) : false
       "
@@ -15,7 +17,9 @@
           <v-icon>mdi-menu</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> MI CUENTA </v-list-item-title>
+          <v-list-item-title class="text-h6" style="font-family: montserrat">
+            MI CUENTA
+          </v-list-item-title>
           <v-list-item-subtitle>
             Hola {{ $store.state.user.user.name }}</v-list-item-subtitle
           >
@@ -39,8 +43,8 @@
       <v-divider></v-divider>
 
       <v-list dense nav>
-        <v-list-item-group color="primary">
-          <v-list-item :to="{ path: '/' }">
+        <v-list-item-group color="warning">
+          <v-list-item :to="{ path: '/userProfile' }">
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
@@ -48,7 +52,7 @@
               <v-list-item-title>Perfil</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item :to="{ path: '/' }">
+          <v-list-item :to="{ path: '/userList' }">
             <v-list-item-icon>
               <v-icon>mdi-format-list-bulleted-square</v-icon>
             </v-list-item-icon>
@@ -110,7 +114,6 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>-->
-    <h6 id="modal">Soy un modal</h6>
   </div>
 </template>
 
@@ -126,9 +129,9 @@ export default {
     rating: 5,
     drawer: null,
   }),
-  beforeCreate() {
-    this.script();
-  },
+  //beforeCreate() {
+  //this.script();
+  //},
   methods: {
     test() {
       console.log("click");

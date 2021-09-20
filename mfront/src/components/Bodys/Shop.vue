@@ -7,7 +7,7 @@
     </v-breadcrumbs>
     <v-container class="mb-6 mt-0 pt-0">
       <div class="row">
-        <v-col cols="12" class="hidden-md-and-up">
+        <!--<v-col cols="12" class="hidden-md-and-up">
           <v-text-field
             v-model="producto"
             flat
@@ -37,7 +37,7 @@
             BUSCAR
             <v-icon class="ml-2">mdi-magnify</v-icon>
           </v-btn>
-        </v-col>
+        </v-col>-->
         <div class="col-md-3 col-sm-12 col-xs-12">
           <v-card outlined>
             <v-card-title>Filtros</v-card-title>
@@ -353,20 +353,13 @@
                             readonly
                             :value="pro.valoracion"
                             class="hidden-md-and-down"
-                            background-color="warning lighten-3"
+                            background-color="warning "
                             color="warning"
                             dense
                           >
                           </v-rating>
                           <span
-                            class="
-                              body-2
-                              font-weight-thin
-                              mt-1
-                              ml-1
-                              mr-16
-                              hidden-md-and-down
-                            "
+                            class="body-2 mt-1 ml-1 mr-16 hidden-md-and-down"
                             >{{ pro.cantidad_valoraciones }} Valoraciones</span
                           >
                         </v-row>
