@@ -509,6 +509,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 //axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 import apexchart from "vue-apexcharts";
+import { mapActions } from "vuex";
 export default {
   components: {
     //LineChart,
@@ -783,13 +784,15 @@ export default {
     this.prepararCategoriasHistorial();
     this.obtenerUltimos15Dias();
   },
-  mounted() {
+  async mounted() {
     //this.obtenerIsRating();
-    this.obtenerDetailsRating();
-    this.obtenerIsRating();
+    await this.getUser();
+    await this.obtenerDetailsRating();
+    await this.obtenerIsRating();
   },
 
   methods: {
+    ...mapActions(["getUser"]),
     onScroll() {
       this.scrollInvoked++;
     },
@@ -947,6 +950,7 @@ export default {
             })
             .catch((er) => {
               console.log(er);
+              this.cancelarValoración();
             });
           await this.obtenerProducto();
           await this.obtenerDetailsRating();

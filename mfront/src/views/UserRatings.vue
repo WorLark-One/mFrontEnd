@@ -29,7 +29,7 @@
           </v-card-subtitle>
           <v-card-subtitle class="pl-0 pt-2 pb-2">
             <v-rating
-              background-color="warning lighten-3"
+              background-color="warning "
               color="warning"
               dense
               readonly
@@ -138,7 +138,7 @@
             dark
             tile
             text
-            @click="valoracionDialogEliminar = false"
+            @click="resetEliminarValoracion()"
           >
             Cancelar
           </v-btn>
@@ -183,6 +183,7 @@ export default {
 
     valoracionDialogEliminar: false,
     valoracionEliminar: -1,
+    idUsuarioEliminar: 0,
     //importante
     idValoracion: -1,
     valoracionUsuario: 0,
@@ -228,11 +229,27 @@ export default {
     },
     eliminarValoracion(valoracion) {
       this.valoracionEliminar = valoracion.id;
+      this.idUsuarioEliminar = this.$store.state.user.user.id;
       this.valoracionDialogEliminar = true;
     },
-    eliminarValoracionAux() {
-      console.log("valoracion eliminada: " + this.valoracionEliminar);
+    resetEliminarValoracion() {
+      this.valoracionEliminar = -1;
+      this.idUsuarioEliminar = 0;
       this.valoracionDialogEliminar = false;
+    },
+    async eliminarValoracionAux() {
+      await axios
+        .delete(
+          `/api/private/deleteRating/${this.valoracionEliminar}/${this.idUsuarioEliminar}`
+        )
+        .then((result) => {
+          console.log(result);
+          this.resetEliminarValoracion();
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+      await this.obtenerRatings();
     },
     async obtenerRatings() {
       //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
