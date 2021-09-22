@@ -159,9 +159,11 @@
 
 <script>
 import axios from "axios";
+import { mapActions } from "vuex";
 import usernavigation from "../components/Global/UserNavigation.vue";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+
 export default {
   components: {
     usernavigation,
@@ -205,6 +207,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(["getUser"]),
+    redireccionar() {},
     rellenarEditarValoracion(valoracion) {
       this.valoracionDialog = true;
       this.idValoracion = valoracion.id;
