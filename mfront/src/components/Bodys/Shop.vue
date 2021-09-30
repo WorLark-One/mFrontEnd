@@ -254,7 +254,9 @@
                       >CONSULTAR PRECIO</span
                     >
                     <v-spacer></v-spacer>
-                    <span class="ml-1">({{ pro.valoracion }})</span>
+                    <span class="ml-1"
+                      >({{ mostrarUnDecimal(pro.valoracion) }})</span
+                    >
                     <v-rating
                       readonly
                       value="1"
@@ -533,6 +535,10 @@ export default {
   },
   methods: {
     ...mapActions(["SET_RUTAACTUAL"]),
+    mostrarUnDecimal(num) {
+      var aux = num.toFixed(1);
+      return aux;
+    },
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
