@@ -13,6 +13,7 @@ export default new Vuex.Store({
         rutaActual: "",
         user: null,
         auth: false,
+        rolUser: null,
         newUser: "cliente",
         layout: true,
         alertaLogin: false,
@@ -31,6 +32,7 @@ export default new Vuex.Store({
         SET_USER(state, user) {
             state.user = user;
             state.auth = Boolean(user);
+            state.rolUser = user != null ? user.roles[0] : null;
         },
         SET_LAYOUT(state, value) {
             state.layout = value;

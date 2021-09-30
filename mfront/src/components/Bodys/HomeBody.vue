@@ -2,7 +2,7 @@
   <div class="paco">
     <div class="primary">
       <v-container>
-        <v-col cols="12" class="hidden-md-and-up">
+        <!--<v-col cols="12" class="hidden-md-and-up">
           <v-text-field
             v-model="producto"
             flat
@@ -33,7 +33,7 @@
             BUSCAR
             <v-icon class="ml-2">mdi-magnify</v-icon>
           </v-btn>
-        </v-col>
+        </v-col>-->
         <section class="mb-5">
           <v-carousel cycle hide-delimiters height="400" class="mt-4">
             <v-carousel-item
