@@ -81,6 +81,7 @@ export default {
     orientacion: "ASC",
     marketPlaces: "ComunidadC+marketmaule+MercadoLibre",
     rangoPrecios: "Todos",
+    valoracionProductos: "0",
     pagina: 1,
   }),
 
@@ -105,6 +106,8 @@ export default {
             this.marketPlaces +
             "&rgp=" +
             this.rangoPrecios +
+            "&val=" +
+            this.valoracionProductos +
             "&pag=" +
             this.pagina;
         } else {
@@ -117,6 +120,8 @@ export default {
             this.marketPlaces +
             "&rgp=" +
             this.rangoPrecios +
+            "&val=" +
+            this.valoracionProductos +
             "&pag=" +
             this.pagina;
         }

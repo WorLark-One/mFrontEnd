@@ -77,30 +77,20 @@
             <v-divider></v-divider>
             <v-card-title class="pb-0">Valoración</v-card-title>
             <v-container class="pt-0" fluid>
-              <v-checkbox
+              <!--<v-checkbox
                 append-icon="mdi-star"
                 label="4 o más"
                 hide-details
                 dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="3 o más"
-                hide-details
-                dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="2 o más"
-                hide-details
-                dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="1 o más"
-                hide-details
-                dense
-              ></v-checkbox>
+              ></v-checkbox>-->
+
+              <v-radio-group v-model="filtroValoracion" column>
+                <v-radio label="4 estrellas o más" value="4"> </v-radio>
+                <v-radio label="3 estrellas o más" value="3"> </v-radio>
+                <v-radio label="2 estrellas o más" value="2"> </v-radio>
+                <v-radio label="1 estrellas o más" value="1"> </v-radio>
+                <v-radio label="0 estrellas o más" value="0"> </v-radio>
+              </v-radio-group>
             </v-container>
             <v-divider></v-divider>
             <v-card-title>Market Place</v-card-title>
@@ -455,6 +445,7 @@ export default {
     orientacionFinal: "",
     rangoPrecioFinal: "",
     marketPlacesFinal: "",
+    valoracionProductosFinal: "",
     paginaFinal: "",
     //paginacion
     cantidadPaginas: 1,
@@ -516,6 +507,7 @@ export default {
         href: "javascript:history.back()",
       },
     ],
+    filtroValoracion: "0",
   }),
 
   beforeMount() {
@@ -572,6 +564,7 @@ export default {
     },
     obtenerProductos() {
       this.consulta = this.$route.params.consulta;
+      console.log(this.consulta);
       var consultaArray = this.consulta.split("&");
       for (let index = 0; index < consultaArray.length; index++) {
         var element = consultaArray[index].split("=");
@@ -587,8 +580,11 @@ export default {
         } else if (index == 4) {
           this.rangoPrecioFinal = elementSplit;
         } else if (index == 5) {
-          this.paginaFinal = parseInt(elementSplit);
+          this.filtroValoracion = elementSplit;
+          this.valoracionProductosFinal = parseInt(elementSplit);
           //this.page = elementSplit;
+        } else if (index == 6) {
+          this.paginaFinal = parseInt(elementSplit);
         }
       }
       this.setMarketPlaces();
@@ -600,7 +596,9 @@ export default {
         `ori=${this.orientacionFinal}/` +
         `mp=${this.marketPlacesFinal}/` +
         `rgp=${this.rangoPrecioFinal}/` +
+        `val=${this.valoracionProductosFinal}/` +
         `pag=${this.paginaFinal}`;
+      console.log(urlSearch);
       axios.get(urlSearch).then((result) => {
         console.log(result);
         //const response = result.data.data;
@@ -672,6 +670,8 @@ export default {
             this.marketPlacesFinal +
             "&rgp=" +
             this.rangoPrecioFinal +
+            "&val=" +
+            this.valoracionProductosFinal +
             "&pag=" +
             this.paginaFinal;
         } else {
@@ -684,6 +684,8 @@ export default {
             this.marketPlacesFinal +
             "&rgp=" +
             this.rangoPrecioFinal +
+            "&val=" +
+            this.valoracionProductosFinal +
             "&pag=" +
             this.paginaFinal;
         }
@@ -798,6 +800,7 @@ export default {
           this.allMarketPlacesCheckBox = true;
         }
       }
+      this.valoracionProductosFinal = this.filtroValoracion;
       this.paginaFinal = 1;
       this.goToNewRute();
     },
@@ -834,3 +837,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.radioAC {
+  background-color: red;
+  color: white;
+}
+</style>

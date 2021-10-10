@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import HomeBody from "../components/Bodys/HomeBody";
 
 export default {
@@ -11,8 +12,14 @@ export default {
   created() {
     this.$store.dispatch("colocarLayout");
   },
+  async mounted() {
+    await this.getUser();
+  },
   components: {
     HomeBody,
+  },
+  methods: {
+    ...mapActions(["getUser"]),
   },
 };
 </script>

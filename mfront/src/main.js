@@ -10,7 +10,7 @@ global.Raphael = Raphael;
 global.jQuery = require('jquery');
 Vue.config.productionTip = false
 
-store.dispatch("getUser");
+//store.dispatch("getUser");
 
 
 new Vue({

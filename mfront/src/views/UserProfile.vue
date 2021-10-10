@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import usernavigation from "../components/Global/UserNavigation.vue";
 export default {
   components: {
@@ -45,15 +46,20 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    if (this.$store.state.auth == false) {
-      this.$router.push("/");
-    } else if (this.$store.state.user.roles[0] != "cliente") {
-      console.log(this.$store.state.user.roles[0]);
-      //this.$router.push("/");
-    }
+
+  async mounted() {
+    await this.getUser();
+    await this.redireccionar();
   },
   methods: {
+    ...mapActions(["getUser"]),
+    redireccionar() {
+      if (this.$store.state.auth == false) {
+        this.$router.push("/");
+      } else if (this.$store.state.rolUser != "cliente") {
+        //this.$router.push("/");
+      }
+    },
     splitFecha(fecha) {
       var aux = fecha.split("T");
       return aux[0];

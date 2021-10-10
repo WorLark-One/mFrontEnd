@@ -10,103 +10,51 @@
             Usted no tiene productos agregado a su lista.
           </v-card-subtitle>
         </v-card>
+
         <v-card
-          :key="pro.id"
           v-for="pro in miLista"
-          class="pt-3 mb-2"
+          :key="pro.id"
           elevation="0"
+          class="mt-2 mb-2"
         >
-          <v-row>
-            <v-col cols="5" sm="4" md="3" class="ma-0 pt-0">
-              <v-img
-                position="center center "
-                height="200px"
-                width="180px"
-                contain
-                class="rounded-sm"
-                :src="pro.imagen"
-              >
-              </v-img>
-            </v-col>
-            <v-col cols="7" sm="8" md="9">
-              <v-card-text class="text--primary">
-                <div>
-                  <a
-                    @click="goToProduct(pro.id)"
-                    style="text-decoration: none; font-size: large"
-                    ><span
-                      class="d-inline-block text-truncate"
-                      style="max-width: 100%"
-                      >{{ pro.titulo }}</span
-                    ></a
-                  >
-                </div>
-                <v-row class="mt-10 ml-0">
-                  <span
-                    class="mt-1"
-                    style="font-size: 150%"
-                    v-if="pro.precio != 0"
-                    ><strong>$ {{ formatPrecio(pro.precio) }}</strong></span
-                  >
-                  <span style="font-size: 100%" v-if="pro.precio == 0"
-                    >CONSULTAR PRECIO</span
-                  >
-                  <v-spacer class="hidden-md-and-down"></v-spacer>
-                  <v-rating
-                    readonly
-                    :value="pro.valoracion"
-                    class="hidden-md-and-down"
-                    background-color="warning "
-                    color="warning"
-                    dense
-                  >
-                  </v-rating>
-                  <span class="body-2 mt-1 ml-1 mr-16 hidden-md-and-down"
-                    >{{ pro.cantidad_valoraciones }} Valoraciones</span
-                  >
-                </v-row>
-                <v-row class="hidden-md-and-up mt-4 ml-0">
-                  <v-rating
-                    :value="pro.valoracion"
-                    background-color="warning lighten-3"
-                    color="warning"
-                    dense
-                  >
-                  </v-rating>
-                  <span class="font-weight-thin mt-1 ml-1"
-                    >({{ pro.cantidad_valoraciones }})</span
-                  >
-                </v-row>
-              </v-card-text>
-            </v-col>
-          </v-row>
-          <v-card-actions
-            :class="
-              $vuetify.breakpoint.xs == true
-                ? 'justify-end mr-8 pt-0'
-                : 'justify-end mr-14 pt-0'
-            "
-          >
+          <v-card-subtitle class="pl-0 pt-2 pb-1">
+            Producto
+            <a @click="goToProduct(pro.id)"
+              ><strong>{{ pro.titulo }}</strong></a
+            >
+          </v-card-subtitle>
+          <v-card-subtitle class="pl-0 pt-1 pb-1">
+            Lo puedes encontrar en
+            <strong>{{ pro.ubicacion }}</strong>
+          </v-card-subtitle>
+          <v-card-subtitle class="pl-0 pt-2 pb-2">
+            <v-row class="pl-2 mt-1">
+              <v-rating
+                background-color="warning "
+                color="warning"
+                dense
+                readonly
+                :value="pro.valoracion"
+              ></v-rating>
+              <span class="ml-1 pt-1">({{ pro.cantidad_valoraciones }})</span>
+            </v-row>
+          </v-card-subtitle>
+
+          <v-card-actions class="justify-end pb-2 mr-8">
             <v-btn
-              outlined
               color="danger"
+              text
               tile
-              v-show="!$vuetify.breakpoint.xs"
               :loading="loadingMiLista"
               @click.prevent="quitarProductoUserList(pro.id)"
               >Quitar de mi lista</v-btn
             >
-            <v-btn
-              outlined
-              color="danger"
-              tile
-              block
-              v-show="$vuetify.breakpoint.xs"
-              :loading="loadingMiLista"
-              @click.prevent="quitarProductoUserList(pro.id)"
-              >Quitar de mi lista</v-btn
-            >
+            <v-btn tile dark color="cbtn" @click="goToProduct(pro.id)">
+              Ver detalles
+              <v-icon class="ml-1">mdi-open-in-new</v-icon>
+            </v-btn>
           </v-card-actions>
+
           <v-divider class="pl-0 mr-8"></v-divider>
         </v-card>
         <div class="mb-16"></div>
@@ -117,6 +65,7 @@
 
 <script>
 import axios from "axios";
+import { mapActions } from "vuex";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 
@@ -129,18 +78,23 @@ export default {
     miLista: [],
     loadingMiLista: false,
   }),
-  beforeCreate() {
-    if (this.$store.state.auth == false) {
-      this.$router.push("/");
-    } else if (this.$store.state.user.roles[0] != "cliente") {
-      //this.$router.push("/");
-    }
-  },
-  mounted() {
-    this.obtenerMiLista();
+
+  async mounted() {
+    //this.obtenerRatings();
+    await this.getUser();
+    await this.obtenerMiLista();
+    await this.redireccionar();
   },
 
   methods: {
+    ...mapActions(["getUser"]),
+    redireccionar() {
+      if (this.$store.state.auth == false) {
+        this.$router.push("/");
+      } else if (this.$store.state.rolUser != "cliente") {
+        //this.$router.push("/");
+      }
+    },
     async obtenerMiLista() {
       await axios
         .get(`/api/private/getUserList/${this.$store.state.user.user.id}`)

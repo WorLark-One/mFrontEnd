@@ -21,7 +21,7 @@
             MI CUENTA
           </v-list-item-title>
           <v-list-item-subtitle>
-            Hola {{ $store.state.user.user.name }}</v-list-item-subtitle
+            Hola {{ $store.state.userName }}</v-list-item-subtitle
           >
         </v-list-item-content>
       </v-list-item>
@@ -36,7 +36,7 @@
         <v-list-item-content>
           <v-list-item-title class="text-h6"> MI CUENTA </v-list-item-title>
           <v-list-item-subtitle>
-            Hola {{ $store.state.user.user.name }}</v-list-item-subtitle
+            Hola {{ $store.state.userName }}</v-list-item-subtitle
           >
         </v-list-item-content>
       </v-list-item>
@@ -135,18 +135,6 @@ export default {
   methods: {
     test() {
       console.log("click");
-    },
-    script() {
-      this.window.addEventListener("DOMContentLoaded", () => {
-        var m = document.getElementById("modal");
-        if (m.style.display !== "none")
-          (function () {
-            window.addEventListener("click", () => {
-              m.style.display = "none";
-              console.log("El modal desapareció al dar CLICK !");
-            });
-          })();
-      });
     },
   },
 };

@@ -50,16 +50,18 @@
             >
             <v-btn
               dark
+              tile
               color="cbtn"
               @click="rellenarEditarValoracion(valoracion)"
             >
               Editar
+              <v-icon class="ml-1">mdi-square-edit-outline</v-icon>
             </v-btn>
           </v-card-actions>
 
           <v-divider class="pl-0 mr-8"></v-divider>
         </v-card>
-        <div class="mb-8"></div>
+        <div class="mb-16"></div>
       </v-col>
     </v-row>
     <v-dialog
@@ -195,20 +197,23 @@ export default {
     producto_id: -1,
     usuario_id: -1,
   }),
-  beforeCreate() {
-    if (this.$store.state.auth == false) {
-      this.$router.push("/");
-    } else if (this.$store.state.user.roles[0] != "cliente") {
-      //this.$router.push("/");
-    }
-  },
-  mounted() {
-    this.obtenerRatings();
+  beforeCreate() {},
+  async mounted() {
+    //this.obtenerRatings();
+    await this.getUser();
+    await this.obtenerRatings();
+    await this.redireccionar();
   },
 
   methods: {
     ...mapActions(["getUser"]),
-    redireccionar() {},
+    redireccionar() {
+      if (this.$store.state.auth == false) {
+        this.$router.push("/");
+      } else if (this.$store.state.rolUser != "cliente") {
+        //this.$router.push("/");
+      }
+    },
     rellenarEditarValoracion(valoracion) {
       this.valoracionDialog = true;
       this.idValoracion = valoracion.id;
