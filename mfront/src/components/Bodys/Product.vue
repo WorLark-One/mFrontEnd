@@ -413,7 +413,7 @@
 <script>
 import axios from "axios";
 axios.defaults.withCredentials = true;
-//axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 import apexchart from "vue-apexcharts";
 import { mapActions } from "vuex";
 export default {
@@ -589,9 +589,8 @@ export default {
         { fecha: "2021-06-28", precio: 9000 },
       ],
       rating: 4.5,
-      url: "http://localhost:8000/api/public/getProducto/",
-      urlH: "http://localhost:8000/api/public/getHistorial/",
-      rutabase: "http://localhost:8000/api/",
+      url: "/api/public/getProducto/",
+      urlH: "/api/public/getHistorial/",
       idProducto: 1,
       producto: "",
       product: {
@@ -744,7 +743,7 @@ export default {
       //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
       await axios
         .get(
-          `http://localhost:8000/api/private/getIsRating/${this.$store.state.user.user.id}/${this.idProducto}`
+          `/api/private/getIsRating/${this.$store.state.user.user.id}/${this.idProducto}`
         )
         .then((result) => {
           //console.log(result);
@@ -757,7 +756,7 @@ export default {
     obtenerOnUserList() {
       axios
         .get(
-          `http://localhost:8000/api/private/getOnUserList/${this.$store.state.user.user.id}/${this.idProducto}`
+          `/api/private/getOnUserList/${this.$store.state.user.user.id}/${this.idProducto}`
         )
         .then((result) => {
           //console.log(result);
@@ -775,7 +774,7 @@ export default {
       };
 
       await axios
-        .post(`http://localhost:8000/api/private/postProductMiList`, producto)
+        .post(`/api/private/postProductMiList`, producto)
         .then((result) => {
           console.log(result.data.message);
           this.loadingMiLista = false;
@@ -791,7 +790,7 @@ export default {
       this.loadingMiLista = true;
       await axios
         .delete(
-          `http://localhost:8000/api/private/deleteProductMiList/${this.idProducto}/${this.$store.state.user.user.id}`
+          `/api/private/deleteProductMiList/${this.idProducto}/${this.$store.state.user.user.id}`
         )
         .then((result) => {
           console.log(result.data.message);
@@ -806,9 +805,7 @@ export default {
 
     async obtenerDetailsRating() {
       await axios
-        .get(
-          `http://localhost:8000/api/public/getDetailsRating/${this.idProducto}`
-        )
+        .get(`/api/public/getDetailsRating/${this.idProducto}`)
         .then((result) => {
           this.detallesValoracion = result.data;
           this.valoracionesLength = result.data.Valoraciones.length;
@@ -902,7 +899,7 @@ export default {
           console.log(newValoracion);
 
           await axios
-            .post(`http://localhost:8000/api/private/postRating`, newValoracion)
+            .post(`/api/private/postRating`, newValoracion)
             .then((result) => {
               console.log(result);
               this.cancelarValoración();

@@ -422,9 +422,11 @@
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 export default {
   data: () => ({
-    url: "http://localhost:8000/api/public/getSearch/",
+    url: "/api/public/getSearch/",
     range: [0, 1000000],
     select: "Precio: Menor a Mayor",
     options: [
