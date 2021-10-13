@@ -137,7 +137,7 @@
                     @click="goToProduct(pro.id)"
                     class="white--text"
                     outlined
-                    >VER AHORA</v-btn
+                    >VER PRODUCTO</v-btn
                   >
                 </div>
               </v-img>
@@ -165,7 +165,7 @@
                     class="white--text caption"
                     @click="goToProduct(pro.id)"
                     text
-                    >VER AHORA
+                    >VER PRODUCTO
                     <v-icon class="white--text caption"
                       >mdi-arrow-right</v-icon
                     ></v-btn
