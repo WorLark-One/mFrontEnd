@@ -161,7 +161,7 @@
                   <v-col cols="12" sm="6">
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" align-self="left">
+                        <v-col cols="4">
                           <span>5 estrellas</span>
                         </v-col>
                         <v-col cols="4" class="pl-0 pr-0" align-self="center">
@@ -182,7 +182,7 @@
                     </v-card-subtitle>
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>4 estrellas</span>
                         </v-col>
                         <v-col
@@ -209,7 +209,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>3 estrellas</span>
                         </v-col>
                         <v-col
@@ -236,7 +236,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>2 estrellas</span>
                         </v-col>
                         <v-col
@@ -263,7 +263,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0"
                       ><v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>1 estrella</span>
                         </v-col>
                         <v-col

@@ -249,7 +249,7 @@
                     >
                     <v-rating
                       readonly
-                      value="1"
+                      :value="1"
                       length="1"
                       background-color="warning lighten-3"
                       color="warning"
@@ -568,7 +568,6 @@ export default {
     },
     obtenerProductos() {
       this.consulta = this.$route.params.consulta;
-      console.log(this.consulta);
       var consultaArray = this.consulta.split("&");
       for (let index = 0; index < consultaArray.length; index++) {
         var element = consultaArray[index].split("=");
@@ -602,9 +601,7 @@ export default {
         `rgp=${this.rangoPrecioFinal}/` +
         `val=${this.valoracionProductosFinal}/` +
         `pag=${this.paginaFinal}`;
-      console.log(urlSearch);
       axios.get(urlSearch).then((result) => {
-        console.log(result);
         //const response = result.data.data;
         //this.products = response;
         this.products = [];
@@ -614,7 +611,8 @@ export default {
         if (this.totalProductos % 12 == 0) {
           this.cantidadPaginas = this.totalProductos / 12;
         } else {
-          this.cantidadPaginas = 1 + this.totalProductos / 12;
+          var auxCant = parseInt(this.totalProductos / 12);
+          this.cantidadPaginas = 1 + auxCant;
         }
         //console.log(result.data.data);
         //console.log(this.totalProductos);
@@ -719,8 +717,6 @@ export default {
       ) {
         this.orientacion = "ASC";
       }
-      console.log(this.select);
-      console.log(this.orientacion);
       this.goToNewRute();
     },
     setOrientation() {
@@ -821,7 +817,6 @@ export default {
     setNavigation() {
       if (this.page <= this.cantidadPaginas) {
         this.paginaFinal = this.page;
-        console.log(this.page);
         this.goToNewRute();
       }
     },
