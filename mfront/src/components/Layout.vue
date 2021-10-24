@@ -56,14 +56,12 @@
         </v-badge>
       </v-btn>
       <v-btn
-        rounded
         text
         elevation="0"
         :to="{ path: '/login' }"
         v-if="this.$store.state.auth == false"
       >
         <span>Iniciar sesión</span>
-        <v-icon class="ml-1">mdi-account-circle</v-icon>
       </v-btn>
       <v-menu
         open-on-hover
@@ -76,9 +74,9 @@
         "
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
+          <v-btn text elevation="0" v-bind="attrs" v-on="on">
             <span>{{ $store.state.userName }}</span>
-            <v-icon class="ml-1">mdi-account-circle</v-icon>
+            <v-icon class="ml-1">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
         <v-list>

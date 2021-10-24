@@ -43,16 +43,21 @@
               :src="pro.imagen"
               :to="{ path: `/product/${pro.id}/search=${false}` }"
             >
-              <v-row class="fill-height" align="center" justify="center">
+              <v-row
+                class="fill-height"
+                align="center"
+                justify="center"
+                v-if="pro.descuento > 0"
+              >
                 <div
-                  class="pl-5 pr-5 hidden-sm-only"
+                  class="pl-5 pr-5 cbtn rounded"
                   style="
                     font-size: 3.5em;
-                    color: #0bce96;
+                    color: #ffff;
                     font-family: montserrat;
                   "
                 >
-                  <strong>{{ pro.descuento }}% DE DESCUENTO</strong>
+                  <strong>-{{ pro.descuento }}% </strong>
                 </div>
                 <br />
               </v-row>

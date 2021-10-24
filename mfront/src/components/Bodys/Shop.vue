@@ -243,6 +243,17 @@
                       v-if="pro.precio == 0"
                       ><strong>CONSULTAR</strong>
                     </span>
+                    <div
+                      v-if="pro.descuento > 0"
+                      class="ml-2 pl-1 pr-1 cbtn rounded"
+                      style="
+                        font-size: 0.9em;
+                        color: #ffff;
+                        font-family: montserrat;
+                      "
+                    >
+                      <strong>-{{ pro.descuento }}% </strong>
+                    </div>
                     <v-spacer></v-spacer>
                     <span class="ml-1"
                       >({{ mostrarUnDecimal(pro.valoracion) }})</span
@@ -340,6 +351,17 @@
                           <span style="font-size: 100%" v-if="pro.precio == 0"
                             ><strong>CONSULTAR</strong></span
                           >
+                          <div
+                            v-if="pro.descuento > 0"
+                            class="ml-2 pl-1 pr-1 pt-1 pb-1 cbtn rounded"
+                            style="
+                              font-size: 1.2em;
+                              color: #ffff;
+                              font-family: montserrat;
+                            "
+                          >
+                            <strong>-{{ pro.descuento }}% </strong>
+                          </div>
                           <v-spacer class="hidden-md-and-down"></v-spacer>
                           <v-rating
                             readonly
