@@ -13,8 +13,11 @@
             <!--<p class="display-1 mb-0"></p>-->
             <v-img height="300" contain :src="product.imagen" />
             <v-card-actions class="pa-0 mt-4">
-              <p class="headline font-weight-light">
+              <p class="headline font-weight-light" v-if="product.precio > 1">
                 <strong>${{ formatPrecio(product.precio) }}</strong>
+              </p>
+              <p class="headline font-weight-light" v-if="product.precio == 0">
+                <strong>CONSULTAR PRECIO</strong>
               </p>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -47,7 +50,11 @@
                     dense
                     block
                     @click="abrir(product.link)"
-                    ><v-icon class="mr-4">mdi-cart</v-icon> Ir a comprar</v-btn
+                    ><v-icon class="mr-4">mdi-cart</v-icon>
+                    <span v-if="product.precio > 0">Ir a comprar</span>
+                    <span v-if="product.precio == 0"
+                      >Ir a consultar</span
+                    ></v-btn
                   >
                 </v-col>
                 <v-col
@@ -90,7 +97,7 @@
             show-arrows
           >
             <v-tab>Descripción </v-tab>
-            <v-tab>Historial de precios</v-tab>
+            <v-tab v-if="product.precio > 0">Historial de precios</v-tab>
             <v-tab>Valoraciones</v-tab>
             <v-tab-item>
               <v-card
@@ -105,7 +112,7 @@
                 ></v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="product.precio > 0">
               <v-card height="500" elevation="0" class="pt-8">
                 <!--<line-chart
                   class="px-4"
@@ -597,7 +604,7 @@ export default {
       product: {
         titulo: " ",
         descripcion: " ",
-        precio: " ",
+        precio: 1,
         imagen: " ",
         ubicacion: " ",
         link: " ",

@@ -89,7 +89,7 @@
                 <v-radio label="3 estrellas o más" value="3"> </v-radio>
                 <v-radio label="2 estrellas o más" value="2"> </v-radio>
                 <v-radio label="1 estrellas o más" value="1"> </v-radio>
-                <v-radio label="0 estrellas o más" value="0"> </v-radio>
+                <v-radio label="Todas" value="0"> </v-radio>
               </v-radio-group>
             </v-container>
             <v-divider></v-divider>
@@ -241,8 +241,8 @@
                       style="font-size: 90%"
                       class="ml-1"
                       v-if="pro.precio == 0"
-                      >CONSULTAR PRECIO</span
-                    >
+                      ><strong>CONSULTAR</strong>
+                    </span>
                     <v-spacer></v-spacer>
                     <span class="ml-1"
                       >({{ mostrarUnDecimal(pro.valoracion) }})</span
@@ -338,14 +338,14 @@
                             ></span
                           >
                           <span style="font-size: 100%" v-if="pro.precio == 0"
-                            >CONSULTAR PRECIO</span
+                            ><strong>CONSULTAR</strong></span
                           >
                           <v-spacer class="hidden-md-and-down"></v-spacer>
                           <v-rating
                             readonly
                             :value="pro.valoracion"
                             class="hidden-md-and-down"
-                            background-color="warning "
+                            background-color="warning"
                             color="warning"
                             dense
                           >
@@ -357,8 +357,9 @@
                         </v-row>
                         <v-row class="hidden-md-and-up mt-4 ml-0">
                           <v-rating
+                            readonly
                             :value="pro.valoracion"
-                            background-color="warning lighten-3"
+                            background-color="warning"
                             color="warning"
                             dense
                           >
@@ -396,6 +397,7 @@
               v-if="this.totalProductos > 0"
               v-model.number="page"
               :length="cantidadPaginas"
+              :total-visible="6"
             ></v-pagination>
           </div>
         </div>

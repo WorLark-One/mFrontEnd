@@ -268,7 +268,7 @@
       </v-dialog>-->
     </v-app-bar>
 
-    <v-content
+    <!--<v-content
       id="1"
       v-if="
         this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
@@ -277,32 +277,20 @@
         this.$vuetify.breakpoint.smAndDown == true ? 'margin-bottom: -56px' : ''
       "
       ><searchglobal
-    /></v-content>
+    /></v-content>-->
     <v-content id="2">
+      <searchglobal
+        v-if="
+          this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
+        "
+      />
       <router-view />
     </v-content>
 
     <v-footer :padless="true" v-if="this.$store.state.layout">
       <v-card flat tile width="100%" class="secondary white--text text-center">
-        <v-card-text>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-home</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-email</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-calendar</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-delete</v-icon>
-          </v-btn>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
         <v-card-text class="white--text">
-          {{ new Date().getFullYear() }}
+          <strong> Felipe Milla - {{ new Date().getFullYear() }} </strong>
         </v-card-text>
       </v-card>
     </v-footer>

@@ -41,7 +41,7 @@
               v-for="pro in productosDescuento"
               contain
               :src="pro.imagen"
-              @click="goToProduct(pro.id)"
+              :to="{ path: `/product/${pro.id}/search=${false}` }"
             >
               <v-row class="fill-height" align="center" justify="center">
                 <div
