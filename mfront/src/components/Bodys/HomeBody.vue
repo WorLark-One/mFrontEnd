@@ -366,7 +366,7 @@ export default {
       this.stateFalseAppBarSearch();
     },
     goToProduct(id) {
-      this.$router.push(`/product/${id}`);
+      this.$router.push(`/product/${id}/search=${false}`);
     },
     formatPrecio(n) {
       n = n.toString();

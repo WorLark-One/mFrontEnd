@@ -1,6 +1,6 @@
 <template>
   <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
-    <v-breadcrumbs class="ml-2" :items="items">
+    <v-breadcrumbs class="ml-2" :items="flagSearch ? items : itemsAux">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
@@ -423,6 +423,7 @@ export default {
   },
   data() {
     return {
+      flagSearch: true,
       series: [
         {
           name: "Precio",
@@ -623,6 +624,18 @@ export default {
           href: "breadcrumbs_link_2",
         },
       ],
+      itemsAux: [
+        {
+          text: "Inicio",
+          disabled: false,
+          href: "/",
+        },
+        {
+          text: "Producto",
+          disabled: true,
+          href: "breadcrumbs_link_2",
+        },
+      ],
       flagValoracionUsuario: true,
       valoracionDialog: false,
       rules: [
@@ -684,6 +697,7 @@ export default {
     };
   },
   created() {
+    this.flagSearch = this.$route.params.flag == "false" ? false : true;
     this.obtenerProducto();
   },
   beforeMount() {
@@ -693,6 +707,7 @@ export default {
   },
   async mounted() {
     //this.obtenerIsRating();
+
     await this.getUser();
     await this.obtenerDetailsRating();
     await this.obtenerIsRating();

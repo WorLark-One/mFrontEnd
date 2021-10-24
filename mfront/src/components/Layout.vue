@@ -51,7 +51,7 @@
       </v-btn>
       <v-spacer />
       <v-btn icon v-if="this.$store.state.auth == true">
-        <v-badge content="1" color="green" overlap>
+        <v-badge :content="contadorNotificaciones" color="green" overlap>
           <v-icon>mdi-bell</v-icon>
         </v-badge>
       </v-btn>
@@ -311,12 +311,21 @@
 <script>
 import { mapActions } from "vuex";
 import searchglobal from "./Global/SearchGlobal.vue";
+//import Echo from "laravel-echo";
+import axios from "axios";
+import Pusher from "pusher-js";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+//window.Pusher = require("pusher-js");
+//Pusher.logToConsole = true;
 export default {
   components: {
     searchglobal,
   },
   data() {
     return {
+      contadorNotificaciones: 1,
+      notifications: [],
       crearCuenta: false,
       show1: false,
       show2: false,
@@ -355,7 +364,7 @@ export default {
         "San Rafael",
         "Talca",
       ],
-      activeBtn: 1,
+      activeBtn: 0,
       comuna: "",
       producto: "",
       orientacion: "ASC",
@@ -376,6 +385,33 @@ export default {
       },
     };
   },
+  mounted() {
+    /*window.Echo = new Echo({
+      broadcaster: "pusher",
+      key: "0c40fe59ad95d8de38f8",
+      //authEndpoint: "http://localhost:8000/broadcasting/auth",
+      cluster: "mt1",
+      forceTLS: true,
+    });
+    window.Echo.channel("home").listen("test", (notificacion) => {
+      console.log(notificacion);
+    });*/
+
+    var pusher = new Pusher("0c40fe59ad95d8de38f8", {
+      cluster: "mt1",
+    });
+    //console.log(pusher);
+    var channel = pusher.subscribe("notification");
+    channel.bind("notification", function (data) {
+      //console.log(pusher);
+      console.log(data);
+      this.contadorNotificaciones = this.contadorNotificaciones + 1;
+    });
+  },
+  created() {
+    //this.getNotifications();
+  },
+
   mutations: {},
   methods: {
     ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register"]),
@@ -390,6 +426,16 @@ export default {
       };
       this.show2 = false;
       this.show3 = false;
+    },
+    async getNotifications() {
+      await axios
+        .get(`/api/private/getNotificationUser`)
+        .then((result) => {
+          console.log(result.data);
+        })
+        .catch((er) => {
+          console.log(er);
+        });
     },
     async crearCuentaMethod() {
       if (this.form2.password == this.form2.passwordConfirm) {

@@ -655,7 +655,7 @@ export default {
       window.open(link, "_blank");
     },
     goToProduct(id) {
-      this.$router.push(`/product/${id}`);
+      this.$router.push(`/product/${id}/search=${true}`);
     },
     goToNewRute() {
       if (this.productoFinal != "" && this.productoFinal != undefined) {

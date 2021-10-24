@@ -121,7 +121,8 @@ export default {
       return n;
     },
     goToProduct(id) {
-      var link = `http://localhost:8080/#/product/${id}`;
+      var link =
+        process.env.VUE_APP_WEB_URL + `#/product/${id}/search=${false}`;
       window.open(link, "_blank");
     },
 
