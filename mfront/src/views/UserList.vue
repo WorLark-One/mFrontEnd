@@ -1,63 +1,82 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2" sm="2" md="3"><usernavigation /></v-col>
-      <v-col cols="10" sm="10" md="9">
-        <h1 class="mt-10 medtitt2">Mi lista</h1>
-        <v-divider class="primary mt-2 mr-8 mb-5"></v-divider>
-        <v-card v-if="miLista.length == 0" height="300" elevation="0">
-          <v-card-subtitle class="pl-0 pt-2 pb-1">
-            Usted no tiene productos agregado a su lista.
-          </v-card-subtitle>
-        </v-card>
-
-        <v-card
-          v-for="pro in miLista"
-          :key="pro.id"
-          elevation="0"
-          class="mt-2 mb-2"
+      <v-col cols="2" sm="1" md="3" lg="2"><usernavigation /></v-col>
+      <v-col cols="10" sm="11" md="9" lg="10">
+        <div
+          :class="this.$vuetify.breakpoint.smAndDown == true ? 'mr-4' : 'mr-14'"
         >
-          <v-card-subtitle class="pl-0 pt-2 pb-1">
-            Producto
-            <a @click="goToProduct(pro.id)"
-              ><strong>{{ pro.titulo }}</strong></a
-            >
-          </v-card-subtitle>
-          <v-card-subtitle class="pl-0 pt-1 pb-1">
-            Lo puedes encontrar en
-            <strong>{{ pro.ubicacion }}</strong>
-          </v-card-subtitle>
-          <v-card-subtitle class="pl-0 pt-2 pb-2">
-            <v-row class="pl-2 mt-1">
-              <v-rating
-                background-color="warning "
-                color="warning"
-                dense
-                readonly
-                :value="pro.valoracion"
-              ></v-rating>
-              <span class="ml-1 pt-1">({{ pro.cantidad_valoraciones }})</span>
-            </v-row>
-          </v-card-subtitle>
+          <h1 class="mt-10 medtitt2">Mi lista</h1>
+          <v-divider class="primary mt-2 mb-5"></v-divider>
+          <div class="mt-8" v-if="cargando">
+            <v-progress-linear
+              v-if="cargando"
+              indeterminate
+              rounded
+              height="6"
+              color="primary"
+            ></v-progress-linear>
+          </div>
 
-          <v-card-actions class="justify-end pb-2 mr-8">
-            <v-btn
-              color="danger"
-              text
-              tile
-              :loading="loadingMiLista"
-              @click.prevent="quitarProductoUserList(pro.id)"
-              >Quitar de mi lista</v-btn
-            >
-            <v-btn tile dark color="cbtn" @click="goToProduct(pro.id)">
-              Ver detalles
-              <v-icon class="ml-1">mdi-open-in-new</v-icon>
-            </v-btn>
-          </v-card-actions>
+          <v-card
+            v-if="miLista.length == 0 && cargando == false"
+            height="300"
+            elevation="0"
+            class="mt-8"
+          >
+            <v-card-subtitle class="pl-0 pt-0">
+              Usted no tiene productos agregado a su lista.
+            </v-card-subtitle>
+          </v-card>
 
-          <v-divider class="pl-0 mr-8"></v-divider>
-        </v-card>
-        <div class="mb-16"></div>
+          <v-card
+            v-for="pro in miLista"
+            :key="pro.id"
+            elevation="0"
+            class="mt-2 mb-2"
+          >
+            <v-card-subtitle class="pl-0 pt-2 pb-1">
+              Producto
+              <a @click="goToProduct(pro.id)"
+                ><strong>{{ pro.titulo }}</strong></a
+              >
+            </v-card-subtitle>
+            <v-card-subtitle class="pl-0 pt-1 pb-1">
+              Lo puedes encontrar en
+              <strong>{{ pro.ubicacion }}</strong>
+            </v-card-subtitle>
+            <v-card-subtitle class="pl-0 pt-2 pb-2">
+              <v-row class="pl-2 mt-1">
+                <v-rating
+                  background-color="warning "
+                  color="warning"
+                  dense
+                  readonly
+                  :value="pro.valoracion"
+                ></v-rating>
+                <span class="ml-1 pt-1">({{ pro.cantidad_valoraciones }})</span>
+              </v-row>
+            </v-card-subtitle>
+
+            <v-card-actions class="justify-end pb-2">
+              <v-btn
+                color="danger"
+                text
+                tile
+                :loading="loadingMiLista"
+                @click.prevent="quitarProductoUserList(pro.id)"
+                >Quitar de mi lista</v-btn
+              >
+              <v-btn tile dark color="cbtn" @click="goToProduct(pro.id)">
+                Ver detalles
+                <v-icon class="ml-1">mdi-open-in-new</v-icon>
+              </v-btn>
+            </v-card-actions>
+
+            <v-divider class="pl-0"></v-divider>
+          </v-card>
+          <div class="mb-16"></div>
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -75,6 +94,7 @@ export default {
     usernavigation,
   },
   data: () => ({
+    cargando: true,
     miLista: [],
     loadingMiLista: false,
   }),
@@ -96,6 +116,7 @@ export default {
       }
     },
     async obtenerMiLista() {
+      this.cargando = true;
       await axios
         .get(`/api/private/getUserList/${this.$store.state.user.user.id}`)
         .then((result) => {
@@ -106,6 +127,7 @@ export default {
         .catch((er) => {
           console.log(er);
         });
+      this.cargando = false;
     },
     formatPrecio(n) {
       n = n.toString();
