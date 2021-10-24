@@ -121,6 +121,7 @@ export default {
     ...mapState(["auth", "user"]),
   },
   beforeCreate() {
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("quitarLayout");
     if (this.$store.state.auth == true) {
       this.$router.push("/");

@@ -65,9 +65,15 @@
                 tile
                 :loading="loadingMiLista"
                 @click.prevent="quitarProductoUserList(pro.id)"
-                >Quitar de mi lista</v-btn
+                >Quitar
+              </v-btn>
+              <v-btn
+                class="ml-4"
+                tile
+                dark
+                color="cbtn"
+                @click="goToProduct(pro.id)"
               >
-              <v-btn tile dark color="cbtn" @click="goToProduct(pro.id)">
                 Ver detalles
                 <v-icon class="ml-1">mdi-open-in-new</v-icon>
               </v-btn>
@@ -101,6 +107,7 @@ export default {
 
   async mounted() {
     //this.obtenerRatings();
+    this.$store.dispatch("navUsuarioActiva");
     await this.getUser();
     await this.obtenerMiLista();
     await this.redireccionar();

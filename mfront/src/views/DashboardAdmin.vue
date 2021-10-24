@@ -303,6 +303,7 @@ export default {
   created() {
     //this.initialize();
     this.obtenerComunas();
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("colocarLayout");
   },
 

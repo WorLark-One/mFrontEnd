@@ -1,36 +1,35 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2" sm="2" md="3"><usernavigation /></v-col>
-      <v-col cols="10" sm="10" md="9">
-        <h1 class="mt-10 medtitt2">Perfil de usuario</h1>
-        <v-divider class="primary mt-2 mr-8"></v-divider>
-        <v-card elevation="3" class="mt-6 mb-6 mr-8">
-          <v-card-subtitle
-            >Nombre:
-            <strong>{{
-              this.$store.state.user.user.name
-            }}</strong></v-card-subtitle
-          >
-          <v-card-subtitle
-            >Correo electrónico:
-            <strong
-              >{{ this.$store.state.user.user.email }}
-            </strong></v-card-subtitle
-          >
-          <v-card-subtitle
-            >Rol:
-            <strong>{{
-              this.$store.state.user.roles[0]
-            }}</strong></v-card-subtitle
-          >
-          <v-card-subtitle
-            >Cuenta creada:
-            <strong>{{
-              splitFecha(this.$store.state.user.user.created_at)
-            }}</strong></v-card-subtitle
-          >
-        </v-card>
+      <v-col cols="2" sm="1" md="3" lg="2"><usernavigation /></v-col>
+      <v-col cols="10" sm="11" md="9" lg="10">
+        <div
+          :class="this.$vuetify.breakpoint.smAndDown == true ? 'mr-4' : 'mr-14'"
+        >
+          <h1 class="mt-10 medtitt2">Perfil de usuario</h1>
+          <v-divider class="primary mt-2"></v-divider>
+          <v-card elevation="3" class="mt-6 mb-6">
+            <v-card-subtitle
+              >Nombre:
+              <strong>{{ $store.state.userName }}</strong></v-card-subtitle
+            >
+            <v-card-subtitle
+              >Correo electrónico:
+              <strong>{{ $store.state.userEmail }} </strong></v-card-subtitle
+            >
+            <v-card-subtitle
+              >Tipo de usuario:
+              <strong>{{ $store.state.userRol }}</strong></v-card-subtitle
+            >
+            <v-card-subtitle
+              >Cuenta creada:
+              <strong>{{
+                splitFecha($store.state.userCreacion)
+              }}</strong></v-card-subtitle
+            >
+          </v-card>
+          <div class="mb-16"></div>
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -48,6 +47,7 @@ export default {
   },
 
   async mounted() {
+    this.$store.dispatch("navUsuarioActiva");
     await this.getUser();
     await this.redireccionar();
   },
@@ -62,7 +62,9 @@ export default {
     },
     splitFecha(fecha) {
       var aux = fecha.split("T");
-      return aux[0];
+      var aux2 = aux[0].split("-");
+      var fechaAux = aux2[2] + " / " + aux2[1] + " / " + aux2[0];
+      return fechaAux;
     },
   },
 };

@@ -59,7 +59,7 @@
         rounded
         text
         elevation="0"
-        to="/login"
+        :to="{ path: '/login' }"
         v-if="this.$store.state.auth == false"
       >
         <span>Iniciar sesión</span>
@@ -72,12 +72,12 @@
         rounded
         v-if="
           this.$store.state.auth == true &&
-          this.$store.state.user.roles[0] == 'cliente'
+          this.$store.state.userRol == 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
-            <span>{{ $store.state.user.user.name }}</span>
+            <span>{{ $store.state.userName }}</span>
             <v-icon class="ml-1">mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -103,12 +103,12 @@
         rounded
         v-if="
           this.$store.state.auth == true &&
-          this.$store.state.user.roles[0] != 'cliente'
+          this.$store.state.userRol != 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
-            <span>{{ $store.state.user.user.name }}</span>
+            <span>{{ $store.state.userName }}</span>
             <v-icon class="ml-1">mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -284,6 +284,7 @@
           this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
         "
       />
+
       <router-view />
     </v-content>
 

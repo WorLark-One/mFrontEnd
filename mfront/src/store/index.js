@@ -13,12 +13,16 @@ export default new Vuex.Store({
         rutaActual: "",
         user: null,
         userName: "",
+        userEmail: "",
+        userRol: "",
+        userCreacion: "",
         auth: false,
         rolUser: null,
         newUser: "cliente",
         layout: true,
         alertaLogin: false,
         alertaRegister: false,
+        navUsuario: false,
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -34,10 +38,16 @@ export default new Vuex.Store({
             state.user = user;
             state.auth = Boolean(user);
             state.rolUser = user != null ? user.roles[0] : null;
-            state.userName = user != null ? user.name : "";
+            state.userName = user != null ? user.user.name : "";
+            state.userEmail = user != null ? user.user.email : "";
+            state.userRol = user != null ? user.roles[0] : "";
+            state.userCreacion = user != null ? user.user.created_at : "";
         },
         SET_LAYOUT(state, value) {
             state.layout = value;
+        },
+        SET_NAVUSER(state, value) {
+            state.navUsuario = value;
         },
         SET_ALERTALOGIN(state, value) {
             state.alertaLogin = value;
@@ -123,6 +133,12 @@ export default new Vuex.Store({
         },
         colocarLayout() {
             this.commit('SET_LAYOUT', true);
+        },
+        navUsuarioDesactivada() {
+            this.commit('SET_NAVUSER', false);
+        },
+        navUsuarioActiva() {
+            this.commit('SET_NAVUSER', true);
         },
         async alertaLoginMostrar() {
             await this.commit('SET_ALERTALOGIN', true);
