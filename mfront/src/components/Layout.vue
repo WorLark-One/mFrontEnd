@@ -311,6 +311,7 @@ export default {
   },
   data() {
     return {
+      notifyCount: 0,
       contadorNotificaciones: 1,
       notifications: [],
       crearCuenta: false,
@@ -373,27 +374,18 @@ export default {
     };
   },
   mounted() {
-    /*window.Echo = new Echo({
+    /*window.Pusher = require("pusher-js");
+    window.Echo = new Echo({
       broadcaster: "pusher",
       key: "0c40fe59ad95d8de38f8",
-      //authEndpoint: "http://localhost:8000/broadcasting/auth",
       cluster: "mt1",
       forceTLS: true,
     });
-    window.Echo.channel("home").listen("test", (notificacion) => {
-      console.log(notificacion);
+    window.Echo.channel("notificationUser").listen("hola", (e) => {
+      console.log(e);
+      //this.auxNotificacion(data);
     });*/
-
-    var pusher = new Pusher("0c40fe59ad95d8de38f8", {
-      cluster: "mt1",
-    });
-    //console.log(pusher);
-    var channel = pusher.subscribe("notification");
-    channel.bind("notification", function (data) {
-      //console.log(pusher);
-      console.log(data);
-      this.contadorNotificaciones = this.contadorNotificaciones + 1;
-    });
+    this.fun();
   },
   created() {
     //this.getNotifications();
@@ -402,6 +394,27 @@ export default {
   mutations: {},
   methods: {
     ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register"]),
+    fun() {
+      var pusher = new Pusher("0c40fe59ad95d8de38f8", {
+        cluster: "mt1",
+      });
+      //console.log(pusher);
+      var channel = pusher.subscribe("notificationUser");
+
+      /*eslint no-undef: 0*/
+      var aux = "App\\Events\\DescuentoUser";
+      var handler = function (data) {
+        this.auxNotificacion(data);
+      };
+      var context = this;
+      channel.bind(aux, handler, context);
+    },
+    auxNotificacion(data) {
+      if (this.$store.state.userId == data.user_id) {
+        console.log("es el mismo usuario");
+        this.contadorNotificaciones++;
+      }
+    },
     goToCrearCuenta() {
       this.crearCuenta = true;
       this.form2 = {
