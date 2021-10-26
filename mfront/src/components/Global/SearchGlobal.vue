@@ -22,7 +22,7 @@
         flat
         solo-inverted
         hide-details
-        class="hidden-md-and-up mt-1"
+        class="hidden-md-and-up pt-1"
       ></v-select>
       <v-btn
         color="hidden-md-and-up cbtn mt-1"

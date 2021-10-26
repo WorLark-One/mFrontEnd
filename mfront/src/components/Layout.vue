@@ -15,8 +15,11 @@
           href="/"
           class="white--text"
           style="text-decoration: none; font-family: montserrat"
-          ><font-awesome-icon icon="shopping-basket" size="2x" />&nbsp;
-          KMaule</a
+          ><font-awesome-icon
+            icon="shopping-basket"
+            size="2x"
+            class="hidden-sm-and-down"
+          />&nbsp; KMaule</a
         >
       </v-toolbar-title>
       <v-spacer />
@@ -50,11 +53,85 @@
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn icon v-if="this.$store.state.auth == true">
-        <v-badge :content="contadorNotificaciones" color="green" overlap>
-          <v-icon>mdi-bell</v-icon>
-        </v-badge>
-      </v-btn>
+
+      <v-menu
+        open-on-click
+        bottom
+        offset-y
+        rounded
+        :max-height="400"
+        :min-width="300"
+        :max-width="300"
+        v-if="
+          this.$store.state.auth == true &&
+          this.$store.state.userRol != 'Cliente'
+        "
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-badge
+              :content="contadorNotificaciones"
+              :value="contadorNotificaciones"
+              color="green"
+              overlap
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
+        <v-list color="white">
+          <v-subheader><strong>Notificaciones</strong></v-subheader>
+          <template v-for="(item, index) in itemss">
+            <!--<v-divider
+              v-if="item.divider"
+              :key="index"
+              :inset="item.inset"
+            ></v-divider>-->
+
+            <v-list-item v-if="itemss.length > 0" :key="index">
+              <v-list-item-content>
+                <v-list-item-title
+                  ><a
+                    @click="goToProduct(item.producto_id)"
+                    style="text-decoration: none"
+                    ><span style="font-size: 100%">{{
+                      item.nombre_producto
+                    }}</span></a
+                  >
+                </v-list-item-title>
+                <v-list-item-subtitle class="mt-2"
+                  >${{ formatPrecio(item.precio_producto) }}
+                  <strong
+                    class="ml-1 pl-1 pr-1 cbtn rounded"
+                    style="
+                      font-size: 0.9em;
+                      color: #ffff;
+                      font-family: montserrat;
+                    "
+                    >-{{ item.descuento_producto }}%
+                  </strong>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-btn icon small text color="danger">X</v-btn>
+            </v-list-item>
+            <v-divider
+              v-if="itemss.length > 0"
+              :key="index"
+              class="mx-4"
+            ></v-divider>
+          </template>
+          <template v-if="itemss.length == 0">
+            <v-list-item :key="0">
+              <v-list-item-content>
+                <v-list-item-subtitle>
+                  Usted no tiene notificaciones
+                  disponiibles.</v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
       <v-btn
         text
         elevation="0"
@@ -76,7 +153,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn text elevation="0" v-bind="attrs" v-on="on">
             <span>{{ $store.state.userName }}</span>
-            <v-icon class="ml-1">mdi-chevron-down</v-icon>
+            <v-icon class="pl-1">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -312,13 +389,22 @@ export default {
   data() {
     return {
       notifyCount: 0,
-      contadorNotificaciones: 1,
+      contadorNotificaciones: 0,
       notifications: [],
       crearCuenta: false,
       show1: false,
       show2: false,
       show3: false,
       dialog: false,
+      itemss: [
+        {
+          id: 0,
+          producto_id: 1,
+          nombre_producto: "producto",
+          precio_producto: 1000,
+          descuento_producto: "10",
+        },
+      ],
       items: [
         "Todas",
         "Cauquenes",
@@ -408,6 +494,22 @@ export default {
       };
       var context = this;
       channel.bind(aux, handler, context);
+    },
+    goToProduct(id) {
+      this.$router.push(`/product/${id}/search=${false}`);
+    },
+    formatPrecio(n) {
+      n = n.toString();
+      var flag = 0;
+      while (flag == 0) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1.$2$3");
+        if (n == n2) {
+          flag = 1;
+        } else {
+          n = n2;
+        }
+      }
+      return n;
     },
     auxNotificacion(data) {
       if (this.$store.state.userId == data.user_id) {
