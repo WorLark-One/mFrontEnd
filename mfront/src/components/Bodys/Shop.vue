@@ -89,7 +89,7 @@
                 <v-radio label="3 estrellas o más" value="3"> </v-radio>
                 <v-radio label="2 estrellas o más" value="2"> </v-radio>
                 <v-radio label="1 estrellas o más" value="1"> </v-radio>
-                <v-radio label="0 estrellas o más" value="0"> </v-radio>
+                <v-radio label="Todas" value="0"> </v-radio>
               </v-radio-group>
             </v-container>
             <v-divider></v-divider>
@@ -241,15 +241,26 @@
                       style="font-size: 90%"
                       class="ml-1"
                       v-if="pro.precio == 0"
-                      >CONSULTAR PRECIO</span
+                      ><strong>CONSULTAR</strong>
+                    </span>
+                    <div
+                      v-if="pro.descuento > 0"
+                      class="ml-2 pl-1 pr-1 cbtn rounded"
+                      style="
+                        font-size: 0.9em;
+                        color: #ffff;
+                        font-family: montserrat;
+                      "
                     >
+                      <strong>-{{ pro.descuento }}% </strong>
+                    </div>
                     <v-spacer></v-spacer>
                     <span class="ml-1"
                       >({{ mostrarUnDecimal(pro.valoracion) }})</span
                     >
                     <v-rating
                       readonly
-                      value="1"
+                      :value="1"
                       length="1"
                       background-color="warning lighten-3"
                       color="warning"
@@ -338,14 +349,25 @@
                             ></span
                           >
                           <span style="font-size: 100%" v-if="pro.precio == 0"
-                            >CONSULTAR PRECIO</span
+                            ><strong>CONSULTAR</strong></span
                           >
+                          <div
+                            v-if="pro.descuento > 0"
+                            class="ml-2 pl-1 pr-1 pt-1 pb-1 cbtn rounded"
+                            style="
+                              font-size: 1.2em;
+                              color: #ffff;
+                              font-family: montserrat;
+                            "
+                          >
+                            <strong>-{{ pro.descuento }}% </strong>
+                          </div>
                           <v-spacer class="hidden-md-and-down"></v-spacer>
                           <v-rating
                             readonly
                             :value="pro.valoracion"
                             class="hidden-md-and-down"
-                            background-color="warning "
+                            background-color="warning"
                             color="warning"
                             dense
                           >
@@ -357,8 +379,9 @@
                         </v-row>
                         <v-row class="hidden-md-and-up mt-4 ml-0">
                           <v-rating
+                            readonly
                             :value="pro.valoracion"
-                            background-color="warning lighten-3"
+                            background-color="warning"
                             color="warning"
                             dense
                           >
@@ -396,6 +419,7 @@
               v-if="this.totalProductos > 0"
               v-model.number="page"
               :length="cantidadPaginas"
+              :total-visible="6"
             ></v-pagination>
           </div>
         </div>
@@ -566,7 +590,6 @@ export default {
     },
     obtenerProductos() {
       this.consulta = this.$route.params.consulta;
-      console.log(this.consulta);
       var consultaArray = this.consulta.split("&");
       for (let index = 0; index < consultaArray.length; index++) {
         var element = consultaArray[index].split("=");
@@ -600,9 +623,7 @@ export default {
         `rgp=${this.rangoPrecioFinal}/` +
         `val=${this.valoracionProductosFinal}/` +
         `pag=${this.paginaFinal}`;
-      console.log(urlSearch);
       axios.get(urlSearch).then((result) => {
-        console.log(result);
         //const response = result.data.data;
         //this.products = response;
         this.products = [];
@@ -612,7 +633,8 @@ export default {
         if (this.totalProductos % 12 == 0) {
           this.cantidadPaginas = this.totalProductos / 12;
         } else {
-          this.cantidadPaginas = 1 + this.totalProductos / 12;
+          var auxCant = parseInt(this.totalProductos / 12);
+          this.cantidadPaginas = 1 + auxCant;
         }
         //console.log(result.data.data);
         //console.log(this.totalProductos);
@@ -655,7 +677,7 @@ export default {
       window.open(link, "_blank");
     },
     goToProduct(id) {
-      this.$router.push(`/product/${id}`);
+      this.$router.push(`/product/${id}/search=${true}`);
     },
     goToNewRute() {
       if (this.productoFinal != "" && this.productoFinal != undefined) {
@@ -717,8 +739,6 @@ export default {
       ) {
         this.orientacion = "ASC";
       }
-      console.log(this.select);
-      console.log(this.orientacion);
       this.goToNewRute();
     },
     setOrientation() {
@@ -819,7 +839,6 @@ export default {
     setNavigation() {
       if (this.page <= this.cantidadPaginas) {
         this.paginaFinal = this.page;
-        console.log(this.page);
         this.goToNewRute();
       }
     },

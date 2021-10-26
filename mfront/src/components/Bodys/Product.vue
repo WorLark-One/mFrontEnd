@@ -1,6 +1,6 @@
 <template>
   <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
-    <v-breadcrumbs class="ml-2" :items="items">
+    <v-breadcrumbs class="ml-2" :items="flagSearch ? items : itemsAux">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
@@ -13,8 +13,11 @@
             <!--<p class="display-1 mb-0"></p>-->
             <v-img height="300" contain :src="product.imagen" />
             <v-card-actions class="pa-0 mt-4">
-              <p class="headline font-weight-light">
+              <p class="headline font-weight-light" v-if="product.precio > 1">
                 <strong>${{ formatPrecio(product.precio) }}</strong>
+              </p>
+              <p class="headline font-weight-light" v-if="product.precio == 0">
+                <strong>CONSULTAR PRECIO</strong>
               </p>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -47,7 +50,11 @@
                     dense
                     block
                     @click="abrir(product.link)"
-                    ><v-icon class="mr-4">mdi-cart</v-icon> Ir a comprar</v-btn
+                    ><v-icon class="mr-4">mdi-cart</v-icon>
+                    <span v-if="product.precio > 0">Ir a comprar</span>
+                    <span v-if="product.precio == 0"
+                      >Ir a consultar</span
+                    ></v-btn
                   >
                 </v-col>
                 <v-col
@@ -90,7 +97,7 @@
             show-arrows
           >
             <v-tab>Descripción </v-tab>
-            <v-tab>Historial de precios</v-tab>
+            <v-tab v-if="product.precio > 0">Historial de precios</v-tab>
             <v-tab>Valoraciones</v-tab>
             <v-tab-item>
               <v-card
@@ -105,7 +112,7 @@
                 ></v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="product.precio > 0">
               <v-card height="500" elevation="0" class="pt-8">
                 <!--<line-chart
                   class="px-4"
@@ -154,7 +161,7 @@
                   <v-col cols="12" sm="6">
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" align-self="left">
+                        <v-col cols="4">
                           <span>5 estrellas</span>
                         </v-col>
                         <v-col cols="4" class="pl-0 pr-0" align-self="center">
@@ -175,7 +182,7 @@
                     </v-card-subtitle>
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>4 estrellas</span>
                         </v-col>
                         <v-col
@@ -202,7 +209,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>3 estrellas</span>
                         </v-col>
                         <v-col
@@ -229,7 +236,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0">
                       <v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>2 estrellas</span>
                         </v-col>
                         <v-col
@@ -256,7 +263,7 @@
                     >
                     <v-card-subtitle class="ma-0 pa-0"
                       ><v-row>
-                        <v-col cols="4" class="pt-0" align-self="center">
+                        <v-col cols="4" class="pt-0">
                           <span>1 estrella</span>
                         </v-col>
                         <v-col
@@ -423,6 +430,7 @@ export default {
   },
   data() {
     return {
+      flagSearch: true,
       series: [
         {
           name: "Precio",
@@ -596,7 +604,7 @@ export default {
       product: {
         titulo: " ",
         descripcion: " ",
-        precio: " ",
+        precio: 1,
         imagen: " ",
         ubicacion: " ",
         link: " ",
@@ -616,6 +624,18 @@ export default {
           text: "Búsqueda",
           disabled: false,
           href: "javascript:history.back()",
+        },
+        {
+          text: "Producto",
+          disabled: true,
+          href: "breadcrumbs_link_2",
+        },
+      ],
+      itemsAux: [
+        {
+          text: "Inicio",
+          disabled: false,
+          href: "/",
         },
         {
           text: "Producto",
@@ -684,6 +704,7 @@ export default {
     };
   },
   created() {
+    this.flagSearch = this.$route.params.flag == "false" ? false : true;
     this.obtenerProducto();
   },
   beforeMount() {
@@ -693,6 +714,7 @@ export default {
   },
   async mounted() {
     //this.obtenerIsRating();
+
     await this.getUser();
     await this.obtenerDetailsRating();
     await this.obtenerIsRating();

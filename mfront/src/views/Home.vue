@@ -10,6 +10,7 @@ export default {
   name: "Home",
 
   created() {
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("colocarLayout");
   },
   async mounted() {

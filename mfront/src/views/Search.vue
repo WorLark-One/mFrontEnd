@@ -13,6 +13,7 @@ export default {
     SearchBody,
   },
   created() {
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("colocarLayout");
   },
   async mounted() {

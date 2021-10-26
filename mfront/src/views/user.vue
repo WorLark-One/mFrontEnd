@@ -20,6 +20,7 @@ export default {
     return {};
   },
   mounted() {
+    this.$store.dispatch("navUsuarioDesactivada");
     if (this.$store.state.auth == false) {
       this.$router.push("/");
     } else if (this.$store.state.user.roles[0] != "cliente") {

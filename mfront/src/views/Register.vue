@@ -101,7 +101,15 @@
                 required
                 @click:append="show3 = !show3"
               ></v-text-field>
-              <v-btn color="cbtn" rounded dark large block type="submit">
+              <v-btn
+                color="cbtn"
+                rounded
+                dark
+                large
+                block
+                :loading="loading"
+                type="submit"
+              >
                 Registrarse
               </v-btn>
             </v-form>
@@ -130,6 +138,7 @@ export default {
   data: () => ({
     //user: {},
     //userAuth: {},
+    loading: false,
     valid: true,
     show2: false,
     show3: false,
@@ -156,6 +165,7 @@ export default {
     ],
   }),
   beforeCreate() {
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("quitarLayout");
     if (this.$store.state.auth == true) {
       this.$router.push("/");
@@ -178,8 +188,10 @@ export default {
         this.show3 = false;
         //this.$refs.form.validate();
         if (this.$refs.form.validate()) {
+          this.loading = true;
           this.valid = true;
           await this.register(newUser);
+          this.loading = false;
         } else {
           this.valid = false;
         }

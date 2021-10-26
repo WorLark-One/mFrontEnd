@@ -55,7 +55,7 @@
               Ingrese sus credenciales para continuar
             </v-card-subtitle>
 
-            <v-form class="mx-6 mt-2 pt-4" @submit.prevent="login(form)">
+            <v-form class="mx-6 mt-2 pt-4" @submit.prevent="loginAux(form)">
               <v-text-field
                 v-model="form.email"
                 label="Correo electrónico"
@@ -70,7 +70,15 @@
                 required
                 @click:append="show1 = !show1"
               ></v-text-field>
-              <v-btn color="cbtn" dark large rounded block type="submit">
+              <v-btn
+                color="cbtn"
+                dark
+                large
+                rounded
+                :loading="loading"
+                block
+                type="submit"
+              >
                 Continuar
               </v-btn>
             </v-form>
@@ -102,16 +110,18 @@ export default {
   data: () => ({
     //user: {},
     //userAuth: {},
+    loading: false,
     show1: false,
     form: {
-      email: "felipe.milla.calquin@gmail.com",
-      password: "1234567890",
+      email: "",
+      password: "",
     },
   }),
   computed: {
     ...mapState(["auth", "user"]),
   },
   beforeCreate() {
+    this.$store.dispatch("navUsuarioDesactivada");
     this.$store.dispatch("quitarLayout");
     if (this.$store.state.auth == true) {
       this.$router.push("/");
@@ -120,6 +130,11 @@ export default {
 
   methods: {
     ...mapActions(["login", "alertaLoginQuitar"]),
+    async loginAux(form) {
+      this.loading = true;
+      await this.login(form);
+      this.loading = false;
+    },
     //alertaLoginAux() {
     //var aux = false;
     //this.alertaLogin(aux);

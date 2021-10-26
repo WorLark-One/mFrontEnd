@@ -15,8 +15,11 @@
           href="/"
           class="white--text"
           style="text-decoration: none; font-family: montserrat"
-          ><font-awesome-icon icon="shopping-basket" size="2x" />&nbsp;
-          KMaule</a
+          ><font-awesome-icon
+            icon="shopping-basket"
+            size="2x"
+            class="hidden-sm-and-down"
+          />&nbsp; KMaule</a
         >
       </v-toolbar-title>
       <v-spacer />
@@ -50,20 +53,99 @@
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn icon v-if="this.$store.state.auth == true">
-        <v-badge content="1" color="green" overlap>
-          <v-icon>mdi-bell</v-icon>
-        </v-badge>
-      </v-btn>
-      <v-btn
+
+      <v-menu
+        open-on-click
+        :close-on-content-click="false"
+        bottom
+        offset-y
         rounded
+        :max-height="400"
+        :min-width="300"
+        :max-width="300"
+        v-if="
+          this.$store.state.auth == true &&
+          this.$store.state.userRol != 'Cliente'
+        "
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click.prevent="notificacionesLeidas()"
+          >
+            <v-badge
+              :content="contadorNotificaciones"
+              :value="contadorNotificaciones"
+              color="green"
+              overlap
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
+        <v-list color="white">
+          <v-subheader><strong>Notificaciones</strong></v-subheader>
+          <template v-for="(item, index) in itemss">
+            <v-list-item v-if="itemss.length > 0" :key="index">
+              <v-list-item-content>
+                <v-list-item-title
+                  ><a
+                    @click="goToProduct(item.producto_id)"
+                    style="text-decoration: none"
+                    ><span style="font-size: 100%">{{
+                      item.nombre_producto
+                    }}</span></a
+                  >
+                </v-list-item-title>
+                <v-list-item-subtitle class="mt-2"
+                  >${{ formatPrecio(item.precio_producto) }}
+                  <strong
+                    class="ml-1 pl-1 pr-1 cbtn rounded"
+                    style="
+                      font-size: 0.9em;
+                      color: #ffff;
+                      font-family: montserrat;
+                    "
+                    >-{{ item.descuento_producto }}%
+                  </strong>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-btn
+                icon
+                small
+                text
+                color="danger"
+                @click.prevent="eliminarNotificacion(item.id)"
+                >X</v-btn
+              >
+            </v-list-item>
+            <v-divider
+              v-if="itemss.length > 0"
+              :key="index"
+              class="mx-4"
+            ></v-divider>
+          </template>
+          <template v-if="itemss.length == 0">
+            <v-list-item :key="0">
+              <v-list-item-content>
+                <v-list-item-subtitle>
+                  Usted no tiene notificaciones
+                  disponiibles.</v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
+      <v-btn
         text
         elevation="0"
-        to="/login"
+        :to="{ path: '/login' }"
         v-if="this.$store.state.auth == false"
       >
         <span>Iniciar sesión</span>
-        <v-icon class="ml-1">mdi-account-circle</v-icon>
       </v-btn>
       <v-menu
         open-on-hover
@@ -72,13 +154,13 @@
         rounded
         v-if="
           this.$store.state.auth == true &&
-          this.$store.state.user.roles[0] == 'cliente'
+          this.$store.state.userRol == 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
-            <span>{{ $store.state.user.user.name }}</span>
-            <v-icon class="ml-1">mdi-account-circle</v-icon>
+          <v-btn text elevation="0" v-bind="attrs" v-on="on">
+            <span>{{ $store.state.userName }}</span>
+            <v-icon class="pl-1">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -103,12 +185,12 @@
         rounded
         v-if="
           this.$store.state.auth == true &&
-          this.$store.state.user.roles[0] != 'cliente'
+          this.$store.state.userRol != 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
-            <span>{{ $store.state.user.user.name }}</span>
+            <span>{{ $store.state.userName }}</span>
             <v-icon class="ml-1">mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -268,7 +350,7 @@
       </v-dialog>-->
     </v-app-bar>
 
-    <v-content
+    <!--<v-content
       id="1"
       v-if="
         this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
@@ -277,32 +359,21 @@
         this.$vuetify.breakpoint.smAndDown == true ? 'margin-bottom: -56px' : ''
       "
       ><searchglobal
-    /></v-content>
+    /></v-content>-->
     <v-content id="2">
+      <searchglobal
+        v-if="
+          this.$vuetify.breakpoint.smAndDown == true && this.$store.state.layout
+        "
+      />
+
       <router-view />
     </v-content>
 
     <v-footer :padless="true" v-if="this.$store.state.layout">
       <v-card flat tile width="100%" class="secondary white--text text-center">
-        <v-card-text>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-home</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-email</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-calendar</v-icon>
-          </v-btn>
-          <v-btn class="mx-4 white--text" icon>
-            <v-icon size="24px">mdi-delete</v-icon>
-          </v-btn>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
         <v-card-text class="white--text">
-          {{ new Date().getFullYear() }}
+          <strong> Felipe Milla - {{ new Date().getFullYear() }} </strong>
         </v-card-text>
       </v-card>
     </v-footer>
@@ -311,17 +382,28 @@
 <script>
 import { mapActions } from "vuex";
 import searchglobal from "./Global/SearchGlobal.vue";
+//import Echo from "laravel-echo";
+import axios from "axios";
+import Pusher from "pusher-js";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+//window.Pusher = require("pusher-js");
+//Pusher.logToConsole = true;
 export default {
   components: {
     searchglobal,
   },
   data() {
     return {
+      notifyCount: 0,
+      contadorNotificaciones: 0,
+      notifications: [],
       crearCuenta: false,
       show1: false,
       show2: false,
       show3: false,
       dialog: false,
+      itemss: [],
       items: [
         "Todas",
         "Cauquenes",
@@ -355,7 +437,7 @@ export default {
         "San Rafael",
         "Talca",
       ],
-      activeBtn: 1,
+      activeBtn: 0,
       comuna: "",
       producto: "",
       orientacion: "ASC",
@@ -376,9 +458,112 @@ export default {
       },
     };
   },
+  async mounted() {
+    /*window.Pusher = require("pusher-js");
+    window.Echo = new Echo({
+      broadcaster: "pusher",
+      key: "0c40fe59ad95d8de38f8",
+      cluster: "mt1",
+      forceTLS: true,
+    });
+    window.Echo.channel("notificationUser").listen("hola", (e) => {
+      console.log(e);
+      //this.auxNotificacion(data);
+    });*/
+    await this.getUser();
+    await this.fun();
+    await this.obtenerNotificaciones();
+  },
+  created() {
+    //this.getNotifications();
+  },
+
   mutations: {},
   methods: {
-    ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register"]),
+    ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register", "getUser"]),
+    fun() {
+      var pusher = new Pusher("0c40fe59ad95d8de38f8", {
+        cluster: "mt1",
+      });
+      //console.log(pusher);
+      var channel = pusher.subscribe("notificationUser");
+
+      /*eslint no-undef: 0*/
+      var aux = "App\\Events\\DescuentoUser";
+      var handler = function (data) {
+        this.auxNotificacion(data);
+      };
+      var context = this;
+      channel.bind(aux, handler, context);
+    },
+    goToProduct(id) {
+      this.$router.push(`/product/${id}/search=${false}`);
+    },
+    formatPrecio(n) {
+      n = n.toString();
+      var flag = 0;
+      while (flag == 0) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1.$2$3");
+        if (n == n2) {
+          flag = 1;
+        } else {
+          n = n2;
+        }
+      }
+      return n;
+    },
+    auxNotificacion(data) {
+      if (this.$store.state.userId == data.user_id) {
+        console.log("es el mismo usuario");
+        this.obtenerNotificaciones();
+      }
+    },
+    obtenerNotificaciones() {
+      if (
+        this.$store.state.auth == true &&
+        this.$store.state.userRol == "cliente"
+      ) {
+        axios
+          .get(`/api/private/getNotificationUser/${this.$store.state.userId}`)
+          .then((result) => {
+            console.log(result.data);
+            this.itemss = result.data.data;
+            this.contadorNotificaciones = result.data.count;
+          })
+          .catch((er) => {
+            console.log(er);
+          });
+      }
+    },
+    async notificacionesLeidas() {
+      if (this.contadorNotificaciones > 0) {
+        await axios
+          .put(`/api/private/markReadNotificacion/${this.$store.state.userId}`)
+          .then((result) => {
+            console.log(result.data);
+            this.contadorNotificaciones = 0;
+          })
+          .catch((er) => {
+            console.log(er);
+          });
+      }
+    },
+
+    async eliminarNotificacion(id) {
+      await axios
+        .delete(
+          `/api/private/deleteNotificacion/${id}/${this.$store.state.userId}`
+        )
+        .then((result) => {
+          console.log(result.data);
+          this.contadorNotificaciones = 0;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+      await this.obtenerNotificaciones();
+    },
+
     goToCrearCuenta() {
       this.crearCuenta = true;
       this.form2 = {
@@ -390,6 +575,16 @@ export default {
       };
       this.show2 = false;
       this.show3 = false;
+    },
+    async getNotifications() {
+      await axios
+        .get(`/api/private/getNotificationUser`)
+        .then((result) => {
+          console.log(result.data);
+        })
+        .catch((er) => {
+          console.log(er);
+        });
     },
     async crearCuentaMethod() {
       if (this.form2.password == this.form2.passwordConfirm) {

@@ -1,41 +1,76 @@
 <template >
-  <div class="paco">
-    <div class="primary hidden-md-and-up">
-      <v-container>
-        <v-col cols="12" class="hidden-md-and-up">
-          <v-text-field
-            v-model="producto"
-            flat
-            dark
-            solo-inverted
-            hide-details
-            label="Buscar producto"
-            class="hidden-md-and-up"
-          />
-          <v-select
-            v-model="comuna"
-            :items="items"
-            label="Comuna"
-            dark
-            flat
-            solo-inverted
-            hide-details
-            class="hidden-md-and-up mt-1"
-          ></v-select>
-          <v-btn
-            color="hidden-md-and-up cbtn mt-1"
-            solo-inverted
-            dark
-            block
-            elevation="0"
-            @click="goToSearch()"
-          >
-            BUSCAR
-            <v-icon class="ml-2">mdi-magnify</v-icon>
-          </v-btn>
-        </v-col>
-      </v-container>
-    </div>
+  <div class="primary hidden-md-and-up">
+    <v-col
+      cols="12"
+      class="hidden-md-and-up"
+      v-if="$store.state.navUsuario == false"
+    >
+      <v-text-field
+        v-model="producto"
+        flat
+        dark
+        solo-inverted
+        hide-details
+        label="Buscar producto"
+        class="hidden-md-and-up"
+      />
+      <v-select
+        v-model="comuna"
+        :items="items"
+        label="Comuna"
+        dark
+        flat
+        solo-inverted
+        hide-details
+        class="hidden-md-and-up pt-1"
+      ></v-select>
+      <v-btn
+        color="hidden-md-and-up cbtn mt-1"
+        solo-inverted
+        dark
+        block
+        elevation="0"
+        @click="goToSearch()"
+      >
+        BUSCAR
+        <v-icon class="ml-2">mdi-magnify</v-icon>
+      </v-btn>
+    </v-col>
+    <v-row v-if="$store.state.navUsuario == true">
+      <v-col cols="2" sm="1"></v-col>
+      <v-col cols="10" sm="11" class="pr-8">
+        <v-text-field
+          v-model="producto"
+          flat
+          dark
+          solo-inverted
+          hide-details
+          label="Buscar producto"
+          class="hidden-md-and-up"
+        />
+        <v-select
+          v-model="comuna"
+          :items="items"
+          label="Comuna"
+          dark
+          flat
+          solo-inverted
+          hide-details
+          class="hidden-md-and-up mt-1"
+        ></v-select>
+        <v-btn
+          color="hidden-md-and-up cbtn mt-1"
+          solo-inverted
+          dark
+          block
+          elevation="0"
+          @click="goToSearch()"
+        >
+          BUSCAR
+          <v-icon class="ml-2">mdi-magnify</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -147,12 +182,4 @@ export default {
 </script>
 
 <style scoped>
-.paco {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-}
 </style>

@@ -42,8 +42,8 @@
       </v-list-item>
       <v-divider></v-divider>
 
-      <v-list dense nav>
-        <v-list-item-group color="warning">
+      <v-list nav>
+        <v-list-item-group>
           <v-list-item :to="{ path: '/userProfile' }">
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>

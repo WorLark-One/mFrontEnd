@@ -1,67 +1,87 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2" sm="2" md="3"><usernavigation /></v-col>
-      <v-col cols="10" sm="10" md="9">
-        <h1 class="mt-10 medtitt2">Mis valoraciones</h1>
-        <v-divider class="primary mt-2 mr-8"></v-divider>
-        <v-card v-if="valoraciones.length == 0" height="300" elevation="0">
-          <v-card-subtitle class="pl-0 pt-2 pb-1">
-            Usted no tiene valoraciones registradas.
-          </v-card-subtitle>
-        </v-card>
-
-        <v-card
-          v-for="valoracion in valoraciones"
-          :key="valoracion.id"
-          elevation="0"
-          class="mt-2 mb-2"
+      <v-col cols="2" sm="1" md="3" lg="2"><usernavigation /></v-col>
+      <v-col cols="10" sm="11" md="9" lg="10">
+        <div
+          :class="this.$vuetify.breakpoint.smAndDown == true ? 'mr-4' : 'mr-14'"
         >
-          <v-card-subtitle class="pl-0 pt-2 pb-1">
-            Producto
-            <a @click="goToProduct(valoracion.producto_id)"
-              ><strong>{{ valoracion.nombre_producto }}</strong></a
-            >
-          </v-card-subtitle>
-          <v-card-subtitle class="pl-0 pt-1 pb-1">
-            Realizada el
-            <strong>{{ formatoFecha(valoracion.updated_at) }}</strong>
-          </v-card-subtitle>
-          <v-card-subtitle class="pl-0 pt-2 pb-2">
-            <v-rating
-              background-color="warning "
-              color="warning"
-              dense
-              readonly
-              :value="valoracion.value"
-            ></v-rating
-          ></v-card-subtitle>
-          <v-card-text class="pl-0 pb-2">{{
-            valoracion.comentario
-          }}</v-card-text>
-          <v-card-actions class="justify-end pb-2 mr-8">
-            <v-btn
-              text
-              dark
-              color="danger"
-              @click="eliminarValoracion(valoracion)"
-            >
-              Eliminar</v-btn
-            >
-            <v-btn
-              dark
-              tile
-              color="cbtn"
-              @click="rellenarEditarValoracion(valoracion)"
-            >
-              Editar
-              <v-icon class="ml-1">mdi-square-edit-outline</v-icon>
-            </v-btn>
-          </v-card-actions>
+          <h1 class="mt-10 medtitt2">Mis valoraciones</h1>
+          <v-divider class="primary mt-2"></v-divider>
 
-          <v-divider class="pl-0 mr-8"></v-divider>
-        </v-card>
-        <div class="mb-16"></div>
+          <div class="mt-8" v-if="cargando">
+            <v-progress-linear
+              v-if="cargando"
+              indeterminate
+              rounded
+              height="6"
+              color="primary"
+            ></v-progress-linear>
+          </div>
+          <v-card
+            v-if="valoraciones.length == 0 && cargando == false"
+            height="300"
+            elevation="0"
+            class="mt-8"
+          >
+            <v-card-subtitle class="pl-0 pt-0">
+              Usted no tiene valoraciones registradas.
+            </v-card-subtitle>
+          </v-card>
+
+          <v-card
+            v-for="valoracion in valoraciones"
+            :key="valoracion.id"
+            elevation="0"
+            class="mt-2 mb-2"
+          >
+            <v-card-subtitle class="pl-0 pt-2 pb-1">
+              Producto
+              <a @click="goToProduct(valoracion.producto_id)"
+                ><strong>{{ valoracion.nombre_producto }}</strong></a
+              >
+            </v-card-subtitle>
+            <v-card-subtitle class="pl-0 pt-1 pb-1">
+              Realizada el
+              <strong>{{ formatoFecha(valoracion.updated_at) }}</strong>
+            </v-card-subtitle>
+            <v-card-subtitle class="pl-0 pt-2 pb-2">
+              <v-rating
+                background-color="warning "
+                color="warning"
+                dense
+                readonly
+                :value="valoracion.value"
+              ></v-rating
+            ></v-card-subtitle>
+            <v-card-text class="pl-0 pb-2">{{
+              valoracion.comentario
+            }}</v-card-text>
+            <v-card-actions class="justify-end pb-2">
+              <v-btn
+                text
+                dark
+                color="danger"
+                @click="eliminarValoracion(valoracion)"
+              >
+                Eliminar</v-btn
+              >
+              <v-btn
+                class="ml-4"
+                dark
+                tile
+                color="cbtn"
+                @click="rellenarEditarValoracion(valoracion)"
+              >
+                Editar
+                <v-icon class="ml-1">mdi-square-edit-outline</v-icon>
+              </v-btn>
+            </v-card-actions>
+
+            <v-divider class="pl-0"></v-divider>
+          </v-card>
+          <div class="mb-16"></div>
+        </div>
       </v-col>
     </v-row>
     <v-dialog
@@ -171,6 +191,7 @@ export default {
     usernavigation,
   },
   data: () => ({
+    cargando: true,
     items: [
       { title: "Perfil", icon: "mdi-view-dashboard" },
       { title: "Mi lista", icon: "mdi-image" },
@@ -200,6 +221,7 @@ export default {
   beforeCreate() {},
   async mounted() {
     //this.obtenerRatings();
+    this.$store.dispatch("navUsuarioActiva");
     await this.getUser();
     await this.obtenerRatings();
     await this.redireccionar();
@@ -262,6 +284,7 @@ export default {
     },
     async obtenerRatings() {
       //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+      this.cargando = true;
       await axios
         .get(`/api/private/getRatingUser/${this.$store.state.user.user.id}`)
         .then((result) => {
@@ -271,6 +294,7 @@ export default {
         .catch((er) => {
           console.log(er);
         });
+      this.cargando = false;
     },
 
     async updateValoración() {
@@ -283,8 +307,6 @@ export default {
           producto_id: this.producto_id,
           usuario_id: this.usuario_id,
         };
-        console.log("aaaaaaaa");
-        console.log(newValoracion);
         await axios
           .put(`/api/private/updateRating/${this.idValoracion}`, newValoracion)
           .then((result) => {
@@ -303,7 +325,8 @@ export default {
       return aux[0];
     },
     goToProduct(id) {
-      var link = `http://localhost:8080/#/product/${id}`;
+      var link =
+        process.env.VUE_APP_WEB_URL + `#/product/${id}/search=${false}`;
       window.open(link, "_blank");
     },
   },
