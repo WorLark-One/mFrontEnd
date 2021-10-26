@@ -132,7 +132,7 @@
               <v-list-item-content>
                 <v-list-item-subtitle>
                   Usted no tiene notificaciones
-                  disponiibles.</v-list-item-subtitle
+                  disponibles.</v-list-item-subtitle
                 >
               </v-list-item-content>
             </v-list-item>

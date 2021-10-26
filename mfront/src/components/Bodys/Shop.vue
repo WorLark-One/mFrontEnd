@@ -362,18 +362,18 @@
                           >
                             <strong>-{{ pro.descuento }}% </strong>
                           </div>
-                          <v-spacer class="hidden-md-and-down"></v-spacer>
+                          <v-spacer class="hidden-sm-and-down"></v-spacer>
                           <v-rating
                             readonly
                             :value="pro.valoracion"
-                            class="hidden-md-and-down"
+                            class="hidden-sm-and-down"
                             background-color="warning"
                             color="warning"
                             dense
                           >
                           </v-rating>
                           <span
-                            class="body-2 mt-1 ml-1 mr-16 hidden-md-and-down"
+                            class="body-2 mt-1 ml-1 mr-16 hidden-sm-and-down"
                             >{{ pro.cantidad_valoraciones }} Valoraciones</span
                           >
                         </v-row>
@@ -738,6 +738,16 @@ export default {
         this.orientacion != "ASC"
       ) {
         this.orientacion = "ASC";
+      } else if (
+        this.select == "Descuento" &&
+        this.orientacion != "descuento"
+      ) {
+        this.orientacion = "descuento";
+      } else if (
+        this.select == "Tendencia" &&
+        this.orientacion != "tendencia"
+      ) {
+        this.orientacion = "tendencia";
       }
       this.goToNewRute();
     },
@@ -746,6 +756,10 @@ export default {
         this.select = "Precio: Mayor a Menor";
       } else if (this.orientacionFinal == "ASC") {
         this.select = "Precio: Menor a Mayor";
+      } else if (this.orientacionFinal == "descuento") {
+        this.select = "Descuento";
+      } else if (this.orientacionFinal == "tendencia") {
+        this.select = "Tendencia";
       }
     },
     setMarketPlaces() {
