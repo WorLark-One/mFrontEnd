@@ -56,6 +56,7 @@
 
       <v-menu
         open-on-click
+        :close-on-content-click="false"
         bottom
         offset-y
         rounded
@@ -68,7 +69,12 @@
         "
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click.prevent="notificacionesLeidas()"
+          >
             <v-badge
               :content="contadorNotificaciones"
               :value="contadorNotificaciones"
@@ -82,12 +88,6 @@
         <v-list color="white">
           <v-subheader><strong>Notificaciones</strong></v-subheader>
           <template v-for="(item, index) in itemss">
-            <!--<v-divider
-              v-if="item.divider"
-              :key="index"
-              :inset="item.inset"
-            ></v-divider>-->
-
             <v-list-item v-if="itemss.length > 0" :key="index">
               <v-list-item-content>
                 <v-list-item-title
@@ -112,7 +112,14 @@
                   </strong>
                 </v-list-item-subtitle>
               </v-list-item-content>
-              <v-btn icon small text color="danger">X</v-btn>
+              <v-btn
+                icon
+                small
+                text
+                color="danger"
+                @click.prevent="eliminarNotificacion(item.id)"
+                >X</v-btn
+              >
             </v-list-item>
             <v-divider
               v-if="itemss.length > 0"
@@ -396,15 +403,7 @@ export default {
       show2: false,
       show3: false,
       dialog: false,
-      itemss: [
-        {
-          id: 0,
-          producto_id: 1,
-          nombre_producto: "producto",
-          precio_producto: 1000,
-          descuento_producto: "10",
-        },
-      ],
+      itemss: [],
       items: [
         "Todas",
         "Cauquenes",
@@ -459,7 +458,7 @@ export default {
       },
     };
   },
-  mounted() {
+  async mounted() {
     /*window.Pusher = require("pusher-js");
     window.Echo = new Echo({
       broadcaster: "pusher",
@@ -471,7 +470,9 @@ export default {
       console.log(e);
       //this.auxNotificacion(data);
     });*/
-    this.fun();
+    await this.getUser();
+    await this.fun();
+    await this.obtenerNotificaciones();
   },
   created() {
     //this.getNotifications();
@@ -479,7 +480,7 @@ export default {
 
   mutations: {},
   methods: {
-    ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register"]),
+    ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register", "getUser"]),
     fun() {
       var pusher = new Pusher("0c40fe59ad95d8de38f8", {
         cluster: "mt1",
@@ -514,9 +515,55 @@ export default {
     auxNotificacion(data) {
       if (this.$store.state.userId == data.user_id) {
         console.log("es el mismo usuario");
-        this.contadorNotificaciones++;
+        this.obtenerNotificaciones();
       }
     },
+    obtenerNotificaciones() {
+      if (
+        this.$store.state.auth == true &&
+        this.$store.state.userRol == "cliente"
+      ) {
+        axios
+          .get(`/api/private/getNotificationUser/${this.$store.state.userId}`)
+          .then((result) => {
+            console.log(result.data);
+            this.itemss = result.data.data;
+            this.contadorNotificaciones = result.data.count;
+          })
+          .catch((er) => {
+            console.log(er);
+          });
+      }
+    },
+    async notificacionesLeidas() {
+      if (this.contadorNotificaciones > 0) {
+        await axios
+          .put(`/api/private/markReadNotificacion/${this.$store.state.userId}`)
+          .then((result) => {
+            console.log(result.data);
+            this.contadorNotificaciones = 0;
+          })
+          .catch((er) => {
+            console.log(er);
+          });
+      }
+    },
+
+    async eliminarNotificacion(id) {
+      await axios
+        .delete(
+          `/api/private/deleteNotificacion/${id}/${this.$store.state.userId}`
+        )
+        .then((result) => {
+          console.log(result.data);
+          this.contadorNotificaciones = 0;
+        })
+        .catch((er) => {
+          console.log(er);
+        });
+      await this.obtenerNotificaciones();
+    },
+
     goToCrearCuenta() {
       this.crearCuenta = true;
       this.form2 = {
