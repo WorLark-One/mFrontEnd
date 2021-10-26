@@ -148,7 +148,7 @@
         <span>Iniciar sesión</span>
       </v-btn>
       <v-menu
-        open-on-hover
+        open-on-click
         bottom
         offset-y
         rounded
@@ -179,7 +179,7 @@
         </v-list>
       </v-menu>
       <v-menu
-        open-on-hover
+        open-on-click
         bottom
         offset-y
         rounded
