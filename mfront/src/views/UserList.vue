@@ -1,5 +1,31 @@
 <template>
   <div>
+    <v-snackbar
+      absolute
+      bottom
+      right
+      class="mb-4"
+      :color="errorAlert == true ? 'danger' : 'cbtn'"
+      timeout="5000"
+      v-model="flagAlert"
+    >
+      <font-awesome-icon
+        :icon="errorAlert == true ? 'exclamation-circle' : 'check-circle'"
+        size="1x"
+      />&nbsp;
+      {{ textAlert }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          small
+          icon
+          v-bind="attrs"
+          @click="flagAlert = false"
+        >
+          <font-awesome-icon icon="times" size="1x" />
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-row>
       <v-col cols="2" sm="1" md="3" lg="2"><usernavigation /></v-col>
       <v-col cols="10" sm="11" md="9" lg="10">
@@ -100,6 +126,9 @@ export default {
     usernavigation,
   },
   data: () => ({
+    flagAlert: false,
+    errorAlert: false,
+    textAlert: "",
     cargando: true,
     miLista: [],
     loadingMiLista: false,
@@ -156,18 +185,25 @@ export default {
     },
 
     async quitarProductoUserList(id) {
-      this.loadingMiLista = true;
+      //this.loadingMiLista = true;
       await axios
         .delete(
           `/api/private/deleteProductMiList/${id}/${this.$store.state.user.user.id}`
         )
         .then((result) => {
           console.log(result.data.message);
-          this.loadingMiLista = false;
+          //this.loadingMiLista = false;
+          this.flagAlert = true;
+          this.errorAlert = false;
+          this.textAlert = "Producto quitado correctamente.";
         })
         .catch((er) => {
           console.log(er);
-          this.loadingMiLista = false;
+          //this.loadingMiLista = false;
+          this.flagAlert = true;
+          this.errorAlert = true;
+          this.textAlert =
+            "Ha ocurrido un error vuelva a intentarlo más tarde.";
         });
       await this.obtenerMiLista();
     },

@@ -1,5 +1,31 @@
 <template>
   <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
+    <v-snackbar
+      absolute
+      bottom
+      right
+      class="mb-4"
+      :color="errorAlert == true ? 'danger' : 'cbtn'"
+      timeout="5000"
+      v-model="flagAlert"
+    >
+      <font-awesome-icon
+        :icon="errorAlert == true ? 'exclamation-circle' : 'check-circle'"
+        size="1x"
+      />&nbsp;
+      {{ textAlert }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          small
+          icon
+          v-bind="attrs"
+          @click="flagAlert = false"
+        >
+          <font-awesome-icon icon="times" size="1x" />
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-breadcrumbs class="ml-2" :items="flagSearch ? items : itemsAux">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
@@ -430,6 +456,9 @@ export default {
   },
   data() {
     return {
+      flagAlert: false,
+      errorAlert: false,
+      textAlert: "",
       flagSearch: true,
       series: [
         {
@@ -800,8 +829,15 @@ export default {
         .then((result) => {
           console.log(result.data.message);
           this.loadingMiLista = false;
+          this.flagAlert = true;
+          this.errorAlert = false;
+          this.textAlert = "Producto añadido correctamente.";
         })
         .catch((er) => {
+          this.flagAlert = true;
+          this.errorAlert = true;
+          this.textAlert =
+            "Ha ocurrido un error vuelva a intentarlo más tarde.";
           console.log(er);
           this.loadingMiLista = false;
         });
@@ -817,8 +853,15 @@ export default {
         .then((result) => {
           console.log(result.data.message);
           this.loadingMiLista = false;
+          this.flagAlert = true;
+          this.errorAlert = false;
+          this.textAlert = "Producto quitado correctamente.";
         })
         .catch((er) => {
+          this.flagAlert = true;
+          this.errorAlert = true;
+          this.textAlert =
+            "Ha ocurrido un error vuelva a intentarlo más tarde.";
           console.log(er);
           this.loadingMiLista = false;
         });
@@ -925,10 +968,17 @@ export default {
             .then((result) => {
               console.log(result);
               this.cancelarValoración();
+              this.flagAlert = true;
+              this.errorAlert = false;
+              this.textAlert = "Producto valorado correctamente.";
             })
             .catch((er) => {
               console.log(er);
               this.cancelarValoración();
+              this.flagAlert = true;
+              this.errorAlert = true;
+              this.textAlert =
+                "Ha ocurrido un error vuelva a intentarlo más tarde.";
             });
           await this.obtenerProducto();
           await this.obtenerDetailsRating();

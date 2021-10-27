@@ -1,5 +1,31 @@
 <template>
   <div>
+    <v-snackbar
+      absolute
+      bottom
+      right
+      class="mb-4"
+      :color="errorAlert == true ? 'danger' : 'cbtn'"
+      timeout="5000"
+      v-model="flagAlert"
+    >
+      <font-awesome-icon
+        :icon="errorAlert == true ? 'exclamation-circle' : 'check-circle'"
+        size="1x"
+      />&nbsp;
+      {{ textAlert }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          small
+          icon
+          v-bind="attrs"
+          @click="flagAlert = false"
+        >
+          <font-awesome-icon icon="times" size="1x" />
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-row>
       <v-col cols="2" sm="1" md="3" lg="2"><usernavigation /></v-col>
       <v-col cols="10" sm="11" md="9" lg="10">
@@ -191,6 +217,9 @@ export default {
     usernavigation,
   },
   data: () => ({
+    flagAlert: false,
+    errorAlert: false,
+    textAlert: "",
     cargando: true,
     items: [
       { title: "Perfil", icon: "mdi-view-dashboard" },
@@ -276,8 +305,16 @@ export default {
         .then((result) => {
           console.log(result);
           this.resetEliminarValoracion();
+          this.flagAlert = true;
+          this.errorAlert = false;
+          this.textAlert = "Valoración eliminada correctamente.";
         })
         .catch((er) => {
+          this.resetEliminarValoracion();
+          this.flagAlert = true;
+          this.errorAlert = true;
+          this.textAlert =
+            "Ha ocurrido un error vuelva a intentarlo más tarde.";
           console.log(er);
         });
       await this.obtenerRatings();
@@ -286,12 +323,13 @@ export default {
       //await axios.get("http://localhost:8000/sanctum/csrf-cookie");
       this.cargando = true;
       await axios
-        .get(`/api/private/getRatingUser/${this.$store.state.user.user.id}`)
+        .get(`/api/private/getRatingUser/${this.$store.state.userId}`)
         .then((result) => {
           console.log(result);
           this.valoraciones = result.data.data;
         })
         .catch((er) => {
+          this.cargando = false;
           console.log(er);
         });
       this.cargando = false;
@@ -312,8 +350,15 @@ export default {
           .then((result) => {
             console.log(result);
             this.resetEditarValoracion();
+            this.flagAlert = true;
+            this.errorAlert = false;
+            this.textAlert = "Valoración modificada correctamente.";
           })
           .catch((er) => {
+            this.flagAlert = true;
+            this.errorAlert = true;
+            this.textAlert =
+              "Ha ocurrido un error vuelva a intentarlo más tarde.";
             console.log(er);
           });
         await this.obtenerRatings();
