@@ -141,6 +141,46 @@
           </template>
         </v-list>
       </v-menu>
+      <v-dialog v-model="dialogCart" max-width="700px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon dark v-bind="attrs" v-on="on">
+            <v-icon>mdi-cart</v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>Carrito de petición de compra</v-card-title>
+          <v-stepper v-model="e1" color="cbtn">
+            <v-stepper-header>
+              <v-stepper-step color="cbtn" :complete="e1 > 1" step="1">
+                Lista de productos
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step color="cbtn" :complete="e1 > 2" step="2">
+                Condiciones y envío
+              </v-stepper-step>
+            </v-stepper-header>
+            <v-stepper-items color="cbtn">
+              <v-stepper-content step="1" color="cbtn">
+                <v-card class="mb-12" height="500px" elevation="0"></v-card>
+                <div class="text-right">
+                  <v-btn dark color="cbtn" @click="e1 = 2"> Siguiente </v-btn>
+                </div>
+              </v-stepper-content>
+
+              <v-stepper-content step="2">
+                <v-card class="mb-12" height="500px" elevation="0"></v-card>
+
+                <div class="text-right">
+                  <v-btn text dark color="cbtn" @click="e1 = 1" class="mr-1">
+                    Atrás
+                  </v-btn>
+                  <v-btn dark color="cbtn" @click="e1 = 1"> Finalizar </v-btn>
+                </div>
+              </v-stepper-content>
+            </v-stepper-items>
+          </v-stepper>
+        </v-card>
+      </v-dialog>
       <v-btn
         text
         elevation="0"
@@ -418,6 +458,7 @@ export default {
   },
   data() {
     return {
+      dialogCart: false,
       notifyCount: 0,
       contadorNotificaciones: 0,
       notifications: [],
@@ -479,6 +520,7 @@ export default {
         passwordConfirm: "asdasdasd",
         rol: "",
       },
+      e1: 1,
     };
   },
   async mounted() {

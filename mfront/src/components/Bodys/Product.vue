@@ -68,7 +68,7 @@
                   cols="6"
                   v-show="this.$store.state.rolUser != 'cliente'"
                 ></v-col>
-                <v-col cols="6" class="pr-1">
+                <v-col cols="4" class="pr-1">
                   <v-btn
                     class="primary white--text"
                     outlined
@@ -76,15 +76,31 @@
                     dense
                     block
                     @click="abrir(product.link)"
-                    ><v-icon class="mr-4">mdi-cart</v-icon>
-                    <span v-if="product.precio > 0">Ir a comprar</span>
-                    <span v-if="product.precio == 0"
-                      >Ir a consultar</span
-                    ></v-btn
                   >
+                    <span class="hidden-sm-and-down" v-if="product.precio > 0"
+                      >Ir a comprar</span
+                    >
+                    <span class="hidden-sm-and-down" v-if="product.precio == 0"
+                      >Ir a consultar</span
+                    >
+                    <span v-if="this.$vuetify.breakpoint.smAndDown == true">
+                      <v-icon class="mr-2">mdi-open-in-new</v-icon> Ir
+                    </span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="4" class="pr-1">
+                  <v-btn
+                    class="cbtn white--text"
+                    outlined
+                    tile
+                    dense
+                    block
+                    @click="abrir(product.link)"
+                    ><v-icon>mdi-cart-plus</v-icon>
+                  </v-btn>
                 </v-col>
                 <v-col
-                  cols="6"
+                  cols="4"
                   class="pl-1"
                   v-show="this.$store.state.rolUser == 'cliente'"
                 >
@@ -93,12 +109,18 @@
                     tile
                     dark
                     elevation="0"
-                    color="cbtn"
+                    color="secondary"
                     v-show="!onUserList"
                     :loading="loadingMiLista"
                     @click.prevent="añadirProductoUserList()"
-                    >Añadir a mi lista</v-btn
                   >
+                    <span class="hidden-sm-and-down" v-if="product.precio == 0"
+                      >Añadir a la lista</span
+                    >
+                    <span v-if="this.$vuetify.breakpoint.smAndDown == true">
+                      Añadir
+                    </span>
+                  </v-btn>
                   <v-btn
                     block
                     text
@@ -107,7 +129,10 @@
                     v-show="onUserList"
                     :loading="loadingMiLista"
                     @click.prevent="quitarProductoUserList()"
-                    >Quitar de mi lista</v-btn
+                    ><span class="hidden-sm-and-down">Quitar de la lista</span>
+                    <span v-if="this.$vuetify.breakpoint.smAndDown == true">
+                      Quitar
+                    </span></v-btn
                   >
                 </v-col>
               </v-row>
