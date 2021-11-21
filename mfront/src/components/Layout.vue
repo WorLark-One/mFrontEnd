@@ -35,6 +35,8 @@
         v-model="comuna"
         style="width: 25px"
         :items="items"
+        item-text="nombre"
+        item-value="nombre"
         label="Comuna"
         flat
         solo-inverted
@@ -65,7 +67,7 @@
         :max-width="300"
         v-if="
           this.$store.state.auth == true &&
-          this.$store.state.userRol != 'Cliente'
+          this.$store.state.userRol == 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
@@ -182,23 +184,44 @@
         open-on-click
         bottom
         offset-y
-        rounded
         v-if="
           this.$store.state.auth == true &&
           this.$store.state.userRol != 'cliente'
         "
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn rounded text elevation="0" v-bind="attrs" v-on="on">
+          <v-btn text elevation="0" v-bind="attrs" v-on="on">
             <span>{{ $store.state.userName }}</span>
-            <v-icon class="ml-1">mdi-account-circle</v-icon>
+            <v-icon class="ml-1">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
         <v-list>
-          <v-list-item key="2" link to="/dashboardAdmin">
-            <v-list-item-title>Panel de control </v-list-item-title>
+          <v-list-item :to="{ path: '/adminProfile' }">
+            <v-list-item-content>
+              <v-list-item-title>Perfil</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
-          <v-list-item key="4" link @click="logout()">
+          <v-list-item :to="{ path: '/manageComune' }">
+            <v-list-item-content>
+              <v-list-item-title>Gestionar comunas</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item :to="{ path: '/manageRegion' }">
+            <v-list-item-content>
+              <v-list-item-title>Gestionar regiones</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item :to="{ path: '/manageNotifications' }">
+            <v-list-item-content>
+              <v-list-item-title>Notificaciones</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item :to="{ path: '/manageLogs' }">
+            <v-list-item-content>
+              <v-list-item-title>Logs</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link @click="logout()">
             <v-list-item-title>Cerrar Sesión</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -470,9 +493,11 @@ export default {
       console.log(e);
       //this.auxNotificacion(data);
     });*/
+    await this.obtenerComunas();
     await this.getUser();
     await this.fun();
     await this.obtenerNotificaciones();
+    await this.setComunas();
   },
   created() {
     //this.getNotifications();
@@ -480,7 +505,14 @@ export default {
 
   mutations: {},
   methods: {
-    ...mapActions(["SET_RUTAACTUAL", "login", "logout", "register", "getUser"]),
+    ...mapActions([
+      "SET_RUTAACTUAL",
+      "login",
+      "logout",
+      "register",
+      "getUser",
+      "obtenerComunas",
+    ]),
     fun() {
       var pusher = new Pusher("0c40fe59ad95d8de38f8", {
         cluster: "mt1",
@@ -495,6 +527,9 @@ export default {
       };
       var context = this;
       channel.bind(aux, handler, context);
+    },
+    setComunas() {
+      this.items = this.$store.state.comunas;
     },
     goToProduct(id) {
       this.$router.push(`/product/${id}/search=${false}`);

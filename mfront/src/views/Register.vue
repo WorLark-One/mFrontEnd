@@ -194,6 +194,7 @@ export default {
           this.loading = false;
         } else {
           this.valid = false;
+          this.loading = false;
         }
       }
     },

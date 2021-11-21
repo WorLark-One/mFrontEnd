@@ -17,6 +17,8 @@
       <v-select
         v-model="comuna"
         :items="items"
+        item-text="nombre"
+        item-value="nombre"
         label="Comuna"
         dark
         flat
@@ -51,6 +53,8 @@
         <v-select
           v-model="comuna"
           :items="items"
+          item-text="nombre"
+          item-value="nombre"
           label="Comuna"
           dark
           flat
@@ -75,7 +79,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 export default {
   data: () => ({
     items: [
@@ -120,11 +124,14 @@ export default {
     pagina: 1,
   }),
 
-  created() {
-    //this.goToHome();
+  async mounted() {
+    await this.obtenerComunas();
+    await this.setComunas();
   },
+
   methods: {
     ...mapMutations(["stateFalseAppBarSearch"]),
+    ...mapActions(["obtenerComunas"]),
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
@@ -176,6 +183,9 @@ export default {
 
     goToHome() {
       this.stateFalseAppBarSearch();
+    },
+    setComunas() {
+      this.items = this.$store.state.comunas;
     },
   },
 };

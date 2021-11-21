@@ -54,6 +54,46 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/DashboardAdmin.vue')
     },
     {
+        path: '/manageRegion',
+        name: 'manageRegion',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminRegion.vue')
+    },
+    {
+        path: '/manageComune',
+        name: 'manageComune',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminComunes.vue')
+    },
+    {
+        path: '/manageNotifications',
+        name: 'manageNotifications',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminNotification.vue')
+    },
+    {
+        path: '/manageLogs',
+        name: 'manageLogs',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminLogs.vue')
+    },
+    {
+        path: '/adminProfile',
+        name: 'adminProfile',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/AdminProfile.vue')
+    },
+    {
         path: '/userRatings',
         name: 'userRatings',
         // route level code-splitting

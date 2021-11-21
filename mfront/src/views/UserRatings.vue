@@ -180,7 +180,7 @@
           </h1>
         </v-card-title>
 
-        <v-card-actions class="justify-end pt-4">
+        <v-card-actions class="justify-end pt-4 pb-4">
           <v-btn
             color="danger"
             dark

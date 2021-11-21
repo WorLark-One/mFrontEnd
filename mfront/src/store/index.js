@@ -24,6 +24,7 @@ export default new Vuex.Store({
         alertaLogin: false,
         alertaRegister: false,
         navUsuario: false,
+        comunas: [],
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -56,6 +57,20 @@ export default new Vuex.Store({
         },
         SET_ALERTAREGISTER(state, value) {
             state.alertaRegister = value;
+        },
+        SET_COMUNAS(state, value) {
+            let aux = {
+                created_at: "",
+                id: -1,
+                nombre: "Todas",
+                nombre_region: "",
+                region_id: -1,
+                updated_at: "",
+            }
+            state.comunas = [aux];
+            for (const iterator of value) {
+                state.comunas = [...state.comunas, iterator];
+            }
         }
     },
     actions: {
@@ -122,6 +137,18 @@ export default new Vuex.Store({
                 })
                 .catch(() => {
                     commit('SET_USER', null);
+                });
+        },
+        async obtenerComunas({ commit }) {
+            await axios
+                .get("/api/public/getComunasPublic")
+                .then((result) => {
+                    console.log(result.data.data);
+                    commit('SET_COMUNAS', result.data.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    commit('SET_COMUNAS', []);
                 });
         },
         goToDashboad() {
