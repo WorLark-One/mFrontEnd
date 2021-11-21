@@ -95,7 +95,7 @@
                     tile
                     dense
                     block
-                    @click="abrir(product.link)"
+                    @click="agregarAlCarrito()"
                     ><v-icon>mdi-cart-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -114,9 +114,7 @@
                     :loading="loadingMiLista"
                     @click.prevent="añadirProductoUserList()"
                   >
-                    <span class="hidden-sm-and-down" v-if="product.precio == 0"
-                      >Añadir a la lista</span
-                    >
+                    <span class="hidden-sm-and-down">Añadir a la lista</span>
                     <span v-if="this.$vuetify.breakpoint.smAndDown == true">
                       Añadir
                     </span>
@@ -776,7 +774,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(["getUser"]),
+    ...mapActions(["getUser", "agregarProducto"]),
+    agregarAlCarrito() {
+      let producto = {
+        producto_id: parseInt(this.idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      console.log(producto);
+      this.agregarProducto(this.product);
+    },
     onScroll() {
       this.scrollInvoked++;
     },

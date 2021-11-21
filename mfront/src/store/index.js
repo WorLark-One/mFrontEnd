@@ -25,6 +25,7 @@ export default new Vuex.Store({
         alertaRegister: false,
         navUsuario: false,
         comunas: [],
+        productosCarrito: [],
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -70,6 +71,23 @@ export default new Vuex.Store({
             state.comunas = [aux];
             for (const iterator of value) {
                 state.comunas = [...state.comunas, iterator];
+            }
+        },
+        SET_CARRITO(state, producto) {
+            var flag = false;
+            for (let index = 0; index < state.productosCarrito.length; index++) {
+                const element = state.productosCarrito[index];
+                if (element.producto.id == producto.id) {
+                    flag = true;
+                    state.productosCarrito[index].cantidad += 1;
+                }
+            }
+            if (!flag) {
+                let p = {
+                    producto: producto,
+                    cantidad: 1,
+                };
+                state.productosCarrito = (state.productosCarrito.length > 0) ? [...state.productosCarrito, p] : [p];
             }
         }
     },
@@ -184,6 +202,9 @@ export default new Vuex.Store({
         },
         alertaRegisterQuitar() {
             this.commit('SET_ALERTAREGISTER', false);
+        },
+        agregarProducto({ commit }, producto) {
+            commit("SET_CARRITO", producto);
         },
 
     },

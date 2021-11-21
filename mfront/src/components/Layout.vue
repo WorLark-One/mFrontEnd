@@ -161,7 +161,9 @@
             </v-stepper-header>
             <v-stepper-items color="cbtn">
               <v-stepper-content step="1" color="cbtn">
-                <v-card class="mb-12" height="500px" elevation="0"></v-card>
+                <v-card class="mb-12" height="500px" elevation="0">
+                  {{ $store.state.productosCarrito }}
+                </v-card>
                 <div class="text-right">
                   <v-btn dark color="cbtn" @click="e1 = 2"> Siguiente </v-btn>
                 </div>
