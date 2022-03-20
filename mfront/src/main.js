@@ -9,7 +9,9 @@ import Raphael from "raphael/raphael";
 global.Raphael = Raphael;
 global.jQuery = require('jquery');
 Vue.config.productionTip = false
-
+window.axios.defaults.headers.common = {
+    'X-Requested-With': 'XMLHttpRequest'
+};
 //store.dispatch("getUser");
 
 

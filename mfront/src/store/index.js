@@ -120,18 +120,24 @@ export default new Vuex.Store({
         },
         async register({ dispatch }, re) {
             var flag = false;
-            await axios.get("/sanctum/csrf-cookie");
-            await axios.post("/api/public/registerUser", re)
-                .then(() => {
-                    flag = true;
-                    //console.log(res.data);
-                    //dispatch("getUser");
+            await axios.get("/sanctum/csrf-cookie")
+                .then(res => {
+                    console.log("res=> ", res);
+                    await axios.post("/api/public/registerUser", re)
+                        .then(() => {
+                            flag = true;
+                            //console.log(res.data);
+                            //dispatch("getUser");
+                        })
+                        .catch((ex) => {
+                            //dispatch("getUser");
+                            console.log(ex);
+                            flag = false;
+                        });
                 })
                 .catch((ex) => {
-                    //dispatch("getUser");
                     console.log(ex);
-                    flag = false;
-                });
+                })
             if (flag) {
                 let credentials = {
                     email: re.email,
