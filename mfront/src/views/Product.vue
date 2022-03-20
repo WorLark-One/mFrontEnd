@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import ProductBody from "../components/Bodys/Product";
 
 export default {
@@ -10,6 +11,16 @@ export default {
 
   components: {
     ProductBody,
+  },
+  created() {
+    this.$store.dispatch("navUsuarioDesactivada");
+    this.$store.dispatch("colocarLayout");
+  },
+  async mounted() {
+    await this.getUser();
+  },
+  methods: {
+    ...mapActions(["getUser"]),
   },
 };
 </script>

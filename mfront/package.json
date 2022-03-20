@@ -11,10 +11,14 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.31",
         "@fortawesome/free-solid-svg-icons": "^5.15.0",
         "@fortawesome/vue-fontawesome": "^2.0.0",
+        "apexcharts": "^3.28.1",
         "axios": "^0.21.1",
         "core-js": "^3.6.5",
         "jquery": "^3.6.0",
+        "laravel-echo": "^1.11.2",
+        "pusher-js": "^7.0.3",
         "vue": "^2.6.11",
+        "vue-apexcharts": "^1.6.2",
         "vue-morris": "^1.1.0",
         "vue-router": "^3.2.0",
         "vuetify": "^2.4.0",
@@ -48,7 +52,9 @@
         "parserOptions": {
             "parser": "babel-eslint"
         },
-        "rules": {}
+        "rules": {
+            "vue/no-multiple-template-root": "off"
+        }
     },
     "browserslist": [
         "> 1%",

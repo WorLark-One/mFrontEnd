@@ -1,8 +1,13 @@
 <template>
-  <div>
-    <v-container class="mb-6 mt-6">
+  <div :class="this.$vuetify.breakpoint.smAndDown == true ? 'px-0' : 'px-12'">
+    <v-breadcrumbs class="ml-2" :items="itemsB">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <v-container class="mb-6 mt-0 pt-0">
       <div class="row">
-        <v-col cols="12" class="hidden-md-and-up">
+        <!--<v-col cols="12" class="hidden-md-and-up">
           <v-text-field
             v-model="producto"
             flat
@@ -22,16 +27,17 @@
             class="hidden-md-and-up mt-1"
           ></v-select>
           <v-btn
-            color="hidden-md-and-up secondary mt-1"
+            color="hidden-md-and-up cbtn mt-1"
             solo-inverted
             block
+            dark
             elevation="0"
             @click="goToSearch()"
           >
             BUSCAR
             <v-icon class="ml-2">mdi-magnify</v-icon>
           </v-btn>
-        </v-col>
+        </v-col>-->
         <div class="col-md-3 col-sm-12 col-xs-12">
           <v-card outlined>
             <v-card-title>Filtros</v-card-title>
@@ -71,30 +77,20 @@
             <v-divider></v-divider>
             <v-card-title class="pb-0">Valoración</v-card-title>
             <v-container class="pt-0" fluid>
-              <v-checkbox
+              <!--<v-checkbox
                 append-icon="mdi-star"
                 label="4 o más"
                 hide-details
                 dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="3 o más"
-                hide-details
-                dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="2 o más"
-                hide-details
-                dense
-              ></v-checkbox>
-              <v-checkbox
-                append-icon="mdi-star"
-                label="1 o más"
-                hide-details
-                dense
-              ></v-checkbox>
+              ></v-checkbox>-->
+
+              <v-radio-group v-model="filtroValoracion" column>
+                <v-radio label="4 estrellas o más" value="4"> </v-radio>
+                <v-radio label="3 estrellas o más" value="3"> </v-radio>
+                <v-radio label="2 estrellas o más" value="2"> </v-radio>
+                <v-radio label="1 estrellas o más" value="1"> </v-radio>
+                <v-radio label="Todas" value="0"> </v-radio>
+              </v-radio-group>
             </v-container>
             <v-divider></v-divider>
             <v-card-title>Market Place</v-card-title>
@@ -121,7 +117,7 @@
                 @change="changeMarketPlace()"
               ></v-checkbox>
             </v-container>
-            <v-btn block color="secondary" @click="setFilters()"
+            <v-btn block color="cbtn" dark @click="setFilters()"
               >APLICAR FILTROS</v-btn
             >
           </v-card>
@@ -153,7 +149,7 @@
               >
                 <font-awesome-icon
                   icon="th-list"
-                  :color="cuadricula == false ? '#83c5be' : 'gray'"
+                  :color="cuadricula == false ? '#0bce96' : 'gray'"
                   size="2x"
                 />
               </v-btn>
@@ -165,14 +161,14 @@
               >
                 <font-awesome-icon
                   icon="th-large"
-                  :color="cuadricula == true ? '#83c5be' : 'gray'"
+                  :color="cuadricula == true ? '#0bce96' : 'gray'"
                   size="2x"
                 />
               </v-btn>
             </v-col>
           </v-row>
 
-          <v-divider></v-divider>
+          <v-divider class="primary"></v-divider>
 
           <div class="row mt-2" v-if="cuadricula">
             <v-progress-linear
@@ -189,7 +185,12 @@
               v-for="pro in products"
             >
               <v-hover v-slot:default="{ hover }">
-                <v-card class="mx-auto" color="fondo lighten-4" height="425px">
+                <v-card
+                  class="mx-auto"
+                  color="fondo lighten-4"
+                  elevation="8"
+                  height="425px"
+                >
                   <v-img
                     class="white--text align-self-star"
                     contain
@@ -240,13 +241,26 @@
                       style="font-size: 90%"
                       class="ml-1"
                       v-if="pro.precio == 0"
-                      >CONSULTAR PRECIO</span
+                      ><strong>CONSULTAR</strong>
+                    </span>
+                    <div
+                      v-if="pro.descuento > 0"
+                      class="ml-2 pl-1 pr-1 cbtn rounded"
+                      style="
+                        font-size: 0.9em;
+                        color: #ffff;
+                        font-family: montserrat;
+                      "
                     >
+                      <strong>-{{ pro.descuento }}% </strong>
+                    </div>
                     <v-spacer></v-spacer>
-                    <span class="ml-1">(3,5)</span>
+                    <span class="ml-1"
+                      >({{ mostrarUnDecimal(pro.valoracion) }})</span
+                    >
                     <v-rating
                       readonly
-                      value="1"
+                      :value="1"
                       length="1"
                       background-color="warning lighten-3"
                       color="warning"
@@ -271,7 +285,12 @@
             ></v-progress-linear>
             <v-col cols="12" :key="pro.id" v-for="pro in products">
               <v-hover v-slot:default="{ hover }">
-                <v-card class="mx-auto" color="fondo lighten-4" height="200">
+                <v-card
+                  class="mx-auto"
+                  color="fondo lighten-4"
+                  elevation="4"
+                  height="200"
+                >
                   <v-row>
                     <v-col cols="5" sm="4" md="3" class="ma-0 pt-0">
                       <v-img
@@ -330,39 +349,46 @@
                             ></span
                           >
                           <span style="font-size: 100%" v-if="pro.precio == 0"
-                            >CONSULTAR PRECIO</span
+                            ><strong>CONSULTAR</strong></span
                           >
-                          <v-spacer class="hidden-md-and-down"></v-spacer>
+                          <div
+                            v-if="pro.descuento > 0"
+                            class="ml-2 pl-1 pr-1 pt-1 pb-1 cbtn rounded"
+                            style="
+                              font-size: 1.2em;
+                              color: #ffff;
+                              font-family: montserrat;
+                            "
+                          >
+                            <strong>-{{ pro.descuento }}% </strong>
+                          </div>
+                          <v-spacer class="hidden-sm-and-down"></v-spacer>
                           <v-rating
                             readonly
-                            value="3"
-                            class="hidden-md-and-down"
-                            background-color="warning lighten-3"
+                            :value="pro.valoracion"
+                            class="hidden-sm-and-down"
+                            background-color="warning"
                             color="warning"
                             dense
                           >
                           </v-rating>
                           <span
-                            class="
-                              body-2
-                              font-weight-thin
-                              mt-1
-                              ml-1
-                              mr-16
-                              hidden-md-and-down
-                            "
-                            >5 Valoraciones</span
+                            class="body-2 mt-1 ml-1 mr-16 hidden-sm-and-down"
+                            >{{ pro.cantidad_valoraciones }} Valoraciones</span
                           >
                         </v-row>
                         <v-row class="hidden-md-and-up mt-4 ml-0">
                           <v-rating
-                            value="3"
-                            background-color="warning lighten-3"
+                            readonly
+                            :value="pro.valoracion"
+                            background-color="warning"
                             color="warning"
                             dense
                           >
                           </v-rating>
-                          <span class="font-weight-thin mt-1 ml-1">(5)</span>
+                          <span class="font-weight-thin mt-1 ml-1"
+                            >({{ pro.cantidad_valoraciones }})</span
+                          >
                         </v-row>
                       </v-card-text>
                     </v-col>
@@ -393,6 +419,7 @@
               v-if="this.totalProductos > 0"
               v-model.number="page"
               :length="cantidadPaginas"
+              :total-visible="6"
             ></v-pagination>
           </div>
         </div>
@@ -419,9 +446,11 @@
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 export default {
   data: () => ({
-    url: "http://127.0.0.1:8000/api/public/getSearch/",
+    url: "/api/public/getSearch/",
     range: [0, 1000000],
     select: "Precio: Menor a Mayor",
     options: [
@@ -442,6 +471,7 @@ export default {
     orientacionFinal: "",
     rangoPrecioFinal: "",
     marketPlacesFinal: "",
+    valoracionProductosFinal: "",
     paginaFinal: "",
     //paginacion
     cantidadPaginas: 1,
@@ -491,6 +521,19 @@ export default {
     marketMauleCheckBox: false,
     comunidadCCheckBox: false,
     mercadoLibreCheckBox: false,
+    itemsB: [
+      {
+        text: "Inicio",
+        disabled: false,
+        href: "/",
+      },
+      {
+        text: "Búsqueda",
+        disabled: true,
+        href: "javascript:history.back()",
+      },
+    ],
+    filtroValoracion: "0",
   }),
 
   beforeMount() {
@@ -510,6 +553,10 @@ export default {
   },
   methods: {
     ...mapActions(["SET_RUTAACTUAL"]),
+    mostrarUnDecimal(num) {
+      var aux = num.toFixed(1);
+      return aux;
+    },
     goToSearch() {
       if (this.producto != "" && this.producto != undefined) {
         var consulta = "";
@@ -558,8 +605,11 @@ export default {
         } else if (index == 4) {
           this.rangoPrecioFinal = elementSplit;
         } else if (index == 5) {
-          this.paginaFinal = parseInt(elementSplit);
+          this.filtroValoracion = elementSplit;
+          this.valoracionProductosFinal = parseInt(elementSplit);
           //this.page = elementSplit;
+        } else if (index == 6) {
+          this.paginaFinal = parseInt(elementSplit);
         }
       }
       this.setMarketPlaces();
@@ -571,9 +621,9 @@ export default {
         `ori=${this.orientacionFinal}/` +
         `mp=${this.marketPlacesFinal}/` +
         `rgp=${this.rangoPrecioFinal}/` +
+        `val=${this.valoracionProductosFinal}/` +
         `pag=${this.paginaFinal}`;
       axios.get(urlSearch).then((result) => {
-        console.log(result);
         //const response = result.data.data;
         //this.products = response;
         this.products = [];
@@ -583,7 +633,8 @@ export default {
         if (this.totalProductos % 12 == 0) {
           this.cantidadPaginas = this.totalProductos / 12;
         } else {
-          this.cantidadPaginas = 1 + this.totalProductos / 12;
+          var auxCant = parseInt(this.totalProductos / 12);
+          this.cantidadPaginas = 1 + auxCant;
         }
         //console.log(result.data.data);
         //console.log(this.totalProductos);
@@ -626,7 +677,7 @@ export default {
       window.open(link, "_blank");
     },
     goToProduct(id) {
-      this.$router.push(`/product/${id}`);
+      this.$router.push(`/product/${id}/search=${true}`);
     },
     goToNewRute() {
       if (this.productoFinal != "" && this.productoFinal != undefined) {
@@ -643,6 +694,8 @@ export default {
             this.marketPlacesFinal +
             "&rgp=" +
             this.rangoPrecioFinal +
+            "&val=" +
+            this.valoracionProductosFinal +
             "&pag=" +
             this.paginaFinal;
         } else {
@@ -655,6 +708,8 @@ export default {
             this.marketPlacesFinal +
             "&rgp=" +
             this.rangoPrecioFinal +
+            "&val=" +
+            this.valoracionProductosFinal +
             "&pag=" +
             this.paginaFinal;
         }
@@ -683,9 +738,17 @@ export default {
         this.orientacion != "ASC"
       ) {
         this.orientacion = "ASC";
+      } else if (
+        this.select == "Descuento" &&
+        this.orientacion != "descuento"
+      ) {
+        this.orientacion = "descuento";
+      } else if (
+        this.select == "Tendencia" &&
+        this.orientacion != "tendencia"
+      ) {
+        this.orientacion = "tendencia";
       }
-      console.log(this.select);
-      console.log(this.orientacion);
       this.goToNewRute();
     },
     setOrientation() {
@@ -693,6 +756,10 @@ export default {
         this.select = "Precio: Mayor a Menor";
       } else if (this.orientacionFinal == "ASC") {
         this.select = "Precio: Menor a Mayor";
+      } else if (this.orientacionFinal == "descuento") {
+        this.select = "Descuento";
+      } else if (this.orientacionFinal == "tendencia") {
+        this.select = "Tendencia";
       }
     },
     setMarketPlaces() {
@@ -769,6 +836,7 @@ export default {
           this.allMarketPlacesCheckBox = true;
         }
       }
+      this.valoracionProductosFinal = this.filtroValoracion;
       this.paginaFinal = 1;
       this.goToNewRute();
     },
@@ -785,7 +853,6 @@ export default {
     setNavigation() {
       if (this.page <= this.cantidadPaginas) {
         this.paginaFinal = this.page;
-        console.log(this.page);
         this.goToNewRute();
       }
     },
@@ -805,3 +872,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.radioAC {
+  background-color: red;
+  color: white;
+}
+</style>
