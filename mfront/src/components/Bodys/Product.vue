@@ -88,7 +88,11 @@
                     </span>
                   </v-btn>
                 </v-col>
-                <v-col cols="4" class="pr-1">
+                <v-col
+                  cols="4"
+                  class="pr-1"
+                  v-show="this.$store.state.rolUser == 'cliente'"
+                >
                   <v-btn
                     class="cbtn white--text"
                     outlined
