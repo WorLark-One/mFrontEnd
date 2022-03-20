@@ -100,14 +100,20 @@ export default new Vuex.Store({
         },
         async login({ dispatch }, credentials) {
             var flag = false;
-            await axios.get("/sanctum/csrf-cookie");
-            await axios.post("/login", credentials)
-                .then(() => {
-                    flag = true;
+            await axios.get("/sanctum/csrf-cookie")
+                .then(res => {
+                    console.log("res=> ", res);
+                    axios.post("/login", credentials)
+                        .then(() => {
+                            flag = true;
+                        })
+                        .catch(() => {
+                            flag = false;
+                        });
                 })
-                .catch(() => {
-                    flag = false;
-                });
+                .catch((ex) => {
+                    console.log(ex);
+                })
             if (flag) {
                 await dispatch("getUser");
                 await dispatch("goToHome");
@@ -126,7 +132,7 @@ export default new Vuex.Store({
             await axios.get("/sanctum/csrf-cookie")
                 .then(res => {
                     console.log("res=> ", res);
-                    await axios.post("/api/public/registerUser", re)
+                    axios.post("/api/public/registerUser", re)
                         .then(() => {
                             flag = true;
                             //console.log(res.data);
