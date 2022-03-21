@@ -4,9 +4,6 @@ import axios from "axios";
 import router from '../router'
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
-axios.defaults.headers.common = {
-    'X-Requested-With': 'XMLHttpRequest'
-};
 
 Vue.use(Vuex)
 
@@ -100,20 +97,14 @@ export default new Vuex.Store({
         },
         async login({ dispatch }, credentials) {
             var flag = false;
-            await axios.get("/sanctum/csrf-cookie")
-                .then(res => {
-                    console.log("res=> ", res);
-                    axios.post("/login", credentials)
-                        .then(() => {
-                            flag = true;
-                        })
-                        .catch(() => {
-                            flag = false;
-                        });
+            await axios.get("/sanctum/csrf-cookie");
+            await axios.post("/login", credentials)
+                .then(() => {
+                    flag = true;
                 })
-                .catch((ex) => {
-                    console.log(ex);
-                })
+                .catch(() => {
+                    flag = false;
+                });
             if (flag) {
                 await dispatch("getUser");
                 await dispatch("goToHome");
@@ -129,24 +120,18 @@ export default new Vuex.Store({
         },
         async register({ dispatch }, re) {
             var flag = false;
-            await axios.get("/sanctum/csrf-cookie")
-                .then(res => {
-                    console.log("res=> ", res);
-                    axios.post("/api/public/registerUser", re)
-                        .then(() => {
-                            flag = true;
-                            //console.log(res.data);
-                            //dispatch("getUser");
-                        })
-                        .catch((ex) => {
-                            //dispatch("getUser");
-                            console.log(ex);
-                            flag = false;
-                        });
+            await axios.get("/sanctum/csrf-cookie");
+            await axios.post("/api/public/registerUser", re)
+                .then(() => {
+                    flag = true;
+                    //console.log(res.data);
+                    //dispatch("getUser");
                 })
                 .catch((ex) => {
+                    //dispatch("getUser");
                     console.log(ex);
-                })
+                    flag = false;
+                });
             if (flag) {
                 let credentials = {
                     email: re.email,
