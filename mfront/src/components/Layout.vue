@@ -141,18 +141,31 @@
           </template>
         </v-list>
       </v-menu>
-      <v-dialog v-model="dialogCart" max-width="700px">
+      <v-dialog
+        v-model="dialogCart"
+        max-width="700px"
+        v-if="
+          this.$store.state.auth == true &&
+          this.$store.state.userRol == 'cliente'
+        "
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon dark v-bind="attrs" v-on="on">
-            <v-icon>mdi-cart</v-icon>
+            <v-badge
+              :content="contadorProductosCarrito"
+              :value="contadorProductosCarrito"
+              color="green"
+              overlap
+            >
+              <v-icon>mdi-cart</v-icon>
+            </v-badge>
           </v-btn>
         </template>
-        <v-card>
-          <v-card-title>Carrito de petición de compra</v-card-title>
+        <v-card class="pa-0 ma-0">
           <v-stepper v-model="e1" color="cbtn">
             <v-stepper-header>
               <v-stepper-step color="cbtn" :complete="e1 > 1" step="1">
-                Lista de productos
+                Productos
               </v-stepper-step>
               <v-divider></v-divider>
               <v-stepper-step color="cbtn" :complete="e1 > 2" step="2">
@@ -161,8 +174,90 @@
             </v-stepper-header>
             <v-stepper-items color="cbtn">
               <v-stepper-content step="1" color="cbtn">
-                <v-card class="mb-12" height="500px" elevation="0">
-                  {{ $store.state.productosCarrito }}
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto mb-12 pa-0 ma-0"
+                  height="500"
+                  elevation="0"
+                >
+                  <v-card
+                    class="mt-4"
+                    color="fondo lighten-4"
+                    elevation="4"
+                    height="120"
+                    v-for="pro in productosCarrito"
+                    :key="pro.link"
+                  >
+                    <v-row>
+                      <v-col cols="2" sm="2" md="2">
+                        <v-img
+                          position="center center "
+                          height="100px"
+                          width="90px"
+                          contain
+                          class="rounded-sm"
+                          :src="pro.imagen"
+                        >
+                        </v-img>
+                      </v-col>
+                      <v-col cols="9" sm="9" md="9">
+                        <v-card-text class="text--primary">
+                          <div>
+                            <a
+                              @click="goToProduct(pro.id)"
+                              style="text-decoration: none; font-size: large"
+                              ><span
+                                class="d-inline-block text-truncate"
+                                style="max-width: 100%"
+                                >{{ pro.titulo }}</span
+                              ></a
+                            >
+                          </div>
+                          <v-row class="mt-4 ml-0">
+                            <span
+                              class="mt-1"
+                              style="font-size: 150%"
+                              v-if="pro.precio != 0"
+                              ><strong
+                                >$ {{ formatPrecio(pro.precio) }}</strong
+                              ></span
+                            >
+                            <span style="font-size: 100%" v-if="pro.precio == 0"
+                              ><strong>CONSULTAR</strong></span
+                            >
+                            <div
+                              v-if="pro.descuento > 0"
+                              class="ml-2 pl-1 pr-1 pt-1 pb-1 cbtn rounded"
+                              style="
+                                font-size: 1.2em;
+                                color: #ffff;
+                                font-family: montserrat;
+                              "
+                            >
+                              <strong>-{{ pro.descuento }}% </strong>
+                            </div>
+                            <v-spacer class="hidden-sm-and-down"></v-spacer>
+                          </v-row>
+                        </v-card-text>
+                      </v-col>
+                      <v-col cols="1" sm="1" md="1" class="center center">
+                        <v-btn
+                          icon
+                          text
+                          color="danger"
+                          @click.prevent="eliminarProductoCarrito(pro.id)"
+                          >X</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <!--
+                    {{ pro }}
+                    
+                      
+                      
+                    </v-row>
+                  </v-card>-->
                 </v-card>
                 <div class="text-right">
                   <v-btn dark color="cbtn" @click="e1 = 2"> Siguiente </v-btn>
@@ -463,6 +558,7 @@ export default {
       dialogCart: false,
       notifyCount: 0,
       contadorNotificaciones: 0,
+      contadorProductosCarrito: 1,
       notifications: [],
       crearCuenta: false,
       show1: false,
@@ -523,6 +619,39 @@ export default {
         rol: "",
       },
       e1: 1,
+      productosCarrito: [
+        {
+          id: 1,
+          titulo:
+            "Huaso Erasmo Pais 2020 asdasasdasd asd asdasdasd as dasdas aasdasda asdasdasda asd as asd asdas as dasdasdasa asd asdasdas asdasdasdasasdf",
+          descripcion:
+            "<div><br></div><div>Glorioso viñedo de Viejas parras maulinas,</div><div>testigo de mas de 150 años de historia.</div><div>Hoy consagramos al pipeño pais,</div><div>Como el vino Huaso de esta zona.</div><div>Vino tinto rojito color de pechuga loica,</div><div>Amistoso y querido como un pariente familiar</div><div>Hoy en nuestra mesa chilena, esta listo para celebrar</div><div>Celebrando ya están el Conde italiano y Huasopazo maulino, </div><div>al homenaje del campo chileno y a todos nuestros amigos…Salud</div><div> </div><div>Francesco Marone Cinzano - Cesar Huasopazo</div>",
+          precio: 9720,
+          imagen:
+            "https://www.marketmaule.cl/rails/active_storage/representations/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBanBBIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--5813db8ba5387e28c3e831d0b1c1c287bef0a5af/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9VWTI5dFltbHVaVjl2Y0hScGIyNXpld2c2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWl3QmFRSXNBVG9NWjNKaGRtbDBlVWtpQzBObGJuUmxjZ1k2QmtWVU9ndGxlSFJsYm5SSklnd3pNREI0TXpBd0Jqc0lWQT09IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--e2dbe50542ebcaba8a130f4c07466db74adc28df/IMG_6069.jpg",
+          ubicacion: "San Javier",
+          link: "https://www.marketmaule.cl/products/vino-huaso-erasmo",
+          marketplace: "marketmaule",
+          cantidadValoraciones: 1,
+          descuento: 10,
+          valoracion: 5,
+        },
+        {
+          id: 2,
+          titulo: "Huaso Erasmo Pais 2020",
+          descripcion:
+            "<div><br></div><div>Glorioso viñedo de Viejas parras maulinas,</div><div>testigo de mas de 150 años de historia.</div><div>Hoy consagramos al pipeño pais,</div><div>Como el vino Huaso de esta zona.</div><div>Vino tinto rojito color de pechuga loica,</div><div>Amistoso y querido como un pariente familiar</div><div>Hoy en nuestra mesa chilena, esta listo para celebrar</div><div>Celebrando ya están el Conde italiano y Huasopazo maulino, </div><div>al homenaje del campo chileno y a todos nuestros amigos…Salud</div><div> </div><div>Francesco Marone Cinzano - Cesar Huasopazo</div>",
+          precio: 9720,
+          imagen:
+            "https://www.marketmaule.cl/rails/active_storage/representations/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBanBBIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--5813db8ba5387e28c3e831d0b1c1c287bef0a5af/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9VWTI5dFltbHVaVjl2Y0hScGIyNXpld2c2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWl3QmFRSXNBVG9NWjNKaGRtbDBlVWtpQzBObGJuUmxjZ1k2QmtWVU9ndGxlSFJsYm5SSklnd3pNREI0TXpBd0Jqc0lWQT09IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--e2dbe50542ebcaba8a130f4c07466db74adc28df/IMG_6069.jpg",
+          ubicacion: "San Javier",
+          link: "https://www.marketmaule.cl/products/vino-huaso-erasmo",
+          marketplace: "marketmaule",
+          cantidadValoraciones: 1,
+          descuento: 10,
+          valoracion: 5,
+        },
+      ],
     };
   },
   async mounted() {
@@ -743,6 +872,12 @@ export default {
         this.orientacion = "ASC";
         this.$router.push(ruta);
       }
+    },
+    onScroll() {
+      this.scrollInvoked++;
+    },
+    eliminarProductoCarrito(idProducto) {
+      console.log(idProducto);
     },
   },
 };
