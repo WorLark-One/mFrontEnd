@@ -141,18 +141,31 @@
           </template>
         </v-list>
       </v-menu>
-      <v-dialog v-model="dialogCart" max-width="700px">
+      <v-dialog
+        v-model="dialogCart"
+        max-width="700px"
+        v-if="
+          this.$store.state.auth == true &&
+          this.$store.state.userRol == 'cliente'
+        "
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon dark v-bind="attrs" v-on="on">
-            <v-icon>mdi-cart</v-icon>
+            <v-badge
+              :content="productosCarritoFinal.length"
+              :value="productosCarritoFinal.length"
+              color="green"
+              overlap
+            >
+              <v-icon>mdi-cart</v-icon>
+            </v-badge>
           </v-btn>
         </template>
-        <v-card>
-          <v-card-title>Carrito de petición de compra</v-card-title>
+        <v-card class="pl-0 ml-0">
           <v-stepper v-model="e1" color="cbtn">
             <v-stepper-header>
               <v-stepper-step color="cbtn" :complete="e1 > 1" step="1">
-                Lista de productos
+                Productos
               </v-stepper-step>
               <v-divider></v-divider>
               <v-stepper-step color="cbtn" :complete="e1 > 2" step="2">
@@ -160,19 +173,145 @@
               </v-stepper-step>
             </v-stepper-header>
             <v-stepper-items color="cbtn">
-              <v-stepper-content step="1" color="cbtn">
-                <v-card class="mb-12" height="500px" elevation="0">
-                  {{ $store.state.productosCarrito }}
+              <v-stepper-content step="1" color="cbtn" class="pl-0 pr-0">
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto pl-0 pr-0"
+                  height="500"
+                  elevation="0"
+                  v-if="productosCarritoFinal.length == 0 ? true : false"
+                >
+                  <div align-self="center">
+                    <p class="mx-10 my-12">
+                      Usted actualmente no tiene productos añadidos a su carrito
+                      de compra.
+                    </p>
+                  </div>
                 </v-card>
-                <div class="text-right">
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto pl-0 pr-0"
+                  height="500"
+                  elevation="0"
+                  v-if="productosCarritoFinal.length == 0 ? false : true"
+                >
+                  <v-card
+                    class=""
+                    color="fondo lighten-4"
+                    elevation="0"
+                    height="120"
+                    v-for="pro in productosCarritoFinal"
+                    :key="pro.link"
+                  >
+                    <v-row class="px-0 mx-0">
+                      <v-col
+                        cols="2"
+                        sm="2"
+                        md="2"
+                        align-self="center"
+                        justify="center"
+                      >
+                        <v-img contain class="rounded-sm" :src="pro.imagen">
+                        </v-img>
+                      </v-col>
+                      <v-col cols="9" sm="9" md="9" class="px-0 mx-0">
+                        <v-card-text class="text--primary">
+                          <div>
+                            <a
+                              :style="
+                                $vuetify.breakpoint.smAndDown == true
+                                  ? 'text-decoration: none; font-size: medium'
+                                  : 'text-decoration: none; font-size: large'
+                              "
+                              ><span
+                                class="d-inline-block text-truncate"
+                                style="max-width: 100%"
+                                >{{ pro.titulo }}</span
+                              ></a
+                            >
+                          </div>
+                          <v-row class="mt-3 mx-0 px-0">
+                            <span
+                              class="pt-1"
+                              :style="
+                                $vuetify.breakpoint.smAndDown == true
+                                  ? 'font-size: 100%'
+                                  : 'font-size: 150%'
+                              "
+                              v-if="pro.precio != 0"
+                              ><strong
+                                >$ {{ formatPrecio(pro.precio) }}</strong
+                              ></span
+                            >
+                            <span style="font-size: 100%" v-if="pro.precio == 0"
+                              ><strong>CONSULTAR</strong></span
+                            >
+                            <!--<v-spacer></v-spacer>-->
+                            <div class="ml-4">
+                              <v-btn
+                                small
+                                text
+                                color="secondary"
+                                @click.prevent="deleteProductCart(pro.id)"
+                              >
+                                <strong style="font-size: 150%"> - </strong>
+                              </v-btn>
+                              <v-btn disabled small text @click.prevent="">
+                                <strong style="font-size: 120%">
+                                  {{ pro.cantidad }}
+                                </strong>
+                              </v-btn>
+                              <v-btn
+                                small
+                                text
+                                color="secondary"
+                                @click.prevent="postProductoCart(pro.id)"
+                              >
+                                <strong style="font-size: 150%"> + </strong>
+                              </v-btn>
+                            </div>
+                          </v-row>
+                        </v-card-text>
+                      </v-col>
+                      <v-col
+                        cols="1"
+                        sm="1"
+                        md="1"
+                        align-self="center"
+                        justify="left"
+                        class="px-0 mx-0"
+                      >
+                        <v-btn
+                          icon
+                          text
+                          color="danger"
+                          @click.prevent="deleteProductCartRaiz(pro.id)"
+                          >X</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+                <div class="text-right mr-4 mt-6">
                   <v-btn dark color="cbtn" @click="e1 = 2"> Siguiente </v-btn>
                 </div>
               </v-stepper-content>
 
-              <v-stepper-content step="2">
-                <v-card class="mb-12" height="500px" elevation="0"></v-card>
-
-                <div class="text-right">
+              <v-stepper-content step="2" class="pl-0 pr-0">
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto pl-0 pr-0"
+                  height="500"
+                  elevation="0"
+                >
+                  <p>
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Veniam sint ad unde ipsam quam id voluptas error excepturi
+                    dignissimos? Quisquam iste magnam odit velit eius ea aliquam
+                    recusandae provident quo!
+                  </p>
+                </v-card>
+                <div class="text-right mr-4 mt-6">
                   <v-btn text dark color="cbtn" @click="e1 = 1" class="mr-1">
                     Atrás
                   </v-btn>
@@ -217,7 +356,10 @@
           <v-list-item key="3" :to="{ path: '/userRatings' }">
             <v-list-item-title>Mis Valoraciones</v-list-item-title>
           </v-list-item>
-          <v-list-item key="4" link @click="logout()">
+          <v-list-item key="4" :to="{ path: '/userPurchases' }">
+            <v-list-item-title>Mis Compras</v-list-item-title>
+          </v-list-item>
+          <v-list-item key="5" link @click="logout()">
             <v-list-item-title>Cerrar Sesión</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -445,7 +587,7 @@
   </v-app>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import searchglobal from "./Global/SearchGlobal.vue";
 //import Echo from "laravel-echo";
 import axios from "axios";
@@ -463,6 +605,7 @@ export default {
       dialogCart: false,
       notifyCount: 0,
       contadorNotificaciones: 0,
+      contadorProductosCarrito: 1,
       notifications: [],
       crearCuenta: false,
       show1: false,
@@ -523,6 +666,39 @@ export default {
         rol: "",
       },
       e1: 1,
+      productosCarrito: [
+        {
+          id: 1,
+          titulo:
+            "Huaso Erasmo Pais 2020 asdasasdasd asd asdasdasd as dasdas aasdasda asdasdasda asd as asd asdas as dasdasdasa asd asdasdas asdasdasdasasdf",
+          descripcion:
+            "<div><br></div><div>Glorioso viñedo de Viejas parras maulinas,</div><div>testigo de mas de 150 años de historia.</div><div>Hoy consagramos al pipeño pais,</div><div>Como el vino Huaso de esta zona.</div><div>Vino tinto rojito color de pechuga loica,</div><div>Amistoso y querido como un pariente familiar</div><div>Hoy en nuestra mesa chilena, esta listo para celebrar</div><div>Celebrando ya están el Conde italiano y Huasopazo maulino, </div><div>al homenaje del campo chileno y a todos nuestros amigos…Salud</div><div> </div><div>Francesco Marone Cinzano - Cesar Huasopazo</div>",
+          precio: 9720,
+          imagen:
+            "https://www.marketmaule.cl/rails/active_storage/representations/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBanBBIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--5813db8ba5387e28c3e831d0b1c1c287bef0a5af/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9VWTI5dFltbHVaVjl2Y0hScGIyNXpld2c2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWl3QmFRSXNBVG9NWjNKaGRtbDBlVWtpQzBObGJuUmxjZ1k2QmtWVU9ndGxlSFJsYm5SSklnd3pNREI0TXpBd0Jqc0lWQT09IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--e2dbe50542ebcaba8a130f4c07466db74adc28df/IMG_6069.jpg",
+          ubicacion: "San Javier",
+          link: "https://www.marketmaule.cl/products/vino-huaso-erasmo",
+          marketplace: "marketmaule",
+          cantidadValoraciones: 1,
+          descuento: 10,
+          valoracion: 5,
+        },
+        {
+          id: 2,
+          titulo: "Huaso Erasmo Pais 2020",
+          descripcion:
+            "<div><br></div><div>Glorioso viñedo de Viejas parras maulinas,</div><div>testigo de mas de 150 años de historia.</div><div>Hoy consagramos al pipeño pais,</div><div>Como el vino Huaso de esta zona.</div><div>Vino tinto rojito color de pechuga loica,</div><div>Amistoso y querido como un pariente familiar</div><div>Hoy en nuestra mesa chilena, esta listo para celebrar</div><div>Celebrando ya están el Conde italiano y Huasopazo maulino, </div><div>al homenaje del campo chileno y a todos nuestros amigos…Salud</div><div> </div><div>Francesco Marone Cinzano - Cesar Huasopazo</div>",
+          precio: 9720,
+          imagen:
+            "https://www.marketmaule.cl/rails/active_storage/representations/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBanBBIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--5813db8ba5387e28c3e831d0b1c1c287bef0a5af/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9VWTI5dFltbHVaVjl2Y0hScGIyNXpld2c2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWl3QmFRSXNBVG9NWjNKaGRtbDBlVWtpQzBObGJuUmxjZ1k2QmtWVU9ndGxlSFJsYm5SSklnd3pNREI0TXpBd0Jqc0lWQT09IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--e2dbe50542ebcaba8a130f4c07466db74adc28df/IMG_6069.jpg",
+          ubicacion: "San Javier",
+          link: "https://www.marketmaule.cl/products/vino-huaso-erasmo",
+          marketplace: "marketmaule",
+          cantidadValoraciones: 1,
+          descuento: 10,
+          valoracion: 5,
+        },
+      ],
     };
   },
   async mounted() {
@@ -546,7 +722,9 @@ export default {
   created() {
     //this.getNotifications();
   },
-
+  computed: {
+    ...mapState(["productosCarritoFinal"]),
+  },
   mutations: {},
   methods: {
     ...mapActions([
@@ -556,6 +734,9 @@ export default {
       "register",
       "getUser",
       "obtenerComunas",
+      "postProductoCarrito",
+      "deleteProductCarrito",
+      "deleteProductCarritoRaiz",
     ]),
     fun() {
       var pusher = new Pusher("0c40fe59ad95d8de38f8", {
@@ -743,6 +924,33 @@ export default {
         this.orientacion = "ASC";
         this.$router.push(ruta);
       }
+    },
+    onScroll() {
+      this.scrollInvoked++;
+    },
+    eliminarProductoCarrito(idProducto) {
+      console.log(idProducto);
+    },
+    async postProductoCart(idProducto) {
+      let producto = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.postProductoCarrito(producto);
+    },
+    async deleteProductCart(idProducto) {
+      let request = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.deleteProductCarrito(request);
+    },
+    async deleteProductCartRaiz(idProducto) {
+      let request = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.deleteProductCarritoRaiz(request);
     },
   },
 };

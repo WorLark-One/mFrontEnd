@@ -99,7 +99,7 @@
                     tile
                     dense
                     block
-                    @click="agregarAlCarrito()"
+                    @click="postProductoCart()"
                     ><v-icon>mdi-cart-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -778,7 +778,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["getUser", "agregarProducto"]),
+    ...mapActions(["getUser", "agregarProducto", "postProductoCarrito"]),
     agregarAlCarrito() {
       let producto = {
         producto_id: parseInt(this.idProducto),
@@ -877,6 +877,14 @@ export default {
           this.loadingMiLista = false;
         });
       await this.obtenerOnUserList();
+    },
+
+    async postProductoCart() {
+      let producto = {
+        producto_id: parseInt(this.idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.postProductoCarrito(producto);
     },
 
     async quitarProductoUserList() {
