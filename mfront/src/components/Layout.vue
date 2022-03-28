@@ -152,8 +152,8 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon dark v-bind="attrs" v-on="on">
             <v-badge
-              :content="contadorProductosCarrito"
-              :value="contadorProductosCarrito"
+              :content="productosCarritoFinal.length"
+              :value="productosCarritoFinal.length"
               color="green"
               overlap
             >
@@ -161,7 +161,7 @@
             </v-badge>
           </v-btn>
         </template>
-        <v-card class="pa-0 ma-0">
+        <v-card class="pl-0 ml-0">
           <v-stepper v-model="e1" color="cbtn">
             <v-stepper-header>
               <v-stepper-step color="cbtn" :complete="e1 > 1" step="1">
@@ -173,39 +173,56 @@
               </v-stepper-step>
             </v-stepper-header>
             <v-stepper-items color="cbtn">
-              <v-stepper-content step="1" color="cbtn">
+              <v-stepper-content step="1" color="cbtn" class="pl-0 pr-0">
                 <v-card
                   v-scroll.self="onScroll"
-                  class="overflow-y-auto mb-12 pa-0 ma-0"
+                  class="overflow-y-auto pl-0 pr-0"
                   height="500"
                   elevation="0"
+                  v-if="productosCarritoFinal.length == 0 ? true : false"
+                >
+                  <div align-self="center">
+                    <p class="mx-10 my-12">
+                      Usted actualmente no tiene productos añadidos a su carrito
+                      de compra.
+                    </p>
+                  </div>
+                </v-card>
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto pl-0 pr-0"
+                  height="500"
+                  elevation="0"
+                  v-if="productosCarritoFinal.length == 0 ? false : true"
                 >
                   <v-card
-                    class="mt-4"
+                    class=""
                     color="fondo lighten-4"
-                    elevation="4"
+                    elevation="0"
                     height="120"
-                    v-for="pro in productosCarrito"
+                    v-for="pro in productosCarritoFinal"
                     :key="pro.link"
                   >
-                    <v-row>
-                      <v-col cols="2" sm="2" md="2">
-                        <v-img
-                          position="center center "
-                          height="100px"
-                          width="90px"
-                          contain
-                          class="rounded-sm"
-                          :src="pro.imagen"
-                        >
+                    <v-row class="px-0 mx-0">
+                      <v-col
+                        cols="2"
+                        sm="2"
+                        md="2"
+                        align-self="center"
+                        justify="center"
+                      >
+                        <v-img contain class="rounded-sm" :src="pro.imagen">
                         </v-img>
                       </v-col>
-                      <v-col cols="9" sm="9" md="9">
+                      <v-col cols="9" sm="9" md="9" class="px-0 mx-0">
                         <v-card-text class="text--primary">
                           <div>
                             <a
-                              @click="goToProduct(pro.id)"
-                              style="text-decoration: none; font-size: large"
+                              :style="
+                                $vuetify.breakpoint.smAndDown == true
+                                  ? 'text-decoration: none; font-size: medium'
+                                  : 'text-decoration: none; font-size: large'
+                              "
                               ><span
                                 class="d-inline-block text-truncate"
                                 style="max-width: 100%"
@@ -213,10 +230,14 @@
                               ></a
                             >
                           </div>
-                          <v-row class="mt-4 ml-0">
+                          <v-row class="mt-3 mx-0 px-0">
                             <span
-                              class="mt-1"
-                              style="font-size: 150%"
+                              class="pt-1"
+                              :style="
+                                $vuetify.breakpoint.smAndDown == true
+                                  ? 'font-size: 100%'
+                                  : 'font-size: 150%'
+                              "
                               v-if="pro.precio != 0"
                               ><strong
                                 >$ {{ formatPrecio(pro.precio) }}</strong
@@ -225,49 +246,72 @@
                             <span style="font-size: 100%" v-if="pro.precio == 0"
                               ><strong>CONSULTAR</strong></span
                             >
-                            <div
-                              v-if="pro.descuento > 0"
-                              class="ml-2 pl-1 pr-1 pt-1 pb-1 cbtn rounded"
-                              style="
-                                font-size: 1.2em;
-                                color: #ffff;
-                                font-family: montserrat;
-                              "
-                            >
-                              <strong>-{{ pro.descuento }}% </strong>
+                            <!--<v-spacer></v-spacer>-->
+                            <div class="ml-4">
+                              <v-btn
+                                small
+                                text
+                                color="secondary"
+                                @click.prevent="deleteProductCart(pro.id)"
+                              >
+                                <strong style="font-size: 150%"> - </strong>
+                              </v-btn>
+                              <v-btn disabled small text @click.prevent="">
+                                <strong style="font-size: 120%">
+                                  {{ pro.cantidad }}
+                                </strong>
+                              </v-btn>
+                              <v-btn
+                                small
+                                text
+                                color="secondary"
+                                @click.prevent="postProductoCart(pro.id)"
+                              >
+                                <strong style="font-size: 150%"> + </strong>
+                              </v-btn>
                             </div>
-                            <v-spacer class="hidden-sm-and-down"></v-spacer>
                           </v-row>
                         </v-card-text>
                       </v-col>
-                      <v-col cols="1" sm="1" md="1" class="center center">
+                      <v-col
+                        cols="1"
+                        sm="1"
+                        md="1"
+                        align-self="center"
+                        justify="left"
+                        class="px-0 mx-0"
+                      >
                         <v-btn
                           icon
                           text
                           color="danger"
-                          @click.prevent="eliminarProductoCarrito(pro.id)"
+                          @click.prevent="deleteProductCartRaiz(pro.id)"
                           >X</v-btn
                         >
                       </v-col>
                     </v-row>
                   </v-card>
-                  <!--
-                    {{ pro }}
-                    
-                      
-                      
-                    </v-row>
-                  </v-card>-->
                 </v-card>
-                <div class="text-right">
+                <div class="text-right mr-4 mt-6">
                   <v-btn dark color="cbtn" @click="e1 = 2"> Siguiente </v-btn>
                 </div>
               </v-stepper-content>
 
-              <v-stepper-content step="2">
-                <v-card class="mb-12" height="500px" elevation="0"></v-card>
-
-                <div class="text-right">
+              <v-stepper-content step="2" class="pl-0 pr-0">
+                <v-card
+                  v-scroll.self="onScroll"
+                  class="overflow-y-auto pl-0 pr-0"
+                  height="500"
+                  elevation="0"
+                >
+                  <p>
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Veniam sint ad unde ipsam quam id voluptas error excepturi
+                    dignissimos? Quisquam iste magnam odit velit eius ea aliquam
+                    recusandae provident quo!
+                  </p>
+                </v-card>
+                <div class="text-right mr-4 mt-6">
                   <v-btn text dark color="cbtn" @click="e1 = 1" class="mr-1">
                     Atrás
                   </v-btn>
@@ -312,7 +356,10 @@
           <v-list-item key="3" :to="{ path: '/userRatings' }">
             <v-list-item-title>Mis Valoraciones</v-list-item-title>
           </v-list-item>
-          <v-list-item key="4" link @click="logout()">
+          <v-list-item key="4" :to="{ path: '/userPurchases' }">
+            <v-list-item-title>Mis Compras</v-list-item-title>
+          </v-list-item>
+          <v-list-item key="5" link @click="logout()">
             <v-list-item-title>Cerrar Sesión</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -540,7 +587,7 @@
   </v-app>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import searchglobal from "./Global/SearchGlobal.vue";
 //import Echo from "laravel-echo";
 import axios from "axios";
@@ -675,7 +722,9 @@ export default {
   created() {
     //this.getNotifications();
   },
-
+  computed: {
+    ...mapState(["productosCarritoFinal"]),
+  },
   mutations: {},
   methods: {
     ...mapActions([
@@ -685,6 +734,9 @@ export default {
       "register",
       "getUser",
       "obtenerComunas",
+      "postProductoCarrito",
+      "deleteProductCarrito",
+      "deleteProductCarritoRaiz",
     ]),
     fun() {
       var pusher = new Pusher("0c40fe59ad95d8de38f8", {
@@ -878,6 +930,27 @@ export default {
     },
     eliminarProductoCarrito(idProducto) {
       console.log(idProducto);
+    },
+    async postProductoCart(idProducto) {
+      let producto = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.postProductoCarrito(producto);
+    },
+    async deleteProductCart(idProducto) {
+      let request = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.deleteProductCarrito(request);
+    },
+    async deleteProductCartRaiz(idProducto) {
+      let request = {
+        producto_id: parseInt(idProducto),
+        usuario_id: this.$store.state.user.user.id,
+      };
+      this.deleteProductCarritoRaiz(request);
     },
   },
 };

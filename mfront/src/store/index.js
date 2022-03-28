@@ -26,6 +26,7 @@ export default new Vuex.Store({
         navUsuario: false,
         comunas: [],
         productosCarrito: [],
+        productosCarritoFinal: [],
     },
     mutations: {
         stateTrueAppBarSearch(state) {
@@ -46,6 +47,9 @@ export default new Vuex.Store({
             state.userRol = user != null ? user.roles[0] : "";
             state.userCreacion = user != null ? user.user.created_at : "";
             state.userId = user != null ? user.user.id : -1;
+        },
+        SET_CARRITO_FINAL(state, result) {
+            state.productosCarritoFinal = result != null ? result.data : [];
         },
         SET_LAYOUT(state, value) {
             state.layout = value;
@@ -143,15 +147,20 @@ export default new Vuex.Store({
             } else {
                 await dispatch("alertaRegisterMostrar");
             }
-
-
         },
         async getUser({ commit }) {
             await axios.get("/api/user")
                 .then((res) => {
-                    console.log(res.data);
-                    //await axios.get
                     commit('SET_USER', res.data);
+                    let id = res.data.user.id;
+                    axios.get('/api/private/getCartUsuario/' + id)
+                        .then((result) => {
+                            commit('SET_CARRITO_FINAL', result.data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            commit('SET_CARRITO_FINAL', null);
+                        });
                 })
                 .catch(() => {
                     commit('SET_USER', null);
@@ -167,6 +176,73 @@ export default new Vuex.Store({
                 .catch((error) => {
                     console.log(error);
                     commit('SET_COMUNAS', []);
+                });
+        },
+        async obtenerCarrito({ commit }, state) {
+            await axios.get(`/api/private/getCartUsuario/${state.userId}}`)
+                .then((result) => {
+                    commit('SET_CARRITO_FINAL', result.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    commit('SET_CARRITO_FINAL', null);
+                });
+        },
+        async postProductoCarrito({ commit }, request) {
+            let id = request.usuario_id;
+            await axios.post('/api/private/postProductoCart', request)
+                .then(() => {
+                    axios.get('/api/private/getCartUsuario/' + id)
+                        .then((result) => {
+                            commit('SET_CARRITO_FINAL', result.data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            commit('SET_CARRITO_FINAL', null);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    commit('SET_CARRITO_FINAL', null);
+                });
+
+        },
+        async deleteProductCarrito({ commit }, request) {
+            let idProducto = request.producto_id;
+            let idUsuario = request.usuario_id;
+            await axios.delete('/api/private/deleteProductoCart/' + idProducto + '/' + idUsuario)
+                .then(() => {
+                    axios.get('/api/private/getCartUsuario/' + idUsuario)
+                        .then((result) => {
+                            commit('SET_CARRITO_FINAL', result.data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            commit('SET_CARRITO_FINAL', null);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    commit('SET_CARRITO_FINAL', null);
+                });
+        },
+        async deleteProductCarritoRaiz({ commit }, request) {
+            let idProducto = request.producto_id;
+            let idUsuario = request.usuario_id;
+            await axios.delete('/api/private/deleteProductoCartRaiz/' + idProducto + '/' + idUsuario)
+                .then(() => {
+                    axios.get('/api/private/getCartUsuario/' + idUsuario)
+                        .then((result) => {
+                            commit('SET_CARRITO_FINAL', result.data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            commit('SET_CARRITO_FINAL', null);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    commit('SET_CARRITO_FINAL', null);
                 });
         },
         goToDashboad() {
@@ -214,6 +290,10 @@ export default new Vuex.Store({
         rutaActual: (state) => {
             return state.rutaActual
         },
+    },
+
+    methods: {
+
     },
 
 

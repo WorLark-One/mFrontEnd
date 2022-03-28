@@ -68,6 +68,14 @@
               <v-list-item-title>Mis valoraciones</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item :to="{ path: '/userPurchases' }">
+            <v-list-item-icon>
+              <v-icon>mdi-cart</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Mis Compras</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
