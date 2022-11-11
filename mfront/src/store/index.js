@@ -16,6 +16,7 @@ export default new Vuex.Store({
         userName: "",
         userEmail: "",
         userRol: "",
+        userShopper: false,
         userCreacion: "",
         auth: false,
         rolUser: null,
@@ -25,6 +26,7 @@ export default new Vuex.Store({
         alertaRegister: false,
         navUsuario: false,
         comunas: [],
+        comunasAux: [],
         productosCarrito: [],
         productosCarritoFinal: [],
     },
@@ -47,6 +49,7 @@ export default new Vuex.Store({
             state.userRol = user != null ? user.roles[0] : "";
             state.userCreacion = user != null ? user.user.created_at : "";
             state.userId = user != null ? user.user.id : -1;
+            state.userShopper = user.roles.length > 1 ? user.roles[1] : false;
         },
         SET_CARRITO_FINAL(state, result) {
             state.productosCarritoFinal = result != null ? result.data : [];
@@ -73,6 +76,7 @@ export default new Vuex.Store({
                 updated_at: "",
             }
             state.comunas = [aux];
+            state.comunasAux = value;
             for (const iterator of value) {
                 state.comunas = [...state.comunas, iterator];
             }

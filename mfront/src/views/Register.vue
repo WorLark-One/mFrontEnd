@@ -101,6 +101,25 @@
                 required
                 @click:append="show3 = !show3"
               ></v-text-field>
+              <v-checkbox
+                v-model="form2.shopper"
+                :label="
+                  !form2.shopper
+                    ? 'Haz click si deseas ser shopper.'
+                    : 'Haz click si no deseas ser shopper.'
+                "
+              ></v-checkbox>
+              <v-select
+                v-if="form2.shopper"
+                v-model="form2.comunas"
+                :items="comunasAux"
+                item-text="nombre"
+                item-value="nombre"
+                :menu-props="{ maxHeight: '300' }"
+                label="Comunas en las que quieras trabajar"
+                multiple
+                persistent-hint
+              ></v-select>
               <v-btn
                 color="cbtn"
                 rounded
@@ -148,6 +167,8 @@ export default {
       password: "",
       passwordConfirm: "",
       rol: "",
+      shopper: false,
+      comunas: [],
     },
     nameRules: [
       (v) => !!v || "Nombre es requerido",
@@ -172,7 +193,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["auth", "user"]),
+    ...mapState(["auth", "user", "comunasAux"]),
   },
   methods: {
     ...mapActions(["register", "alertaRegisterQuitar"]),
@@ -183,6 +204,8 @@ export default {
           email: this.form2.email,
           password: this.form2.password,
           rol: this.$store.state.newUser,
+          shopper: this.form2.shopper,
+          comunas: this.form2.shopper ? this.form2.comunas : [],
         };
         this.show2 = false;
         this.show3 = false;

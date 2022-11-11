@@ -359,7 +359,14 @@
           <v-list-item key="4" :to="{ path: '/userPurchases' }">
             <v-list-item-title>Mis Compras</v-list-item-title>
           </v-list-item>
-          <v-list-item key="5" link @click="logout()">
+          <v-list-item
+            v-if="$store.state.userShopper"
+            key="5"
+            :to="{ path: '/userShopper' }"
+          >
+            <v-list-item-title>Shopper</v-list-item-title>
+          </v-list-item>
+          <v-list-item key="6" link @click="logout()">
             <v-list-item-title>Cerrar Sesión</v-list-item-title>
           </v-list-item>
         </v-list>
